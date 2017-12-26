@@ -1,0 +1,28 @@
+LIBRARY "CspInterface"
+
+EXPORTS
+	CPAcquireContext @1
+    CPGetProvParam @2
+    CPReleaseContext @3
+    CPSetProvParam @4
+	CPDeriveKey @5
+	CPDestroyKey @6
+	CPExportKey @7 
+	CPGenKey @8
+	CPGenRandom @9
+	CPGetKeyParam @10
+	CPGetUserKey @11
+	CPImportKey @12
+	CPSetKeyParam @13
+	CPDecrypt @14 
+	CPEncrypt @15
+	CPCreateHash @16
+	CPDestroyHash @17
+	CPDuplicateHash @18
+	CPGetHashParam @19
+	CPHashData @20
+	CPSetHashParam @21 
+	CPSignHash @22
+	CPVerifySignature @23
+	CPDuplicateKey @24
+	CPHashSessionKey @25
