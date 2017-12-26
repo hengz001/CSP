@@ -3,6 +3,9 @@
 
 #include "stdafx.h"
 
+#define IP "192.168.1.101"
+#define PORT 8000
+
 //1 CPAcquireContext
 CSPINTERFACE BOOL WINAPI CPAcquireContext(
 	__out HCRYPTPROV *phProv,
@@ -15,12 +18,29 @@ CSPINTERFACE BOOL WINAPI CPAcquireContext(
 	puts("CPAcquireContext");
 #endif
 	int rv;
+	int fd;
+	int rsplen = MAX_MSGDATA;
+	char rsp[MAX_MSGDATA + 1];
+
 	LogEntry("CPAcquireContext","start" , 0, LOG_LEVEL );
 	//初始化线程同步
 	if ((rv = CSP_InitMutex())!=0){
 		return FALSE;
 	}
 	CSP_LockMutex();
+	fd = InitHsmDevice(IP, PORT, NULL);
+	if (fd < 0){
+		CSP_UnlockMutex();
+		LogEntry("InitHsmDevice", "ERROR", fd, LOG_LEVEL);
+		return FALSE;
+	}
+
+	rv =  HsmCmdRun(fd, 0,NULL, "NC", strlen("NC"), rsp, &rsplen);
+	if (rv < 0){
+		CSP_UnlockMutex();
+		LogEntry("HsmCmdRun", "ERROR", rv, LOG_LEVEL);
+		return FALSE;
+	}
 	CSP_UnlockMutex();
 	LogEntry("CPAcquireContext", "end", 0, LOG_LEVEL);
 	return TRUE;

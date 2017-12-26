@@ -81,6 +81,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="common_util.h" />
     <ClInclude Include="csp.h" />
     <ClInclude Include="CspInterfaceTools.h" />
     <ClInclude Include="mutex.h" />
@@ -89,6 +90,7 @@
     <ClInclude Include="tcptools.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="common_util.cpp" />
     <ClCompile Include="CspInterface.cpp" />
     <ClCompile Include="CspInterfaceTools.cpp" />
     <ClCompile Include="dllmain.cpp">

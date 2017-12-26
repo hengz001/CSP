@@ -16,8 +16,12 @@
 #include <process.h>
 #include <wincrypt.h>
 #include <winerror.h>
+#include <errno.h>
+//#include <winsock.h>
+#include <WinSock2.h>
 // TODO:  在此处引用程序需要的其他头文件
 #include "csp.h"
 #include "CspInterfaceTools.h"
 #include "mutex.h"
 #include "tcptools.h"
+#include "common_util.h"
