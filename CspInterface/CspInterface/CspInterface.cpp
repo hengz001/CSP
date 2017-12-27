@@ -3,8 +3,8 @@
 
 #include "stdafx.h"
 
-#define IP "192.168.1.101"
-#define PORT 8000
+static char *IP = "192.168.1.101";
+static int PORT = 8000;
 
 //1 CPAcquireContext
 CSPINTERFACE BOOL WINAPI CPAcquireContext(
@@ -21,6 +21,8 @@ CSPINTERFACE BOOL WINAPI CPAcquireContext(
 	int fd;
 	int rsplen = MAX_MSGDATA;
 	char rsp[MAX_MSGDATA + 1];
+	char *value = NULL;
+	char *port = NULL;
 
 	LogEntry("CPAcquireContext","start" , 0, LOG_LEVEL );
 	//初始化线程同步
@@ -28,19 +30,50 @@ CSPINTERFACE BOOL WINAPI CPAcquireContext(
 		return FALSE;
 	}
 	CSP_LockMutex();
+	
+
+	//初始化配置
+	rv = GetConfigString("GMN", "IP", &value);
+	if (rv != 0){
+		CSP_UnlockMutex();
+		LogEntry("GetConfigString GMN IP", "ERROR", rv, LOG_LEVEL);
+		return FALSE;
+	}
+	puts(value);
+	if (NULL != value){
+		free(value);
+		value = NULL;
+	}
+
+	rv = GetConfigString("GMN", "PORT", &value);
+	if (rv != 0){
+		CSP_UnlockMutex();
+		LogEntry("GetConfigString GMN IP", "ERROR", rv, LOG_LEVEL);
+		return FALSE;
+	}
+	puts(value);
+	if (NULL != value){
+		free(value);
+		value = NULL;
+	}
+
+	//连接
 	fd = InitHsmDevice(IP, PORT, NULL);
 	if (fd < 0){
 		CSP_UnlockMutex();
 		LogEntry("InitHsmDevice", "ERROR", fd, LOG_LEVEL);
 		return FALSE;
 	}
-
+	//通讯测试
 	rv =  HsmCmdRun(fd, 0,NULL, "NC", strlen("NC"), rsp, &rsplen);
 	if (rv < 0){
 		CSP_UnlockMutex();
 		LogEntry("HsmCmdRun", "ERROR", rv, LOG_LEVEL);
 		return FALSE;
 	}
+	//退出连接
+	CloseHsmDevice(fd);
+
 	CSP_UnlockMutex();
 	LogEntry("CPAcquireContext", "end", 0, LOG_LEVEL);
 	return TRUE;
