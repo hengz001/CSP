@@ -37,14 +37,14 @@ char achStrUpChar[] = {			/* IBM Codepage 850	*/
 
 #define StrUpChar(c)	((char) achStrUpChar [(unsigned char) (c)])
 
-static BOOL ReadLine(FILE *pf,char *pc,int MaxLen)
+static BOOL ReadLine(FILE *pf, char *pc, int MaxLen)
 {
-	if (!fgets(pc,MaxLen,pf)){
+	if (!fgets(pc, MaxLen, pf)){
 		*pc = 0x0;
 		return (FALSE);
 	}
 
-	for (;*pc;pc++){
+	for (; *pc; pc++){
 		if (!isprint((int)*pc)){
 			*pc = ' ';
 		}
@@ -56,11 +56,11 @@ void NormalizeString(char *s){
 	int l, l2;
 
 	l = strlen(s);
-	while (l&&(s[l-1]) == ' '){
+	while (l && (s[l - 1]) == ' '){
 		s[--l] = 0x00;
 	}
 	for (l = 0; s[l] == ' '; l++);
-	for (l2 = l; s[l2];l2++){
+	for (l2 = l; s[l2]; l2++){
 		s[l2 - l] = s[l2];
 	}
 	s[l2 - l] = 0x0;
@@ -72,7 +72,7 @@ char *NormalizeStringUpCase(char *pszString){
 
 	while ((s[0] == ' ') || (s[0] == '\t')) ++s;
 
-	while ((*t++ = StrUpChar(*s++))!=0){
+	while ((*t++ = StrUpChar(*s++)) != 0){
 		if ((s[0] == ' ') || (s[0] == '\t')){
 			while ((s[1] == ' ') || (s[1] == '\t'))++s;
 			if (s[1] == 0)++s;
@@ -89,34 +89,36 @@ static int StringIsEmpty(char *pc){
 	return (*pc = 0x0);
 }
 
-int Z_GetProfileString(const char *configFileName, const char *Section, const char *FieldName, 
+int Z_GetProfileString(const char *configFileName, const char *Section, const char *FieldName,
 	char *Value, int MaxValueLen, BOOL NormalizeNames){
 	FILE *cf;
 	static char fn[512];
-	char line[LINELEN+1];
+	char line[LINELEN + 1];
 	char keyword[LINELEN + 1];
 	char value[LINELEN + 1];
 	char *pc;
 	int LineNo = 0;
 	int ret = 3;
 	BOOL SectionFound = FALSE;
+	
+	LogEntry("Z_GetProfileString", "start", 0, 10);
 
 	*value = 0x00;
-	if (!(cf = fopen(configFileName,"rt"))){
-		LogEntry("Z_GetProfileString", "fopen error", -1, LOG_LEVEL);
+	if (!(cf = fopen(configFileName, "rt"))){
+		LogEntry("Z_GetProfileString", "fopen error", -1, 0);
 		ret = 2;
 		goto ende;
 	}
 
-	while (ReadLine(cf,line,LINELEN)){
+	while (ReadLine(cf, line, LINELEN)){
 		LineNo++;
 		if (line[0] == '['){
-			pc = strchr(line,']');
+			pc = strchr(line, ']');
 			if (pc){
 				*pc = 0x0;
 			}
 			else{
-				LogEntry("GetProfileString[]", "error", -1, LOG_LEVEL);
+				LogEntry("GetProfileString[]", "error", -1, 0);
 			}
 			if (NormalizeNames){
 				NormalizeStringUpCase(&line[1]);
@@ -132,13 +134,10 @@ int Z_GetProfileString(const char *configFileName, const char *Section, const ch
 				ret = 4;
 			}
 		}
-		else if(line[0] == '#'){
-			;
-		}
-		else if (SectionFound){
-			pc = strchr(line,'=');
+		else if (SectionFound && line[0] != '#'){
+			pc = strchr(line, '=');
 			if (pc){
-				strncpy(keyword,line,pc-line);
+				strncpy(keyword, line, pc - line);
 				keyword[pc - line] = 0x0;
 				if (NormalizeNames){
 					NormalizeStringUpCase(keyword);
@@ -146,15 +145,16 @@ int Z_GetProfileString(const char *configFileName, const char *Section, const ch
 				else{
 					NormalizeString(keyword);
 				}
-				sscanf(++pc,"%s",value);
+				sscanf(++pc, "%s", value);
 				if (!strcmp(keyword, FieldName)){
-					strncpy(Value,pc,MaxValueLen);
+					strncpy(Value, pc, MaxValueLen);
 					NormalizeString(Value);
 					ret = 0;
+
 					goto ende;
 				}
 				else if (!StringIsEmpty(line)){
-					LogEntry("keyword and value must be separated whit '=' ", "show", LineNo, LOG_LEVEL);
+					LogEntry("keyword and value must be separated whit '=' ", "show", LineNo, 10);
 				}
 			}
 		}
@@ -164,92 +164,25 @@ ende:
 	if (cf){
 		fclose(cf);
 	}
-	return  ret ;
+	LogEntry("Z_GetProfileString", "end", 0, 10);
+	return  ret;
 }
 
 int GetConfigString(char *pSectionName, char* pFieldname, char **ppValue){
 	char buff[512];
 	int rv = 0;
 
-	LogEntry("GetConfigString", "start", 0, LOG_LEVEL);
-	rv = Z_GetProfileString(CONFIGFILE,pSectionName,pFieldname,buff,510,FALSE);
+	LogEntry("GetConfigString", "start", 0, 10);
+	rv = Z_GetProfileString(CONFIGFILE, pSectionName, pFieldname, buff, 510, FALSE);
 	if (rv != 0){
-		VarLogEntry("Z_GetProfileString", 
+		VarLogEntry("Z_GetProfileString",
 			"Reading config field '%s' from Section [%s] in file '%s' failed %s",
-			rv, LOG_LEVEL,pFieldname,pSectionName,CONFIGFILE,"配置错误");
+			rv, 0, pFieldname, pSectionName, CONFIGFILE, "配置错误");
 		return (5);
 	}
-	*ppValue = (char*)malloc(strlen(buff)+1);
-	strcpy(*ppValue,buff);
-	VarLogEntry("GetConfigString", "section[%s],fieldname[%s] vaule[%s]", 0, LOG_LEVEL, pSectionName, pFieldname, *ppValue);
+	*ppValue = (char*)malloc(strlen(buff) + 1);
+	strcpy(*ppValue, buff);
+	VarLogEntry("GetConfigString", "section[%s],fieldname[%s] vaule[%s]", 0, 10, pSectionName, pFieldname, *ppValue);
 	return 0;
 }
 
-void VarLogEntry(char *functionName, char *processDes, int rv, int level, ...){
-	va_list params;
-	va_start(params, level);
-	char varProcessDes[2048];
-	vsprintf(varProcessDes, processDes, params);
-	va_end(params);
-	LogEntry(functionName, varProcessDes, rv, level);
-}
-
-void LogEntry(char *functionName, char *processDes, int rv, int level){
-	FILE *log = NULL;
-	
-	//是否记录log
-	if (!level || LOG_LEVEL == 0){
-		return ;
-	}
-
-	//当前时间
-	char fileName[MAX_PATH];
-	char timePad[4+2+2+2+2+2+1];
-	GetTime(timePad,sizeof(timePad),"%Y%m%d%H%M%S");
-	timePad[4+2+2+2+2+2] = 0;
-	
-	//读取日志文件
-	if (fileLength(LOGFILE)>MAX_LOG_SIZE){
-		strcpy(fileName, LOGFILE);
-		strcpy(fileName + sizeof(LOGFILE), timePad);
-
-		remove(fileName);
-		rename(LOGFILE, fileName);
-	}
-
-	//日志文件
-	log = fopen(LOGFILE, "a");
-	if (NULL == log){
-		return;
-	}
-
-	functionName = (NULL == functionName) ? "NULL" : functionName;
-	processDes = (NULL == processDes) ? "NULL" : processDes;
-
-	fprintf(log,"[0x%08X]",_getpid());
-	fprintf(log,"/* %s()",functionName);
-	fprintf(log," %s ",processDes);
-	fprintf(log, "(%d) %s */\n", rv, timePad);
-	
-	fclose(log);
-	return;
-}
-
-unsigned long fileLength(char *fname){
-	HFILE handle;
-	long start, end;
-
-	//判断文件开始 and 结束	
-	handle = _lopen(fname,OF_READ);
-	start = _llseek(handle,0L,SEEK_SET);
-	end = _llseek(handle,0L,SEEK_END);
-	_lclose(handle);
-	return (end-start);
-}
-
-char * GetTime(char *Buffer, int Len, const char *format){
-	time_t clock;
-	clock = time((time_t)0);
-	strftime(Buffer, Len, format, localtime(&clock));
-	return (Buffer);
-}

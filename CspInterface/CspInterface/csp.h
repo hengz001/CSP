@@ -29,15 +29,9 @@
 
 #ifndef CSP_SPI
 #define CSP_SPI
-#include <windows.h>
-#include <wincrypt.h>
 
 //DEBUG打印显示信息
 #define DEBUG
-#ifdef DEBUG
-#include <stdio.h>
-#include <stdlib.h>
-#endif
 
 #define EXPORT
 #ifdef EXPORT

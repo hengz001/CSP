@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "mutex.h"
 
 CSP_MUTEX_FUNCTION_LIST csp_mutex_function_list;
 int MutexInitFlag = 0;

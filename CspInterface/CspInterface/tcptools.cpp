@@ -1,7 +1,26 @@
 #include "stdafx.h"
-#include "tcptools.h"
 
 #pragma comment(lib,"ws2_32.lib")
+
+
+static char IP[256];
+static int PORT = 0;
+
+void setIP(char *ip){
+	memcpy(IP,ip,strlen(ip));
+}
+
+void setPORT(int port){
+	PORT = port;
+}
+
+void getIP(char **ip){
+	*ip = IP;
+}
+
+int getPORT(){
+	return PORT;
+}
 
 int HsmSendToSocket(int sockfd, unsigned char *buffer, int *length, int timeout){
 	int rc = -1;
@@ -206,7 +225,7 @@ int HsmCmdRun(int comid, int msghdlen, char * msghd, char *cmd, int cmdlen, char
 	cmd_len = p - cmd_buf;
 	memcpy(send_buf,cmd_buf,cmd_len);
 	
-	LogEntry("SEND:", cmd, sizeof(cmd), LOG_LEVEL);
+	LogEntry("SEND:", cmd, sizeof(cmd), 1);
 	
 	rc = comTcpSend(comid,send_buf,&cmd_len,SEND_TIMEOUT);
 	if (rc < 0){
@@ -230,7 +249,7 @@ int HsmCmdRun(int comid, int msghdlen, char * msghd, char *cmd, int cmdlen, char
 	}
 	if ((cmd_buf[2 + msghdlen + 1] + 1) != ret_buf[2 + msghdlen + 1])	return(HSM_ERR_CMDRSP);
 
-	LogEntry("RECV:", (char*)(ret_buf+2), 0, LOG_LEVEL);
+	LogEntry("RECV:", (char*)(ret_buf+2), 0, 1);
 	if (!memcmp(&ret_buf[2 + msghdlen + 2], "00", 2)){
 		memcpy(rsp, (unsigned char *)&ret_buf[2 + msghdlen + 2 + 2], *rsplen);
 		return (0);

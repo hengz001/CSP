@@ -3,9 +3,6 @@
 
 #include "stdafx.h"
 
-static char *IP = "192.168.1.101";
-static int PORT = 8000;
-
 //1 CPAcquireContext
 CSPINTERFACE BOOL WINAPI CPAcquireContext(
 	__out HCRYPTPROV *phProv,
@@ -18,64 +15,26 @@ CSPINTERFACE BOOL WINAPI CPAcquireContext(
 	puts("CPAcquireContext");
 #endif
 	int rv;
-	int fd;
-	int rsplen = MAX_MSGDATA;
-	char rsp[MAX_MSGDATA + 1];
-	char *value = NULL;
-	char *port = NULL;
 
-	LogEntry("CPAcquireContext","start" , 0, LOG_LEVEL );
+	LogEntry("CPAcquireContext","start" , 0, 10 );
 	//初始化线程同步
 	if ((rv = CSP_InitMutex())!=0){
 		return FALSE;
 	}
 	CSP_LockMutex();
 	
-
-	//初始化配置
-	rv = GetConfigString("GMN", "IP", &value);
-	if (rv != 0){
-		CSP_UnlockMutex();
-		LogEntry("GetConfigString GMN IP", "ERROR", rv, LOG_LEVEL);
+	//加载配置文件
+	if (initCSP()<0){
 		return FALSE;
 	}
-	puts(value);
-	if (NULL != value){
-		free(value);
-		value = NULL;
-	}
-
-	rv = GetConfigString("GMN", "PORT", &value);
-	if (rv != 0){
-		CSP_UnlockMutex();
-		LogEntry("GetConfigString GMN IP", "ERROR", rv, LOG_LEVEL);
+	
+	//加密机状态
+	if (testSjl22()<0){
 		return FALSE;
 	}
-	puts(value);
-	if (NULL != value){
-		free(value);
-		value = NULL;
-	}
-
-	//连接
-	fd = InitHsmDevice(IP, PORT, NULL);
-	if (fd < 0){
-		CSP_UnlockMutex();
-		LogEntry("InitHsmDevice", "ERROR", fd, LOG_LEVEL);
-		return FALSE;
-	}
-	//通讯测试
-	rv =  HsmCmdRun(fd, 0,NULL, "NC", strlen("NC"), rsp, &rsplen);
-	if (rv < 0){
-		CSP_UnlockMutex();
-		LogEntry("HsmCmdRun", "ERROR", rv, LOG_LEVEL);
-		return FALSE;
-	}
-	//退出连接
-	CloseHsmDevice(fd);
 
 	CSP_UnlockMutex();
-	LogEntry("CPAcquireContext", "end", 0, LOG_LEVEL);
+	LogEntry("CPAcquireContext", "end", 0, 10);
 	return TRUE;
 }
 
@@ -91,10 +50,10 @@ CSPINTERFACE BOOL WINAPI CPGetProvParam(
 #ifdef DEBUG
 	puts("CPGetProvParam");
 #endif
-	LogEntry("CPGetProvParam", "start", 0, LOG_LEVEL);
+	LogEntry("CPGetProvParam", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPGetProvParam", "end", 0, LOG_LEVEL);
+	LogEntry("CPGetProvParam", "end", 0, 10);
 	return TRUE;
 }
 
@@ -108,12 +67,12 @@ CSPINTERFACE BOOL WINAPI CPReleaseContext(
 #ifdef DEBUG
 	puts("CPReleaseContext");
 #endif
-	LogEntry("CPReleaseContext", "start", 0, LOG_LEVEL);
+	LogEntry("CPReleaseContext", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
 	//结束线程同步
 	CSP_Destroy_Mutex();
-	LogEntry("CPReleaseContext", "end", 0, LOG_LEVEL);
+	LogEntry("CPReleaseContext", "end", 0, 10);
 	return TRUE;
 }
 
@@ -129,10 +88,10 @@ CSPINTERFACE BOOL WINAPI CPSetProvParam(
 #ifdef DEBUG
 	puts("CPSetProvParam");
 #endif
-	LogEntry("CPSetProvParam", "start", 0, LOG_LEVEL);
+	LogEntry("CPSetProvParam", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPSetProvParam", "end", 0, LOG_LEVEL);
+	LogEntry("CPSetProvParam", "end", 0, 10);
 	return TRUE;
 }
 
@@ -149,10 +108,10 @@ CSPINTERFACE BOOL WINAPI CPDeriveKey(
 #ifdef DEBUG
 	puts("CPDeriveKey");
 #endif
-	LogEntry("CPDeriveKey", "start", 0, LOG_LEVEL);
+	LogEntry("CPDeriveKey", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPDeriveKey", "end", 0, LOG_LEVEL);
+	LogEntry("CPDeriveKey", "end", 0, 10);
 
 	return TRUE;
 }
@@ -167,10 +126,10 @@ CSPINTERFACE BOOL WINAPI CPDestroyKey(
 #ifdef DEBUG
 	puts("CPDestroyKey");
 #endif
-	LogEntry("CPDestroyKey", "start", 0, LOG_LEVEL);
+	LogEntry("CPDestroyKey", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPDestroyKey", "end", 0, LOG_LEVEL);
+	LogEntry("CPDestroyKey", "end", 0, 10);
 	return TRUE;
 }
 
@@ -189,10 +148,10 @@ CSPINTERFACE BOOL WINAPI CPExportKey(
 #ifdef DEBUG
 	puts("CPExportKey");
 #endif
-	LogEntry("CPExportKey", "start", 0, LOG_LEVEL);
+	LogEntry("CPExportKey", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPExportKey", "end", 0, LOG_LEVEL);
+	LogEntry("CPExportKey", "end", 0, 10);
 	return TRUE;
 }
 
@@ -208,10 +167,10 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 #ifdef DEBUG
 	puts("CPGenKey");
 #endif
-	LogEntry("CPGenKey", "start", 0, LOG_LEVEL);
+	LogEntry("CPGenKey", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPGenKey", "end", 0, LOG_LEVEL);
+	LogEntry("CPGenKey", "end", 0, 10);
 	return TRUE;
 }
 
@@ -226,10 +185,10 @@ CSPINTERFACE BOOL WINAPI CPGenRandom(
 #ifdef DEBUG
 	puts("CPGenRandom");
 #endif
-	LogEntry("CPGenRandom", "start", 0, LOG_LEVEL);
+	LogEntry("CPGenRandom", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPGenRandom", "end", 0, LOG_LEVEL);
+	LogEntry("CPGenRandom", "end", 0, 10);
 	return TRUE;
 }
 
@@ -247,10 +206,10 @@ CSPINTERFACE BOOL WINAPI CPGetKeyParam(
 #ifdef DEBUG
 	puts("CPGetKeyParam");
 #endif
-	LogEntry("CPGetKeyParam", "start", 0, LOG_LEVEL);
+	LogEntry("CPGetKeyParam", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPGetKeyParam", "end", 0, LOG_LEVEL);
+	LogEntry("CPGetKeyParam", "end", 0, 10);
 
 	return TRUE;
 }
@@ -266,10 +225,10 @@ CSPINTERFACE BOOL WINAPI CPGetUserKey(
 #ifdef DEBUG
 	puts("CPGetUserKey");
 #endif
-	LogEntry("CPGetUserKey", "start", 0, LOG_LEVEL);
+	LogEntry("CPGetUserKey", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPGetUserKey", "end", 0, LOG_LEVEL);
+	LogEntry("CPGetUserKey", "end", 0, 10);
 	return TRUE;
 }
 
@@ -287,10 +246,10 @@ CSPINTERFACE BOOL WINAPI CPImportKey(
 #ifdef DEBUG
 	puts("CPImportKey");
 #endif
-	LogEntry("CPImportKey", "start", 0, LOG_LEVEL);
+	LogEntry("CPImportKey", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPImportKey", "end", 0, LOG_LEVEL);
+	LogEntry("CPImportKey", "end", 0, 10);
 	return TRUE;
 }
 
@@ -307,10 +266,10 @@ CSPINTERFACE BOOL WINAPI CPSetKeyParam(
 #ifdef DEBUG
 	puts("CPSetKeyParam");
 #endif
-	LogEntry("CPSetKeyParam", "start", 0, LOG_LEVEL);
+	LogEntry("CPSetKeyParam", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPSetKeyParam", "end", 0, LOG_LEVEL);
+	LogEntry("CPSetKeyParam", "end", 0, 10);
 	return TRUE;
 }
 
@@ -329,10 +288,10 @@ CSPINTERFACE BOOL WINAPI CPDecrypt(
 #ifdef DEBUG
 	puts("CPDecrypt");
 #endif
-	LogEntry("CPDecrypt", "start", 0, LOG_LEVEL);
+	LogEntry("CPDecrypt", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPDecrypt", "end", 0, LOG_LEVEL);
+	LogEntry("CPDecrypt", "end", 0, 10);
 	return TRUE;
 }
 
@@ -352,10 +311,10 @@ CSPINTERFACE BOOL WINAPI CPEncrypt(
 #ifdef DEBUG
 	puts("CPEncrypt");
 #endif
-	LogEntry("CPEncrypt", "start", 0, LOG_LEVEL);
+	LogEntry("CPEncrypt", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPEncrypt", "end", 0, LOG_LEVEL);
+	LogEntry("CPEncrypt", "end", 0, 10);
 	return TRUE;
 }
 
@@ -372,10 +331,10 @@ CSPINTERFACE BOOL WINAPI CPCreateHash(
 #ifdef DEBUG
 	puts("CPCreateHash");
 #endif
-	LogEntry("CPCreateHash", "start", 0, LOG_LEVEL);
+	LogEntry("CPCreateHash", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPCreateHash", "end", 0, LOG_LEVEL);
+	LogEntry("CPCreateHash", "end", 0, 10);
 	return TRUE;
 }
 
@@ -389,10 +348,10 @@ CSPINTERFACE BOOL WINAPI CPDestroyHash(
 #ifdef DEBUG
 	puts("CPDestroyHash");
 #endif
-	LogEntry("CPDestroyHash", "start", 0, LOG_LEVEL);
+	LogEntry("CPDestroyHash", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPDestroyHash", "end", 0, LOG_LEVEL);
+	LogEntry("CPDestroyHash", "end", 0, 10);
 	return TRUE;
 }
 
@@ -409,10 +368,10 @@ CSPINTERFACE BOOL WINAPI CPDuplicateHash(
 #ifdef DEBUG
 	puts("CPDuplicateHash");
 #endif
-	LogEntry("CPDuplicateHash", "start", 0, LOG_LEVEL);
+	LogEntry("CPDuplicateHash", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPDuplicateHash", "end", 0, LOG_LEVEL);
+	LogEntry("CPDuplicateHash", "end", 0, 10);
 	return TRUE;
 }
 
@@ -430,10 +389,10 @@ CSPINTERFACE BOOL WINAPI CPGetHashParam(
 #ifdef DEBUG
 	puts("CPGetHashParam");
 #endif
-	LogEntry("CPGetHashParam", "start", 0, LOG_LEVEL);
+	LogEntry("CPGetHashParam", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPGetHashParam", "end", 0, LOG_LEVEL);
+	LogEntry("CPGetHashParam", "end", 0, 10);
 
 	return TRUE;
 }
@@ -451,10 +410,10 @@ CSPINTERFACE BOOL WINAPI CPHashData(
 #ifdef DEBUG
 	puts("CPHashData");
 #endif
-	LogEntry("CPHashData", "start", 0, LOG_LEVEL);
+	LogEntry("CPHashData", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPHashData", "end", 0, LOG_LEVEL);
+	LogEntry("CPHashData", "end", 0, 10);
 
 	return TRUE;
 }
@@ -472,10 +431,10 @@ CSPINTERFACE BOOL WINAPI CPSetHashParam(
 #ifdef DEBUG
 	puts("CPSetHashParam");
 #endif
-	LogEntry("CPSetHashParam", "start", 0, LOG_LEVEL);
+	LogEntry("CPSetHashParam", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPSetHashParam", "end", 0, LOG_LEVEL);
+	LogEntry("CPSetHashParam", "end", 0, 10);
 
 	return TRUE;
 }
@@ -495,10 +454,10 @@ CSPINTERFACE BOOL WINAPI CPSignHash(
 #ifdef DEBUG
 	puts("CPSignHash");
 #endif
-	LogEntry("CPSignHash", "start", 0, LOG_LEVEL);
+	LogEntry("CPSignHash", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPSignHash", "end", 0, LOG_LEVEL);
+	LogEntry("CPSignHash", "end", 0, 10);
 	return TRUE;
 }
 
@@ -517,10 +476,10 @@ CSPINTERFACE BOOL WINAPI CPVerifySignature(
 #ifdef DEBUG
 	puts("CPVerifySignature");
 #endif
-	LogEntry("CPVerifySignature", "start", 0, LOG_LEVEL);
+	LogEntry("CPVerifySignature", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPVerifySignature", "end", 0, LOG_LEVEL);
+	LogEntry("CPVerifySignature", "end", 0, 10);
 	return TRUE;
 }
 
@@ -537,10 +496,10 @@ CSPINTERFACE BOOL WINAPI CPDuplicateKey(
 #ifdef DEBUG
 	puts("CPDuplicateKey");
 #endif
-	LogEntry("CPDuplicateKey", "start", 0, LOG_LEVEL);
+	LogEntry("CPDuplicateKey", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPDuplicateKey", "end", 0, LOG_LEVEL);
+	LogEntry("CPDuplicateKey", "end", 0, 10);
 	return TRUE;
 }
 
@@ -556,10 +515,10 @@ CSPINTERFACE BOOL WINAPI CPHashSessionKey(
 #ifdef DEBUG
 	puts("CPHashSessionKey");
 #endif
-	LogEntry("CPHashSessionKey", "start", 0, LOG_LEVEL);
+	LogEntry("CPHashSessionKey", "start", 0, 10);
 	CSP_LockMutex();
 	CSP_UnlockMutex();
-	LogEntry("CPHashSessionKey", "end", 0, LOG_LEVEL);
+	LogEntry("CPHashSessionKey", "end", 0, 10);
 	return TRUE;
 }
 

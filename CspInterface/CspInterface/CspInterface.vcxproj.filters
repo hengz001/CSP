@@ -27,9 +27,6 @@
     <ClInclude Include="csp.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CspInterfaceTools.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="mutex.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -39,18 +36,24 @@
     <ClInclude Include="common_util.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="cspService.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CspInterface.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CspInterfaceTools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="mutex.cpp">
@@ -60,6 +63,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="common_util.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="cspService.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="cspInterface.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

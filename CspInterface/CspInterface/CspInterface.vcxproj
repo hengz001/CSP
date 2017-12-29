@@ -81,9 +81,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="common.h" />
     <ClInclude Include="common_util.h" />
+    <ClInclude Include="config.h" />
     <ClInclude Include="csp.h" />
-    <ClInclude Include="CspInterfaceTools.h" />
+    <ClInclude Include="cspService.h" />
+    <ClInclude Include="log.h" />
     <ClInclude Include="mutex.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -91,8 +94,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common_util.cpp" />
-    <ClCompile Include="CspInterface.cpp" />
-    <ClCompile Include="CspInterfaceTools.cpp" />
+    <ClCompile Include="config.cpp" />
+    <ClCompile Include="cspInterface.cpp" />
+    <ClCompile Include="cspService.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -101,6 +105,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="log.cpp" />
     <ClCompile Include="mutex.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

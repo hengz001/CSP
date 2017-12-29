@@ -1,3 +1,5 @@
+#ifndef TCP_TOOLS_H
+#define TCP_TOOLS_H
 
 #define SEND_TIMEOUT		60	
 #define RECV_TIMEOUT		90	
@@ -46,3 +48,13 @@ int CloseHsmDevice(int comid);
 int InitHsmDevice(char *tcpaddr, int port, int timeout);
 
 int HsmCmdRun(int comid, int msghdlen, char * msghd, char *cmd, int cmdlen, char *rsp, int *rsplen);
+
+void setIP(char *ip);
+
+void setPORT(int port);
+
+void getIP(char **ip);
+
+int getPORT();
+
+#endif
