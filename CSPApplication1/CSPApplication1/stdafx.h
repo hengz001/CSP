@@ -18,5 +18,22 @@
 #include <winerror.h>
 #include <errno.h>
 #include <WinSock2.h>
+
 // TODO:  在此处引用程序需要的其他头文件
-#include "common.h"
+#include "cspdefs.h"
+#include "csp.h"
+
+#include "log.h"
+#include "config.h"
+#include "tcptools.h"
+#include "mutex.h"
+#include "cspService.h"
+
+#include "common_util.h"
+
+
+#define MAX_LOG_SIZE (2048*1024)
+#define LINELEN 4096
+#define LOGFILE "csp_zhuheng.log"
+#define CONFIGFILE "csp_config_zhuheng.cfg"
+

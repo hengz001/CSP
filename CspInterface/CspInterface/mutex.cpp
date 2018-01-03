@@ -118,3 +118,7 @@ int CSP_Destroy_Mutex(void)
 	MutexInitFlag = 0;
 	return 0;
 }
+
+int getMutexFlag(void){
+	return MutexInitFlag;
+}

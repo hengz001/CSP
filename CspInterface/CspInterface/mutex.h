@@ -41,4 +41,7 @@ int CSP_InitMutex(void);
 
 int CSP_Destroy_Mutex(void);
 
+
+int getMutexFlag(void);
+
 #endif

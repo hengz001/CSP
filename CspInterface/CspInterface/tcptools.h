@@ -3,7 +3,7 @@
 
 #define SEND_TIMEOUT		60	
 #define RECV_TIMEOUT		90	
-#define MAX_MSGDATA			1024*8
+//#define MAX_MSGDATA			1024*8
 
 #define	HSM_ERROR			(-1)
 #define	HSM_OK				0

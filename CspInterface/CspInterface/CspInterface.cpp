@@ -33,6 +33,9 @@ CSPINTERFACE BOOL WINAPI CPAcquireContext(
 		return FALSE;
 	}
 
+	//·µ»ØÃÜÔ¿ÈÝÆ÷¾ä±ú
+	*phProv = getMutexFlag();
+
 	CSP_UnlockMutex();
 	LogEntry("CPAcquireContext", "end", 0, 10);
 	return TRUE;
