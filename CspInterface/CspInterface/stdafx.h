@@ -19,4 +19,6 @@
 #include <errno.h>
 #include <WinSock2.h>
 // TODO:  在此处引用程序需要的其他头文件
-#include "common.h"
+#include "csp.h"
+#include "cspdefs.h"
+#include "hash.h"

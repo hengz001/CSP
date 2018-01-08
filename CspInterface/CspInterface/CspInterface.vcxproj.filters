@@ -13,45 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\base">
-      <UniqueIdentifier>{c0549c31-bf0f-4e6a-af3b-c29814c62668}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\servlet">
-      <UniqueIdentifier>{19273deb-b073-44fb-becc-a891b82ec615}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\service">
-      <UniqueIdentifier>{b2e83387-6bc3-41f1-87d5-1f64af71ef6e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\base\main">
-      <UniqueIdentifier>{b389516b-59d3-41bd-85e6-cae33cdc9ea2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\base\sys">
-      <UniqueIdentifier>{e6fead82-7c81-4d16-b16b-b6a190b9e6b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\service\method">
-      <UniqueIdentifier>{c8dcba20-5480-4104-8221-1cc185c2f235}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\servlet\common">
-      <UniqueIdentifier>{d45df0ed-e1ff-4e79-914d-03b5505247bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\servlet\tcp">
-      <UniqueIdentifier>{2455e1f7-6721-42f2-9374-b7acb2642ebb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\servlet\log">
-      <UniqueIdentifier>{17311c2c-dda5-412f-8595-a3257a351ad4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\servlet\config">
-      <UniqueIdentifier>{8c1863d0-3a4e-468a-a744-20eda29caf27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\servlet\mutex">
-      <UniqueIdentifier>{423e9a84-a162-4c4b-a178-d7a2f10f9237}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\service\method\CPAcquireContext">
-      <UniqueIdentifier>{b6d0c4c4-620c-423b-ad49-c643996e700d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\service\hash">
-      <UniqueIdentifier>{d466effe-27f6-4500-8511-fd79679f2feb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件\base">
       <UniqueIdentifier>{c0e156c1-d7ac-4d64-9c81-40d336b9c011}</UniqueIdentifier>
     </Filter>
@@ -96,38 +57,29 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="common.h">
-      <Filter>头文件\servlet\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common_util.h">
-      <Filter>头文件\servlet\common</Filter>
-    </ClInclude>
-    <ClInclude Include="config.h">
-      <Filter>头文件\servlet\config</Filter>
-    </ClInclude>
     <ClInclude Include="csp.h">
-      <Filter>头文件\base\main</Filter>
+      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="cspdefs.h">
-      <Filter>头文件\base\main</Filter>
-    </ClInclude>
-    <ClInclude Include="log.h">
-      <Filter>头文件\servlet\log</Filter>
-    </ClInclude>
-    <ClInclude Include="mutex.h">
-      <Filter>头文件\servlet\mutex</Filter>
+      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>头文件\base\sys</Filter>
+      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>头文件\base\sys</Filter>
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="hash.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common_util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="mutex.h">
+      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="tcptools.h">
-      <Filter>头文件\servlet\tcp</Filter>
-    </ClInclude>
-    <ClInclude Include="cspService.h">
-      <Filter>头文件\service\method\CPAcquireContext</Filter>
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="cspService.cpp">
       <Filter>源文件\servlet\method\CPAcquireContext</Filter>
+    </ClCompile>
+    <ClCompile Include="hash.cpp">
+      <Filter>源文件\servlet\hash</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
