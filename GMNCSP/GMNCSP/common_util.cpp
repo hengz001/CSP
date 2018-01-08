@@ -1,0 +1,39 @@
+#include "stdafx.h"
+
+unsigned char *short2hex(unsigned short s, unsigned char *p){
+	*p++ = (s>>8)&0xff;
+	*p++ = s & 0xff;
+	return p;
+}
+
+unsigned short hex2short(unsigned char *p){
+	unsigned short s;
+	s = *p++;
+	s = (s << 8) | *p++;
+	return s;
+}
+
+
+unsigned long filelength(char *fname)
+{
+	HFILE	handle;
+	long start, end;
+
+	/*** open the file to calculate the length ***/
+	handle = _lopen(fname, OF_READ/*O_RDONLY*/);
+	start = _llseek(handle, 0L, SEEK_SET);
+	end = _llseek(handle, 0L, SEEK_END);
+
+	/*** close the file ***/
+	_lclose(handle);
+	return(end - start);
+}
+
+char *GetTime(char *Buffer, int Len, const char *format)
+{
+	time_t clock;
+
+	clock = time((time_t *)0);
+	strftime(Buffer, Len, format, localtime(&clock));
+	return (Buffer);
+}
