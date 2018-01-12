@@ -48,6 +48,12 @@
     <ClInclude Include="config.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="regedit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="sjl22api.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -75,6 +81,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="config.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="regedit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="sjl22api.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

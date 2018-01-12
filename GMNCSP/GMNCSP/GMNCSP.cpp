@@ -16,20 +16,24 @@ CSPINTERFACE BOOL WINAPI CPAcquireContext(
 #endif
 	int rv;
 
-	LogEntry("CPAcquireContext", "start", 0, 10);
 	//初始化线程同步
 	if ((rv = CSP_InitMutex()) != 0){
+		CSP_UnlockMutex();
 		return FALSE;
 	}
 	CSP_LockMutex();
 
 	//加载配置文件
 	if (initCSP()<0){
+		CSP_UnlockMutex();
 		return FALSE;
 	}
 
+	LogEntry("CPAcquireContext", "start", 0, 10);
+
 	//加密机状态
 	if (testSjl22()<0){
+		CSP_UnlockMutex();
 		return FALSE;
 	}
 
@@ -53,8 +57,39 @@ CSPINTERFACE BOOL WINAPI CPGetProvParam(
 #ifdef DEBUG
 	puts("CPGetProvParam");
 #endif
+	LONG lRet;
+	HKEY hKey;
+
 	LogEntry("CPGetProvParam", "start", 0, 10);
+	
 	CSP_LockMutex();
+
+	//容器是否初始化
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+
+	//获取注册表属性
+	lRet = GMN_RegOpen(&hKey);
+	if (ERROR_SUCCESS != lRet) {
+		VarLogEntry(" GMN_RegOpen", "error: %u", -1, 0, lRet);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+
+	//获取属性
+	lRet = GMN_RegQueryValueEx(hKey,(CHAR*)dwParam, 0, &dwFlags, pbData, pdwDataLen);
+	if (ERROR_SUCCESS != lRet) {
+		VarLogEntry(" GMN_RegQueryValueEx", "error: %u", -1, 0, lRet);
+		VarLogEntry(" GMN_RegQueryValueEx", "key: %s", -1, 0,
+				(CHAR*)dwParam);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+
 	CSP_UnlockMutex();
 	LogEntry("CPGetProvParam", "end", 0, 10);
 	return TRUE;
@@ -91,8 +126,36 @@ CSPINTERFACE BOOL WINAPI CPSetProvParam(
 #ifdef DEBUG
 	puts("CPSetProvParam");
 #endif
+	LONG lRet;
+	HKEY hKey;
+	
 	LogEntry("CPSetProvParam", "start", 0, 10);
 	CSP_LockMutex();
+
+	//容器是否初始化
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+
+	//获取注册表属性
+	lRet = GMN_RegOpen(&hKey);
+	if (ERROR_SUCCESS != lRet) {
+		VarLogEntry(" GMN_RegOpen", "error: %u", -1, 0, lRet);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+
+	//设置注册表属性
+	lRet = GMN_RegSetValueEx(hKey, (LPCSTR)dwParam, 0, dwFlags, pbData, strlen((char*)pbData));
+	if (ERROR_SUCCESS != lRet) {
+		VarLogEntry(" GMN_RegSetValueEx", "error: %u", -1, 0, lRet);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+
 	CSP_UnlockMutex();
 	LogEntry("CPSetProvParam", "end", 0, 10);
 	return TRUE;
@@ -113,6 +176,27 @@ CSPINTERFACE BOOL WINAPI CPDeriveKey(
 #endif
 	LogEntry("CPDeriveKey", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
+	//CryptAcquireContextA
+	switch (Algid)
+	{
+	case CALG_DES:
+	case CALG_3DES:
+	case CALG_AES:
+	case CALG_RSA_KEYX:
+	case CALG_RSA_SIGN:
+		break;
+	default:
+		break;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPDeriveKey", "end", 0, 10);
 
@@ -131,6 +215,14 @@ CSPINTERFACE BOOL WINAPI CPDestroyKey(
 #endif
 	LogEntry("CPDestroyKey", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPDestroyKey", "end", 0, 10);
 	return TRUE;
@@ -153,6 +245,14 @@ CSPINTERFACE BOOL WINAPI CPExportKey(
 #endif
 	LogEntry("CPExportKey", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPExportKey", "end", 0, 10);
 	return TRUE;
@@ -172,6 +272,14 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 #endif
 	LogEntry("CPGenKey", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPGenKey", "end", 0, 10);
 	return TRUE;
@@ -190,6 +298,14 @@ CSPINTERFACE BOOL WINAPI CPGenRandom(
 #endif
 	LogEntry("CPGenRandom", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPGenRandom", "end", 0, 10);
 	return TRUE;
@@ -211,6 +327,14 @@ CSPINTERFACE BOOL WINAPI CPGetKeyParam(
 #endif
 	LogEntry("CPGetKeyParam", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPGetKeyParam", "end", 0, 10);
 
@@ -230,6 +354,14 @@ CSPINTERFACE BOOL WINAPI CPGetUserKey(
 #endif
 	LogEntry("CPGetUserKey", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPGetUserKey", "end", 0, 10);
 	return TRUE;
@@ -251,6 +383,14 @@ CSPINTERFACE BOOL WINAPI CPImportKey(
 #endif
 	LogEntry("CPImportKey", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPImportKey", "end", 0, 10);
 	return TRUE;
@@ -271,6 +411,14 @@ CSPINTERFACE BOOL WINAPI CPSetKeyParam(
 #endif
 	LogEntry("CPSetKeyParam", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPSetKeyParam", "end", 0, 10);
 	return TRUE;
@@ -293,6 +441,14 @@ CSPINTERFACE BOOL WINAPI CPDecrypt(
 #endif
 	LogEntry("CPDecrypt", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPDecrypt", "end", 0, 10);
 	return TRUE;
@@ -316,6 +472,14 @@ CSPINTERFACE BOOL WINAPI CPEncrypt(
 #endif
 	LogEntry("CPEncrypt", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPEncrypt", "end", 0, 10);
 	return TRUE;
@@ -336,6 +500,14 @@ CSPINTERFACE BOOL WINAPI CPCreateHash(
 #endif
 	LogEntry("CPCreateHash", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPCreateHash", "end", 0, 10);
 	return TRUE;
@@ -353,6 +525,14 @@ CSPINTERFACE BOOL WINAPI CPDestroyHash(
 #endif
 	LogEntry("CPDestroyHash", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPDestroyHash", "end", 0, 10);
 	return TRUE;
@@ -373,6 +553,14 @@ CSPINTERFACE BOOL WINAPI CPDuplicateHash(
 #endif
 	LogEntry("CPDuplicateHash", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPDuplicateHash", "end", 0, 10);
 	return TRUE;
@@ -394,6 +582,14 @@ CSPINTERFACE BOOL WINAPI CPGetHashParam(
 #endif
 	LogEntry("CPGetHashParam", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPGetHashParam", "end", 0, 10);
 
@@ -415,6 +611,14 @@ CSPINTERFACE BOOL WINAPI CPHashData(
 #endif
 	LogEntry("CPHashData", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPHashData", "end", 0, 10);
 
@@ -436,6 +640,14 @@ CSPINTERFACE BOOL WINAPI CPSetHashParam(
 #endif
 	LogEntry("CPSetHashParam", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPSetHashParam", "end", 0, 10);
 
@@ -459,6 +671,14 @@ CSPINTERFACE BOOL WINAPI CPSignHash(
 #endif
 	LogEntry("CPSignHash", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPSignHash", "end", 0, 10);
 	return TRUE;
@@ -481,6 +701,14 @@ CSPINTERFACE BOOL WINAPI CPVerifySignature(
 #endif
 	LogEntry("CPVerifySignature", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPVerifySignature", "end", 0, 10);
 	return TRUE;
@@ -489,7 +717,7 @@ CSPINTERFACE BOOL WINAPI CPVerifySignature(
 
 //24 CPDuplicateKey 附加函数
 CSPINTERFACE BOOL WINAPI CPDuplicateKey(
-	__in HCRYPTPROV hUID,
+	__in HCRYPTPROV hProv,
 	__in HCRYPTKEY hKey,
 	__in DWORD *pdwReserved,
 	__in DWORD dwFlags,
@@ -501,6 +729,14 @@ CSPINTERFACE BOOL WINAPI CPDuplicateKey(
 #endif
 	LogEntry("CPDuplicateKey", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPDuplicateKey", "end", 0, 10);
 	return TRUE;
@@ -520,6 +756,14 @@ CSPINTERFACE BOOL WINAPI CPHashSessionKey(
 #endif
 	LogEntry("CPHashSessionKey", "start", 0, 10);
 	CSP_LockMutex();
+	
+	if (!(getMutexFlag() & hProv)) {
+		//LogEntry(" HCRYPTPROV hProv", "error", -1, 0);
+		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
 	CSP_UnlockMutex();
 	LogEntry("CPHashSessionKey", "end", 0, 10);
 	return TRUE;

@@ -29,3 +29,5 @@
 #include "common_util.h"
 #include "tcptools.h"
 #include "config.h"
+#include "regedit.h"
+#include "sjl22api.h"
