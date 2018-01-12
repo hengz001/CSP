@@ -32,7 +32,7 @@ CSPINTERFACE BOOL WINAPI CPAcquireContext(
 	LogEntry("CPAcquireContext", "start", 0, 10);
 
 	//加密机状态
-	if (testSjl22()<0){
+	if (testSjl22() != 0){
 		CSP_UnlockMutex();
 		return FALSE;
 	}
@@ -148,8 +148,11 @@ CSPINTERFACE BOOL WINAPI CPSetProvParam(
 		return FALSE;
 	}
 
+	
 	//设置注册表属性
-	lRet = GMN_RegSetValueEx(hKey, (LPCSTR)dwParam, 0, dwFlags, pbData, strlen((char*)pbData));
+	lRet = GMN_RegSetValueEx(hKey, (LPCSTR)dwParam, 0, 
+							 (NULL == dwFlags?REG_SZ: dwFlags), 
+								 pbData, strlen((char*)pbData));
 	if (ERROR_SUCCESS != lRet) {
 		VarLogEntry(" GMN_RegSetValueEx", "error: %u", -1, 0, lRet);
 		CSP_UnlockMutex();

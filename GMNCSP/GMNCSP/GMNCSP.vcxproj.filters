@@ -13,86 +13,113 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="源文件\tcp">
+      <UniqueIdentifier>{149ae6ce-7277-4910-b5a1-e34e5194cf39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\tcp">
+      <UniqueIdentifier>{874142c7-a39e-439f-8f05-43386d7181a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\service">
+      <UniqueIdentifier>{daa7cab1-c365-4bfa-aa66-940a7fa5b16f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\service">
+      <UniqueIdentifier>{222e13ea-ed93-4933-ad12-5e560dad907f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\sys">
+      <UniqueIdentifier>{78c6e4d3-8f67-47ba-85b0-19d95298d87f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\sys">
+      <UniqueIdentifier>{25e7bb3c-0fc3-4e4b-a51d-d5ccdd417403}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="csp.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="cspdef.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="hsm_com.h">
+      <Filter>头文件\tcp</Filter>
     </ClInclude>
-    <ClInclude Include="mutex.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="hsm_tcpsub.h">
+      <Filter>头文件\tcp</Filter>
     </ClInclude>
-    <ClInclude Include="log.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="hsmcmd.h">
+      <Filter>头文件\tcp</Filter>
     </ClInclude>
-    <ClInclude Include="cspService.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="hsmdefs.h">
+      <Filter>头文件\tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="sjl22_api.h">
+      <Filter>源文件\tcp</Filter>
     </ClInclude>
     <ClInclude Include="common_util.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="tcptools.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\service</Filter>
     </ClInclude>
     <ClInclude Include="config.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\service</Filter>
+    </ClInclude>
+    <ClInclude Include="cspService.h">
+      <Filter>头文件\service</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>头文件\service</Filter>
+    </ClInclude>
+    <ClInclude Include="mutex.h">
+      <Filter>头文件\service</Filter>
     </ClInclude>
     <ClInclude Include="regedit.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\service</Filter>
     </ClInclude>
-    <ClInclude Include="sjl22api.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件\sys</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="GMNCSP.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="sjl22_api.cpp">
+      <Filter>源文件\tcp</Filter>
     </ClCompile>
-    <ClCompile Include="mutex.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="util_tools.cpp">
+      <Filter>源文件\tcp</Filter>
     </ClCompile>
-    <ClCompile Include="log.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="cspService.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="hsm_tcpcom.cpp">
+      <Filter>源文件\tcp</Filter>
     </ClCompile>
     <ClCompile Include="common_util.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="tcptools.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\service</Filter>
     </ClCompile>
     <ClCompile Include="config.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\service</Filter>
+    </ClCompile>
+    <ClCompile Include="cspService.cpp">
+      <Filter>源文件\service</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>源文件\service</Filter>
+    </ClCompile>
+    <ClCompile Include="mutex.cpp">
+      <Filter>源文件\service</Filter>
     </ClCompile>
     <ClCompile Include="regedit.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\service</Filter>
     </ClCompile>
-    <ClCompile Include="sjl22api.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>源文件\sys</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件\sys</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source.def">
-      <Filter>源文件</Filter>
+      <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -22,12 +22,14 @@
 
 // TODO:  在此处引用程序需要的其他头文件
 #include "csp.h"
-#include "cspdef.h"
 #include "mutex.h"
 #include "log.h"
 #include "cspService.h"
 #include "common_util.h"
-#include "tcptools.h"
 #include "config.h"
 #include "regedit.h"
-#include "sjl22api.h"
+#include "sjl22_api.h"
+#include "hsmcmd.h"
+#include "hsm_com.h"
+#include "hsmdefs.h"
+#include "hsm_tcpsub.h"

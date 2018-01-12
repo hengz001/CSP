@@ -83,15 +83,17 @@
     <ClInclude Include="common_util.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="csp.h" />
-    <ClInclude Include="cspdef.h" />
     <ClInclude Include="cspService.h" />
+    <ClInclude Include="hsmcmd.h" />
+    <ClInclude Include="hsmdefs.h" />
+    <ClInclude Include="hsm_com.h" />
+    <ClInclude Include="hsm_tcpsub.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="mutex.h" />
     <ClInclude Include="regedit.h" />
-    <ClInclude Include="sjl22api.h" />
+    <ClInclude Include="sjl22_api.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="tcptools.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common_util.cpp" />
@@ -106,15 +108,16 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GMNCSP.cpp" />
+    <ClCompile Include="hsm_tcpcom.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="mutex.cpp" />
     <ClCompile Include="regedit.cpp" />
-    <ClCompile Include="sjl22api.cpp" />
+    <ClCompile Include="sjl22_api.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="tcptools.cpp" />
+    <ClCompile Include="util_tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source.def" />

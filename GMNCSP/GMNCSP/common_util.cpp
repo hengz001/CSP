@@ -1,18 +1,32 @@
 #include "stdafx.h"
 
-unsigned char *short2hex(unsigned short s, unsigned char *p){
-	*p++ = (s>>8)&0xff;
-	*p++ = s & 0xff;
-	return p;
+static char IP[64];
+static int PORT;
+static char CHECKVALUE[64];
+
+void setHsmIP(char * ip) {
+	memcpy(IP,ip,strlen(ip));
 }
 
-unsigned short hex2short(unsigned char *p){
-	unsigned short s;
-	s = *p++;
-	s = (s << 8) | *p++;
-	return s;
+char * getHsmIP() {
+	return IP;
 }
 
+void setHsmPORT(int port) {
+	PORT = port;
+}
+
+int getHsmPORT() {
+	return PORT;
+}
+
+void setHsmCV(char * checkValue) {
+	memcpy(CHECKVALUE,checkValue,strlen(checkValue));
+}
+
+char * getHsmCV() {
+	return CHECKVALUE;
+}
 
 unsigned long filelength(char *fname)
 {

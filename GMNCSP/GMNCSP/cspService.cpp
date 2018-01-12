@@ -20,7 +20,7 @@ int initCSP(void){
 		return rv;
 	}
 	//printf("IP ： %s\n", value);
-	setIP(value);
+	setHsmIP(value);
 	if (value != NULL){
 		free(value);
 		value = NULL;
@@ -31,7 +31,7 @@ int initCSP(void){
 		return rv;
 	}
 	//printf("PORT ： %s\n", value);
-	setPORT(atoi(value));
+	setHsmPORT(atoi(value));
 	if (value != NULL){
 		free(value);
 		value = NULL;
@@ -42,14 +42,14 @@ int initCSP(void){
 		return rv;
 	}
 	//printf("CV ： %s\n", value);
-	setCV(value);
+	setHsmCV(value);
 	if (value != NULL){
 		free(value);
 		value = NULL;
 	}
 	
-	VarLogEntry("initCSP", "IP:%s PORT:%d Level:%d CV:%s", rv, 3,
-		getIP(), getPORT(), getLevel(), getCV());
+	VarLogEntry("initCSP", "IP:%s PORT:%d Level:%d CV:%s", rv, 1,
+		getHsmIP(), getHsmPORT(), getLevel(), getHsmCV());
 
 	/*
 	printf("LoggingLevel ： %d\n",getLevel());
@@ -62,27 +62,25 @@ int initCSP(void){
 }
 
 int testSjl22(void){
-	int timeout = 1000 * 6;
-	int fd = -1;
-	int rv = -1;
-	char rsp[1024*6];
-	int rsplen = sizeof(rsp);
+	int ret = -1;
+	int cmdid;
 
-	fd = InitHsmDevice(getIP(), getPORT(), timeout);
-	if (fd < 0){
-		LogEntry("testSjl22", "connect error", fd, 1);
-		return fd;
+	//开启连接
+	cmdid = InitHsmDevice(getHsmIP(),getHsmPORT(),0);
+	if (cmdid < 0) {
+		VarLogEntry("InitHsmDevice", " error IP:%s PORT:%d", cmdid, 0,
+			getHsmIP(), getHsmPORT());
+		return cmdid;
 	}
 
-	rv = HsmCmdRun(fd, NULL, NULL, "NC", strlen("NC"), rsp, &rsplen);
-	if (rv != 0){
-		LogEntry("testSjl22", "HsmCmdRun error", rv, 1);
-		return rv;
+	ret = testHSM(cmdid, 0, NULL, getHsmCV(), NULL);
+	if (ret != 0) {
+		VarLogEntry("InitHsmDevice", " error CHECKVALUE: %s", cmdid, 0,
+			getHsmCV());
+		return ret;
 	}
-	//printf("RSP : %s",rsp);
-	if (memcmp(rsp,getCV(),16)!= 0){
-		LogEntry("testSjl22", "CV error", -1, 1);
-		return -1;
-	}
-	return rv;
+
+	//关闭连接
+	CloseHsmDevice(cmdid);
+	return ret;
 }
