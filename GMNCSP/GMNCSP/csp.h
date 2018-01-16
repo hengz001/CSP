@@ -1,14 +1,14 @@
 //Version1.0 zhuheng20171721100300
 /*
-//1 CPAcquireContext	success
-//2 CPGetProvParam		success
-//3 CPReleaseContext	success
-//4 CPSetProvParam		success
+//1 CPAcquireContext	SUCCESS
+//2 CPGetProvParam		SUCCESS
+//3 CPReleaseContext	SUCCESS
+//4 CPSetProvParam		SUCCESS
 //5 CPDeriveKey		
-//6 CPDestroyKey		
+//6 CPDestroyKey		SUCCESS
 //7 CPExportKey		
-//8 CPGenKey			action	
-//9 CPGenRandom			success
+//8 CPGenKey			SUCCESS
+//9 CPGenRandom			SUCCESS
 //10 CPGetKeyParam
 //11 CPGetUserKey
 //12 CPImportKey

@@ -225,6 +225,9 @@ CSPINTERFACE BOOL WINAPI CPDestroyKey(
 		CSP_UnlockMutex();
 		return FALSE;
 	}
+	if (NULL != hKey) {
+		free((void*)hKey);
+	}
 	
 	CSP_UnlockMutex();
 	LogEntry("CPDestroyKey", "end", 0, 10);
@@ -273,6 +276,13 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 #ifdef DEBUG
 	puts("CPGenKey");
 #endif
+	int timeout = 0;
+	int comid;
+	int ret;
+	char *key;
+	char checkValue[6+1];
+
+
 	LogEntry("CPGenKey", "start", 0, 10);
 	CSP_LockMutex();
 	
@@ -282,6 +292,29 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 		CSP_UnlockMutex();
 		return FALSE;
 	}
+
+	//////////////////////////// DES
+	comid = InitHsmDevice(getHsmIP(), getHsmPORT(), timeout);
+	if (comid<0) {
+		VarLogEntry(" InitHsmDevice", "connect error", comid, 0);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	
+	__try {
+		key = (char*)malloc(128);
+		ret = generateKey(comid, 0, NULL, Algid, 0, "000", 'X', key, checkValue);
+		if (ret<0) {
+			VarLogEntry(" CPGenKey", "error", ret, 0);
+			CSP_UnlockMutex();
+			return FALSE;
+		}
+	}
+	__finally {
+		CloseHsmDevice(comid);
+	}
+	///////////////////////////
+	*phKey = (ULONG)key;
 	
 	CSP_UnlockMutex();
 	LogEntry("CPGenKey", "end", 0, 10);
@@ -318,6 +351,7 @@ CSPINTERFACE BOOL WINAPI CPGenRandom(
 	if (comid<0) {
 		VarLogEntry(" InitHsmDevice", "connect error",comid, 0);
 		CSP_UnlockMutex();
+		return FALSE;
 	}
 
 	__try {
@@ -325,6 +359,7 @@ CSPINTERFACE BOOL WINAPI CPGenRandom(
 		if (ret<0) {
 			VarLogEntry(" genrandom", "error", ret, 0 );
 			CSP_UnlockMutex();
+			return FALSE;
 		}
 	}
 	__finally {
