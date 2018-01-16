@@ -299,6 +299,10 @@ CSPINTERFACE BOOL WINAPI CPGenRandom(
 #ifdef DEBUG
 	puts("CPGenRandom");
 #endif
+	int timeout = 0;
+	int comid;
+	int ret;
+
 	LogEntry("CPGenRandom", "start", 0, 10);
 	CSP_LockMutex();
 	
@@ -308,6 +312,25 @@ CSPINTERFACE BOOL WINAPI CPGenRandom(
 		CSP_UnlockMutex();
 		return FALSE;
 	}
+
+	////////////////////////////
+	comid = InitHsmDevice(getHsmIP(), getHsmPORT(), timeout);
+	if (comid<0) {
+		VarLogEntry(" InitHsmDevice", "connect error",comid, 0);
+		CSP_UnlockMutex();
+	}
+
+	__try {
+		ret = genrandom(comid, 0, NULL, dwLen, pbBuffer);
+		if (ret<0) {
+			VarLogEntry(" genrandom", "error", ret, 0 );
+			CSP_UnlockMutex();
+		}
+	}
+	__finally {
+		CloseHsmDevice(comid);
+	}
+	///////////////////////////
 	
 	CSP_UnlockMutex();
 	LogEntry("CPGenRandom", "end", 0, 10);

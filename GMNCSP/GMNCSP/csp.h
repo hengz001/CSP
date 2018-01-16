@@ -1,14 +1,14 @@
 //Version1.0 zhuheng20171721100300
 /*
-//1 CPAcquireContext
-//2 CPGetProvParam
-//3 CPReleaseContext
-//4 CPSetProvParam
-//5 CPDeriveKey
-//6 CPDestroyKey
-//7 CPExportKey
-//8 CPGenKey
-//9 CPGenRandom
+//1 CPAcquireContext	success
+//2 CPGetProvParam		success
+//3 CPReleaseContext	success
+//4 CPSetProvParam		success
+//5 CPDeriveKey		
+//6 CPDestroyKey		
+//7 CPExportKey		
+//8 CPGenKey			action	
+//9 CPGenRandom			success
 //10 CPGetKeyParam
 //11 CPGetUserKey
 //12 CPImportKey
@@ -17,13 +17,13 @@
 //15 CPEncrypt
 //16 CPCreateHash
 //17 CPDestroyHash
-//18 CPDuplicateHash	附加函数
+//18 CPDuplicateHash					附加函数
 //19 CPGetHashParam
 //20 CPHashData
 //21 CPSetHashParam
 //22 CPSignHash
 //23 CPVerifySignature
-//24 CPDuplicateKey		附加函数
+//24 CPDuplicateKey						附加函数
 //25 CPHashSessionKey
 */
 
