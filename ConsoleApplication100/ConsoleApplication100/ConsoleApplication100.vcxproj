@@ -154,6 +154,7 @@
     <ClInclude Include="hsm_com.h" />
     <ClInclude Include="hsm_tcpsub.h" />
     <ClInclude Include="sjl22_api.h" />
+    <ClInclude Include="sjl22_api_zh.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -161,6 +162,7 @@
     <ClCompile Include="ConsoleApplication001.cpp" />
     <ClCompile Include="hsm_tcpcom.cpp" />
     <ClCompile Include="sjl22_api.cpp" />
+    <ClCompile Include="sjl22_api_zh.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

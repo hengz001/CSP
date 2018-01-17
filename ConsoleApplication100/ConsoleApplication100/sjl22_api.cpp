@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "sjl22_api.h"
 
-
 //NC
 int testHSM(int comid, int msghdlen, char * msghd, char *chkvalue, char *version)
 {
@@ -3316,7 +3315,6 @@ int derivatekey(int comid,int msghdlen,char *msghd,
 	*p = 0x00;
 
 	cmdlen = p - cmd;
-
 	//        //TraceMessage("sjl22.log", cmd, cmdlen);
 	ret = HsmCmdRun(comid, msghdlen, msghd, (char *)cmd, cmdlen, (char *)rsp, &rsplen);
 
@@ -3330,29 +3328,35 @@ int derivatekey(int comid,int msghdlen,char *msghd,
 
 	p = rsp;
 
-	/*        memcpy(derivedkey, p, (derivationkeylen+1)*16);
-	//        *( derivedkey + (derivationkeylen+1)*16)  = 0x00;
-
+	/*        
 	//        PackBCD(p, derivedkey, (derivationkeylen+1)*16);
 	//        *( derivedkey + (derivationkeylen+1)*8)  = 0x00;
 
-	//        p += (derivationkeylen+1)*16;
-	*/
 	PackBCD(p, (unsigned char *)derivedkey, derivationkeylen * 2);
 	*(derivedkey + derivationkeylen * 2) = 0x00;
-
-	/*	memcpy( kcv, p, 8 );
+	*/
+	
+	memcpy(derivedkey, p, derivationkeylen);
+	*(derivedkey + derivationkeylen) = 0x00;
+	p += derivationkeylen;
+	
+	/*	
+	memcpy( kcv, p, 8 );
 	//        PackBCD(p, kcv, 8);
 
 	//	*( kcv + 4 ) = 0x00;
-	*/
 	p += derivationkeylen * 2;
+	*/
 
-	/*	memcpy( kcv, p, 8 );*/
+	/*	
 	PackBCD(p, (unsigned char *)kcv, 6);
 	p += 6;
-
 	*(kcv + 3) = 0x00;
+	*/
+	
+	memcpy( kcv, p, 8 );
+	*(kcv + 8) = 0x00;
+	p += 8;
 
 	return 0;
 

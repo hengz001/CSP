@@ -78,6 +78,9 @@
     <ClInclude Include="sjl22_api.h">
       <Filter>头文件\tcp</Filter>
     </ClInclude>
+    <ClInclude Include="sjl22_api_zh.h">
+      <Filter>头文件\tcp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GMNCSP.cpp">
@@ -115,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件\sys</Filter>
+    </ClCompile>
+    <ClCompile Include="sjl22_api_zh.cpp">
+      <Filter>源文件\tcp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 
-//1 CPAcquireContext
+//1 CPAcquireContext	SUCCESS
 CSPINTERFACE BOOL WINAPI CPAcquireContext(
 	__out HCRYPTPROV *phProv,
 	__in CHAR *pszContainer,
@@ -45,7 +45,7 @@ CSPINTERFACE BOOL WINAPI CPAcquireContext(
 	return TRUE;
 }
 
-//2 CPGetProvParam
+//2 CPGetProvParam		SUCCESS
 CSPINTERFACE BOOL WINAPI CPGetProvParam(
 	__in HCRYPTPROV hProv,
 	__in DWORD dwParam,
@@ -96,7 +96,7 @@ CSPINTERFACE BOOL WINAPI CPGetProvParam(
 }
 
 
-//3 CPReleaseContext
+//3 CPReleaseContext	SUCCESS
 CSPINTERFACE BOOL WINAPI CPReleaseContext(
 	__in HCRYPTPROV hProv,
 	__in DWORD dwFlags
@@ -115,7 +115,7 @@ CSPINTERFACE BOOL WINAPI CPReleaseContext(
 }
 
 
-//4 CPSetProvParam
+//4 CPSetProvParam		SUCCESS
 CSPINTERFACE BOOL WINAPI CPSetProvParam(
 	__in HCRYPTPROV hProv,
 	__in DWORD dwParam,
@@ -187,22 +187,48 @@ CSPINTERFACE BOOL WINAPI CPDeriveKey(
 		return FALSE;
 	}
 	
-	//CryptAcquireContextA
-	switch (Algid)
-	{
-	case CALG_DES:
-	case CALG_3DES:
-	case CALG_AES:
-	case CALG_RSA_KEYX:
-	case CALG_RSA_SIGN:
-		break;
-	default:
-		break;
+	///////////////////////////
+	int timeout = 0;
+	int comid;
+	int ret = 0;
+	char *key = (char*)phKey;
+	CHAR cKey[256];
+	UCHAR deriveKey[256];
+	UCHAR checkValue[256];
+	int algo = Algid;
+	char *data = (char*)hBaseData;
+	int dataLen = strlen(data);
+	int keyLen = strlen(key)/2;
+	int derivationmode = 0;
+	int encmode = 0;
+	char deriveKeyType[] = "001";
+	char derivationKeyType[] = "001";
+	char *iv = NULL;
+
+	comid = InitHsmDevice(getHsmIP(), getHsmPORT(), timeout);
+	if (comid<0) {
+		VarLogEntry(" InitHsmDevice", "connect error", comid, 0);
+		CSP_UnlockMutex();
+		return FALSE;
 	}
+
+	PackBCD(key, (unsigned char*)cKey, strlen(key));
+	__try {
+		ret = derivatekey(comid, 0, NULL, algo, derivationmode, encmode, deriveKeyType, derivationKeyType, keyLen, cKey, dataLen, iv, data, 0, NULL, NULL, (char*)deriveKey, (char*)checkValue);
+		if (ret<0) {
+			VarLogEntry("derivatekey", "error", ret, 0);
+			CSP_UnlockMutex();
+			return FALSE;
+		}
+	}
+	__finally
+	{
+		CloseHsmDevice(comid);
+	}
+	//////////////////////////
 	
 	CSP_UnlockMutex();
 	LogEntry("CPDeriveKey", "end", 0, 10);
-
 	return TRUE;
 }
 

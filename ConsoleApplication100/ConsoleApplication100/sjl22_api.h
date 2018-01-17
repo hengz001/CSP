@@ -5,6 +5,8 @@
 
 #define NULL_PTR NULL
 
+int generateKey(int comid, int msghdlen, char *msghd, int algo, int genMod, char *keyType, char keyFlag, char *key, char *checkValue);
+
 int testHSM(int comid, int msghdlen, char * msghd, char *chkvalue, char *version);
 
 int encpasswd(int comid, int msghdlen, char * msghd, int passwdlen, char *passwd, char * epin);
@@ -185,10 +187,10 @@ int exportrsakey(
 	int enc_mode,
 	int ofm,
 	/*
-					char * deckeyType,	// Decryption Key type
-					int deckeyLen,		// Decryption key length
-					char *deckeyLmk,	// Decryption Key encrypted under LMK
-					char *decIv,		// Decryption key initial vector*/
+	char * deckeyType,	// Decryption Key type
+	int deckeyLen,		// Decryption key length
+	char *deckeyLmk,	// Decryption Key encrypted under LMK
+	char *decIv,		// Decryption key initial vector*/
 
 	UCHAR * enckeyType,
 	int enckeyLen,

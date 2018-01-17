@@ -33,3 +33,4 @@
 #include "hsm_com.h"
 #include "hsmdefs.h"
 #include "hsm_tcpsub.h"
+#include "sjl22_api_zh.h"
