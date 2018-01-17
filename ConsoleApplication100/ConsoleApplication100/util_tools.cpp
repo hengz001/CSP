@@ -290,6 +290,7 @@ int GetDerByteNum(unsigned char *DerBuffer, long *derbytenum)
 
 	unsigned char *p;
 
+
 	unsigned long ret = 0;
 
 	p = DerBuffer + 1;

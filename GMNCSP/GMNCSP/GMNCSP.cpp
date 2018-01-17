@@ -165,7 +165,7 @@ CSPINTERFACE BOOL WINAPI CPSetProvParam(
 }
 
 
-//5 CPDeriveKey
+//5 CPDeriveKey			SUCCESS
 CSPINTERFACE BOOL WINAPI CPDeriveKey(
 	__in HCRYPTPROV hProv,
 	__in ALG_ID Algid,
@@ -201,9 +201,11 @@ CSPINTERFACE BOOL WINAPI CPDeriveKey(
 	int keyLen = strlen(key)/2;
 	int derivationmode = 0;
 	int encmode = 0;
-	char deriveKeyType[] = "001";
-	char derivationKeyType[] = "001";
+	char deriveKeyType[] = ZMK_TYPE;
+	char derivationKeyType[] = ZMK_TYPE;
 	char *iv = NULL;
+	int deriveKeyLen;
+	UCHAR * hKey;
 
 	comid = InitHsmDevice(getHsmIP(), getHsmPORT(), timeout);
 	if (comid<0) {
@@ -220,6 +222,16 @@ CSPINTERFACE BOOL WINAPI CPDeriveKey(
 			CSP_UnlockMutex();
 			return FALSE;
 		}
+		deriveKeyLen = strlen((CHAR*)deriveKey);
+		hKey = (UCHAR*)malloc(deriveKeyLen);
+		
+		if (NULL == hKey) {
+			VarLogEntry("CPDeriveKey", "memory error", -1, 0);
+			CSP_UnlockMutex();
+			return FALSE;
+		}
+		memcpy(hKey,deriveKey,deriveKeyLen);
+		*phKey = (ULONG)hKey;
 	}
 	__finally
 	{
@@ -233,7 +245,7 @@ CSPINTERFACE BOOL WINAPI CPDeriveKey(
 }
 
 
-//6 CPDestroyKey
+//6 CPDestroyKey		SUCCESS
 CSPINTERFACE BOOL WINAPI CPDestroyKey(
 	__in HCRYPTPROV hProv,
 	__in HCRYPTKEY hKey
@@ -291,7 +303,7 @@ CSPINTERFACE BOOL WINAPI CPExportKey(
 }
 
 
-//8 CPGenKey
+//8 CPGenKey		SUCCESS
 CSPINTERFACE BOOL WINAPI CPGenKey(
 	__in HCRYPTPROV hProv,
 	__in ALG_ID Algid,
@@ -307,7 +319,7 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 	int ret;
 	char *key;
 	char checkValue[6+1];
-
+	ULONG uKey;
 
 	LogEntry("CPGenKey", "start", 0, 10);
 	CSP_LockMutex();
@@ -328,10 +340,29 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 	}
 	
 	__try {
-		key = (char*)malloc(128);
-		ret = generateKey(comid, 0, NULL, Algid, 0, "000", 'X', key, checkValue);
-		if (ret<0) {
-			VarLogEntry(" CPGenKey", "error", ret, 0);
+		switch (Algid)
+		{
+		case ALGO_DESTDES:
+			key = (char*)malloc(128);
+			ret = generateKey(comid, 0, NULL,0, 0, ZMK_TYPE, 'X', key, checkValue);
+			if (ret<0) {
+				VarLogEntry(" CPGenKey", "error", ret, 0);
+				CSP_UnlockMutex();
+				return FALSE;
+			}
+			*phKey = (ULONG)key;
+			break;
+		case SIG_ALGO_RSA:
+			ret = genrsakeyImpl(dwFlags, &uKey, comid);
+			if (ret < 0) {
+				VarLogEntry("genrsakeyImpl", "error", ret, 0);
+				CSP_UnlockMutex();
+				return FALSE;
+			}
+			*phKey = uKey;
+			break;
+		default:
+			VarLogEntry(" CPGenKey", "Algid error", Algid, 0);
 			CSP_UnlockMutex();
 			return FALSE;
 		}
@@ -340,7 +371,6 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 		CloseHsmDevice(comid);
 	}
 	///////////////////////////
-	*phKey = (ULONG)key;
 	
 	CSP_UnlockMutex();
 	LogEntry("CPGenKey", "end", 0, 10);
@@ -348,7 +378,7 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 }
 
 
-//9 CPGenRandom
+//9 CPGenRandom		SUCCESS
 CSPINTERFACE BOOL WINAPI CPGenRandom(
 	__in HCRYPTPROV hProv,
 	__in DWORD dwLen,

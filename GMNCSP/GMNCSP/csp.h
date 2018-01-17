@@ -4,19 +4,19 @@
 //2 CPGetProvParam		SUCCESS
 //3 CPReleaseContext	SUCCESS
 //4 CPSetProvParam		SUCCESS
-//5 CPDeriveKey		
+//5 CPDeriveKey			SUCCESS
 //6 CPDestroyKey		SUCCESS
-//7 CPExportKey		
+//7 CPExportKey			
 //8 CPGenKey			SUCCESS
 //9 CPGenRandom			SUCCESS
-//10 CPGetKeyParam
-//11 CPGetUserKey
-//12 CPImportKey
-//13 CPSetKeyParam
-//14 CPDecrypt
-//15 CPEncrypt
-//16 CPCreateHash
-//17 CPDestroyHash
+//10 CPGetKeyParam		
+//11 CPGetUserKey		
+//12 CPImportKey		
+//13 CPSetKeyParam		
+//14 CPDecrypt			
+//15 CPEncrypt			
+//16 CPCreateHash		
+//17 CPDestroyHash		
 //18 CPDuplicateHash					¸½¼Óº¯Êý
 //19 CPGetHashParam
 //20 CPHashData

@@ -308,7 +308,6 @@ int genrsakey(int comid, int msghdlen, char *msghd,
 		return (-197);
 	}
 
-
 	/* Get the Public key acording to the Public key length */
 	memcpy(public_key, p, *public_key_len);
 	p += *public_key_len;

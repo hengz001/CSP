@@ -84,3 +84,55 @@ int testSjl22(void){
 	CloseHsmDevice(cmdid);
 	return ret;
 }
+
+int genrsakeyImpl(DWORD dwFlags, HCRYPTKEY *phKey, int comid) {
+	int key_usage = 2;
+	int mode_flag = 0;
+	int key_length = 2048;
+	int public_exponent_len = 32;
+	UCHAR public_exponent[] = { 0x00,0x01,0x00,0x01 };
+	UCHAR public_key[4096];
+	int  public_key_len;
+	UCHAR mac[16];
+	UCHAR private_key[4096];
+	int  private_key_len;
+	int ret;
+	UCHAR * key;
+
+	int public_key_encoding = 1;
+	ret = genrsakey(comid, 0, NULL,
+		key_usage, mode_flag, 
+		key_length, public_key_encoding,
+		public_exponent_len,public_exponent,
+		99,0,NULL,
+		public_key,&public_key_len,mac,
+		private_key,&private_key_len,
+		NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL,
+		NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL);
+	
+	if (ret < 0 ) {
+		return ret;
+	}
+
+	switch (dwFlags)
+	{
+	case PUBLICKEYBLOB:
+		key = (UCHAR *)malloc(public_key_len);
+		if (NULL == key) {
+			return -1;
+		}
+		memcpy(key, public_key, public_key_len);
+		break;
+	case PRIVATEKEYBLOB:
+		key = (UCHAR *)malloc(private_key_len);
+		if (NULL == key) {
+			return -1;
+		}
+		memcpy(key, private_key, private_key_len);
+		break;
+	default:
+		return -163;
+	}
+	*phKey = (ULONG)key;
+	return ret;
+}	
