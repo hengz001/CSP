@@ -303,6 +303,7 @@ int HsmCmdRun(int comid, int msghdlen, char * msghd, char *cmd, int cmdlen, char
 	// 2 bytes Command Code + CMD Messge
 	*/
 	p = cmd_buf;
+	printf("CMD:%s\n",cmd);
 	/*
 	// 2 Bytes Length
 	*/

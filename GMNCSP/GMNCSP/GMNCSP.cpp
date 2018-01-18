@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 
-//1 CPAcquireContext	SUCCESS
+//1 CPAcquireContext		SUCCESS
 CSPINTERFACE BOOL WINAPI CPAcquireContext(
 	__out HCRYPTPROV *phProv,
 	__in CHAR *pszContainer,
@@ -45,7 +45,7 @@ CSPINTERFACE BOOL WINAPI CPAcquireContext(
 	return TRUE;
 }
 
-//2 CPGetProvParam		SUCCESS
+//2 CPGetProvParam			SUCCESS
 CSPINTERFACE BOOL WINAPI CPGetProvParam(
 	__in HCRYPTPROV hProv,
 	__in DWORD dwParam,
@@ -96,7 +96,7 @@ CSPINTERFACE BOOL WINAPI CPGetProvParam(
 }
 
 
-//3 CPReleaseContext	SUCCESS
+//3 CPReleaseContext		SUCCESS
 CSPINTERFACE BOOL WINAPI CPReleaseContext(
 	__in HCRYPTPROV hProv,
 	__in DWORD dwFlags
@@ -115,7 +115,7 @@ CSPINTERFACE BOOL WINAPI CPReleaseContext(
 }
 
 
-//4 CPSetProvParam		SUCCESS
+//4 CPSetProvParam			SUCCESS
 CSPINTERFACE BOOL WINAPI CPSetProvParam(
 	__in HCRYPTPROV hProv,
 	__in DWORD dwParam,
@@ -165,7 +165,7 @@ CSPINTERFACE BOOL WINAPI CPSetProvParam(
 }
 
 
-//5 CPDeriveKey			SUCCESS
+//5 CPDeriveKey				SUCCESS
 CSPINTERFACE BOOL WINAPI CPDeriveKey(
 	__in HCRYPTPROV hProv,
 	__in ALG_ID Algid,
@@ -191,10 +191,11 @@ CSPINTERFACE BOOL WINAPI CPDeriveKey(
 	int timeout = 0;
 	int comid;
 	int ret = 0;
-	char *key = (char*)phKey;
 	CHAR cKey[256];
 	UCHAR deriveKey[256];
 	UCHAR checkValue[256];
+	HKEY_Z *hKey_z = (HKEY_Z*)phKey;
+	char *key = (CHAR*)hKey_z->key;
 	int algo = Algid;
 	char *data = (char*)hBaseData;
 	int dataLen = strlen(data);
@@ -205,8 +206,7 @@ CSPINTERFACE BOOL WINAPI CPDeriveKey(
 	char derivationKeyType[] = ZMK_TYPE;
 	char *iv = NULL;
 	int deriveKeyLen;
-	UCHAR * hKey;
-
+	HKEY_Z *hKey_deri;
 	comid = InitHsmDevice(getHsmIP(), getHsmPORT(), timeout);
 	if (comid<0) {
 		VarLogEntry(" InitHsmDevice", "connect error", comid, 0);
@@ -223,15 +223,19 @@ CSPINTERFACE BOOL WINAPI CPDeriveKey(
 			return FALSE;
 		}
 		deriveKeyLen = strlen((CHAR*)deriveKey);
-		hKey = (UCHAR*)malloc(deriveKeyLen);
 		
-		if (NULL == hKey) {
+		
+		hKey_deri = (HKEY_Z *)malloc(1);
+		if (NULL == hKey_deri) {
 			VarLogEntry("CPDeriveKey", "memory error", -1, 0);
 			CSP_UnlockMutex();
 			return FALSE;
 		}
-		memcpy(hKey,deriveKey,deriveKeyLen);
-		*phKey = (ULONG)hKey;
+
+		hKey_deri->len = deriveKeyLen;
+		memcpy(hKey_deri->key,deriveKey,deriveKeyLen);
+		memcpy(hKey_deri->key, checkValue,strlen((CHAR*)checkValue));
+		*phKey = (LONG)hKey_deri;
 	}
 	__finally
 	{
@@ -245,7 +249,7 @@ CSPINTERFACE BOOL WINAPI CPDeriveKey(
 }
 
 
-//6 CPDestroyKey		SUCCESS
+//6 CPDestroyKey			SUCCESS
 CSPINTERFACE BOOL WINAPI CPDestroyKey(
 	__in HCRYPTPROV hProv,
 	__in HCRYPTKEY hKey
@@ -273,7 +277,7 @@ CSPINTERFACE BOOL WINAPI CPDestroyKey(
 }
 
 
-//7 CPExportKey
+//7 CPExportKey				SUCCESS
 CSPINTERFACE BOOL WINAPI CPExportKey(
 	__in HCRYPTPROV hProv,
 	__in HCRYPTKEY hKey,
@@ -284,6 +288,10 @@ CSPINTERFACE BOOL WINAPI CPExportKey(
 	__inout DWORD *pdwDataLen
 	)
 {
+	int ret;
+	UCHAR data[4096],*p;
+	int data_length;
+
 #ifdef DEBUG
 	puts("CPExportKey");
 #endif
@@ -296,14 +304,22 @@ CSPINTERFACE BOOL WINAPI CPExportKey(
 		CSP_UnlockMutex();
 		return FALSE;
 	}
-	
+	ret = exportrsadeskeyImpl(hKey,hPubKey,data,&data_length);
+	if (ret<0|| data_length<0) {
+		VarLogEntry("CPExportKey", "exportrsadeskeyImpl error", ret, 0);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	memcpy(pbData,data,data_length);
+	*pdwDataLen = data_length;
+
 	CSP_UnlockMutex();
 	LogEntry("CPExportKey", "end", 0, 10);
 	return TRUE;
 }
 
 
-//8 CPGenKey		SUCCESS
+//8 CPGenKey				SUCCESS
 CSPINTERFACE BOOL WINAPI CPGenKey(
 	__in HCRYPTPROV hProv,
 	__in ALG_ID Algid,
@@ -317,9 +333,10 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 	int timeout = 0;
 	int comid;
 	int ret;
-	char *key;
+	char key[255];
 	char checkValue[6+1];
-	ULONG uKey;
+	HPKEY_Z *pKey;
+	HKEY_Z *hKey;
 
 	LogEntry("CPGenKey", "start", 0, 10);
 	CSP_LockMutex();
@@ -343,23 +360,38 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 		switch (Algid)
 		{
 		case ALGO_DESTDES:
-			key = (char*)malloc(128);
 			ret = generateKey(comid, 0, NULL,0, 0, ZMK_TYPE, 'X', key, checkValue);
 			if (ret<0) {
 				VarLogEntry(" CPGenKey", "error", ret, 0);
 				CSP_UnlockMutex();
 				return FALSE;
 			}
-			*phKey = (ULONG)key;
-			break;
-		case SIG_ALGO_RSA:
-			ret = genrsakeyImpl(dwFlags, &uKey, comid);
-			if (ret < 0) {
-				VarLogEntry("genrsakeyImpl", "error", ret, 0);
+			hKey = (HKEY_Z*)malloc(1);
+			if (NULL == hKey) {
+				VarLogEntry(" CPGenKey", "memory error", -1, 0);
 				CSP_UnlockMutex();
 				return FALSE;
 			}
-			*phKey = uKey;
+			hKey->len = strlen(key);
+			memcpy(hKey->key,key,hKey->len);
+			memcpy(hKey->cv, checkValue,strlen(checkValue));
+			*phKey = (LONG)hKey;
+			break;
+		case SIG_ALGO_RSA:
+			pKey = (HPKEY_Z*)malloc(1);
+			if (NULL == pKey) {
+				VarLogEntry("CPGenKey", "memory error", -1, 0);
+				CSP_UnlockMutex();
+				return FALSE;
+			}
+			ret = genrsakeyImpl(dwFlags, pKey, comid);
+			if (ret < 0) {
+				VarLogEntry("genrsakeyImpl", "error", ret, 0);
+				CSP_UnlockMutex();
+				free(pKey);
+				return FALSE;
+			}
+			*phKey = (LONG)pKey;
 			break;
 		default:
 			VarLogEntry(" CPGenKey", "Algid error", Algid, 0);
@@ -378,7 +410,7 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 }
 
 
-//9 CPGenRandom		SUCCESS
+//9 CPGenRandom				SUCCESS
 CSPINTERFACE BOOL WINAPI CPGenRandom(
 	__in HCRYPTPROV hProv,
 	__in DWORD dwLen,
@@ -429,7 +461,7 @@ CSPINTERFACE BOOL WINAPI CPGenRandom(
 }
 
 
-//10 CPGetKeyParam
+//10 CPGetKeyParam		
 CSPINTERFACE BOOL WINAPI CPGetKeyParam(
 	__in HCRYPTPROV hProv,
 	__in HCRYPTKEY hKey,
@@ -439,6 +471,8 @@ CSPINTERFACE BOOL WINAPI CPGetKeyParam(
 	__in DWORD dwFlags
 	)
 {
+	int len;
+
 #ifdef DEBUG
 	puts("CPGetKeyParam");
 #endif
@@ -451,13 +485,53 @@ CSPINTERFACE BOOL WINAPI CPGetKeyParam(
 		CSP_UnlockMutex();
 		return FALSE;
 	}
-	
+
+	/*
+	KP_ALGID 表示返回密钥的算法标识
+	KP_BLOCKLEN表示返回密钥的算法数据块长度
+	KP_KEYLEN表示返回密钥的长度
+	KP_SALT 表示返回密钥的盐值
+	KP_PERMISSIONS 表示返回密钥的访问权限
+	KP_IV表示返回算法的初始向量
+	KP_PADDING 表示返回算法的填充方式
+	KP_MODE 表示返回算法的加密模式
+	KP_MODE_BITS表示返回算法的加密模式的反馈位数
+	KP_EFFECTIVE_KEYLEN 表示返回密钥的有效长度
+	*/
+	/////////////////////////////////////////////
+	switch (dwParam)
+	{
+	case KP_ALGID:
+		break;
+	case KP_BLOCKLEN:
+		break;
+	case KP_KEYLEN:
+		break;
+	case KP_SALT:
+		break;
+	case KP_PERMISSIONS:
+		break;
+	case KP_IV:
+		break;
+	case KP_PADDING:
+		break;
+	case KP_MODE:
+		break;
+	case KP_MODE_BITS:
+		break;
+	case KP_EFFECTIVE_KEYLEN:
+		break;
+	default:
+		VarLogEntry(" CPGetKeyParam", "dwParam error", dwParam, 0);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+
 	CSP_UnlockMutex();
 	LogEntry("CPGetKeyParam", "end", 0, 10);
 
 	return TRUE;
 }
-
 
 //11 CPGetUserKey
 CSPINTERFACE BOOL WINAPI CPGetUserKey(
@@ -478,6 +552,10 @@ CSPINTERFACE BOOL WINAPI CPGetUserKey(
 		CSP_UnlockMutex();
 		return FALSE;
 	}
+	// dwKeySpec phUserKey 根据密钥属性获取密钥句柄
+	if (dwKeySpec) {
+		*phUserKey = NULL;
+	}
 	
 	CSP_UnlockMutex();
 	LogEntry("CPGetUserKey", "end", 0, 10);
@@ -485,7 +563,7 @@ CSPINTERFACE BOOL WINAPI CPGetUserKey(
 }
 
 
-//12 CPImportKey
+//12 CPImportKey		SUCCESS
 CSPINTERFACE BOOL WINAPI CPImportKey(
 	__in HCRYPTPROV hProv,
 	__in const BYTE *pbData,
@@ -495,6 +573,13 @@ CSPINTERFACE BOOL WINAPI CPImportKey(
 	__out HCRYPTKEY *phKey
 	)
 {
+	HPKEY_Z * pKey;
+	HKEY_Z * hKey;
+	UCHAR wkLmk[255]; 
+	int keylen;
+	int ret;
+	UCHAR cv[64];
+
 #ifdef DEBUG
 	puts("CPImportKey");
 #endif
@@ -507,7 +592,25 @@ CSPINTERFACE BOOL WINAPI CPImportKey(
 		CSP_UnlockMutex();
 		return FALSE;
 	}
-	
+	pKey = (HPKEY_Z*)hPubKey;
+	ret = importrsadeskeyImpl((UCHAR *)pbData, dwDataLen, pKey->pvKey, pKey->pvLen,wkLmk, &keylen, cv);
+	if (ret != 0) {
+		VarLogEntry(" importrsadeskeyImplvoid", "error",ret, 0);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+	hKey = (HKEY_Z *)malloc(1);
+	if (NULL == hKey) {
+		VarLogEntry(" CPImportKey", "memory error", -1, 0);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+
+	hKey->len = keylen;
+	memcpy(hKey->key, wkLmk, keylen);
+	memcpy(hKey->cv,cv,strlen((CHAR*)cv));
+
+	*phKey = (LONG)hKey;
 	CSP_UnlockMutex();
 	LogEntry("CPImportKey", "end", 0, 10);
 	return TRUE;
@@ -536,6 +639,35 @@ CSPINTERFACE BOOL WINAPI CPSetKeyParam(
 		return FALSE;
 	}
 	
+	switch (dwParam)
+	{
+	case KP_ALGID:
+		break;
+	case KP_BLOCKLEN:
+		break;
+	case KP_KEYLEN:
+		break;
+	case KP_SALT:
+		break;
+	case KP_PERMISSIONS:
+		break;
+	case KP_IV:
+		break;
+	case KP_PADDING:
+		break;
+	case KP_MODE:
+		break;
+	case KP_MODE_BITS:
+		break;
+	case KP_EFFECTIVE_KEYLEN:
+		break;
+	default:
+		VarLogEntry(" CPGetKeyParam", "dwParam error", dwParam, 0);
+		CSP_UnlockMutex();
+		return FALSE;
+	}
+
+
 	CSP_UnlockMutex();
 	LogEntry("CPSetKeyParam", "end", 0, 10);
 	return TRUE;

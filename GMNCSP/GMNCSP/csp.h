@@ -6,12 +6,12 @@
 //4 CPSetProvParam		SUCCESS
 //5 CPDeriveKey			SUCCESS
 //6 CPDestroyKey		SUCCESS
-//7 CPExportKey			
+//7 CPExportKey			SUCCESS
 //8 CPGenKey			SUCCESS
 //9 CPGenRandom			SUCCESS
 //10 CPGetKeyParam		
 //11 CPGetUserKey		
-//12 CPImportKey		
+//12 CPImportKey		SUCCESS
 //13 CPSetKeyParam		
 //14 CPDecrypt			
 //15 CPEncrypt			
@@ -40,6 +40,19 @@
 #else
 #define CSPINTERFACE extern "C" _declspec(dllimport)
 #endif
+
+typedef struct _key {
+	int len;
+	UCHAR key[256];
+	UCHAR cv[64];
+}HKEY_Z,* PHKEY_Z;
+
+typedef struct _pupvkey {
+	int puLen;
+	UCHAR puKey[4096];
+	int pvLen;
+	UCHAR pvKey[4096];
+}HPKEY_Z, *PHPKEY_Z;
 
 typedef struct _VTableProvStruc {
 	DWORD   Version;

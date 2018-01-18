@@ -2555,7 +2555,8 @@ int exportrsadeskey(
 */	if (index < 0 && sig_alg == SIG_ALGO_RSA)
 {
 	GetDerByteNum(public_key, (long *)&len);
-	if (len != public_key_len)	return (-99);
+	public_key_len = len;
+	//if (len != public_key_len)	return (-99);
 }
 	switch (pad_mode)
 	{

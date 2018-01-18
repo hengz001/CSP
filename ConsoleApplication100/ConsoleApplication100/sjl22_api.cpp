@@ -2697,7 +2697,7 @@ int exportrsadeskey(
 	p += 16;
 
 	/* Public key index */
-	if (index >= 0)
+	if (index >= 0 && index != 99)
 	{
 		*p++ = 'T';
 		sprintf((char *)p, "%02d", index);
@@ -3172,13 +3172,13 @@ int gendeskey(int comid, int msghdlen, char *msghd, int algo, int mode, char * k
 }
 
 /*SJL22 command "VI"*/
-int derivatekey(int comid,int msghdlen,char *msghd, 
-				int algo,int derivationmode,int encmode,
-				char * derivedkeytype,char * derivationkeytype,
-				int derivationkeylen,char * derivationkey, 
-				int datalen1,char * iv1,char *derivate_data1,
-				int datalen2,char * iv2,char *derivate_data2, 
-				char * derivedkey,char * kcv)
+int derivatekey(int comid, int msghdlen, char *msghd,
+	int algo, int derivationmode, int encmode,
+	char * derivedkeytype, char * derivationkeytype,
+	int derivationkeylen, char * derivationkey,
+	int datalen1, char * iv1, char *derivate_data1,
+	int datalen2, char * iv2, char *derivate_data2,
+	char * derivedkey, char * kcv)
 {
 	char	*cmd, *p;
 	int 	cmdlen, rsplen;
@@ -3327,19 +3327,19 @@ int derivatekey(int comid,int msghdlen,char *msghd,
 
 	p = rsp;
 
-	/*        
+	/*
 	//        PackBCD(p, derivedkey, (derivationkeylen+1)*16);
 	//        *( derivedkey + (derivationkeylen+1)*8)  = 0x00;
 
 	PackBCD(p, (unsigned char *)derivedkey, derivationkeylen * 2);
 	*(derivedkey + derivationkeylen * 2) = 0x00;
 	*/
-	
+
 	memcpy(derivedkey, p, derivationkeylen);
 	*(derivedkey + derivationkeylen) = 0x00;
 	p += derivationkeylen;
-	
-	/*	
+
+	/*
 	memcpy( kcv, p, 8 );
 	//        PackBCD(p, kcv, 8);
 
@@ -3347,13 +3347,13 @@ int derivatekey(int comid,int msghdlen,char *msghd,
 	p += derivationkeylen * 2;
 	*/
 
-	/*	
+	/*
 	PackBCD(p, (unsigned char *)kcv, 6);
 	p += 6;
 	*(kcv + 3) = 0x00;
 	*/
-	
-	memcpy( kcv, p, 8 );
+
+	memcpy(kcv, p, 8);
 	*(kcv + 8) = 0x00;
 	p += 8;
 

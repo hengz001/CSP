@@ -48,9 +48,6 @@
     <ClInclude Include="hsmcmd.h">
       <Filter>头文件\tcp</Filter>
     </ClInclude>
-    <ClInclude Include="hsmdefs.h">
-      <Filter>头文件\tcp</Filter>
-    </ClInclude>
     <ClInclude Include="common_util.h">
       <Filter>头文件\service</Filter>
     </ClInclude>
@@ -80,6 +77,9 @@
     </ClInclude>
     <ClInclude Include="sjl22_api_zh.h">
       <Filter>头文件\tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="hsmdefs.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
