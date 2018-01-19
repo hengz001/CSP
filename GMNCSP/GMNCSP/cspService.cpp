@@ -279,3 +279,322 @@ int importrsadeskeyImpl(UCHAR * data, int data_length, UCHAR * private_key, int 
 	return 0;
 }
 
+int encryptDecryptImpl() {
+	char ip[] = "192.168.1.205";
+	int port = 8000;
+	int timeout = 0;
+	int comid;
+	int ret;
+
+	comid = InitHsmDevice(ip, port, timeout);
+	if (comid < 0) {
+		puts("connect error");
+	}
+	puts("------------>connect success");
+	/////////////////////////////////////
+	/////////////////////////////////////
+	__try {
+		int algo = 0;
+		int dataBlockFlag = 0;
+		int encryptFlag = 0;
+		int algoOperationMode = 0;
+		int inputFormat = 1;
+		int outputFormat = 1;
+		char keyType[] = ZEK_TYPE;
+		char key[] = "XCB8B629920622806464AB4C738053BFA";
+		int paddingMode = 0;
+		char paddingChar[] = "0000";
+		int paddingFlag = 0;
+		char *iv = NULL;
+		int outFlag;
+		int dataLen = 8;
+		char data[] = "AAAAAAAAAAAAAAAA";
+
+		ret = encryptDecrypt(comid, 0, NULL, algo,
+			dataBlockFlag,
+			encryptFlag,
+			algoOperationMode,
+			inputFormat,
+			outputFormat,
+			keyType,
+			key,
+			paddingMode,
+			paddingChar,
+			paddingFlag,
+			iv,
+			&outFlag,
+			&dataLen,
+			data);
+		if (ret < 0) {
+			printf("RET:%d\n", ret);
+			return;
+		}
+		printf("LEN:%d\n", dataLen);
+		printf("DATA:%s\n", data);
+
+		encryptFlag = 1;
+		ret = encryptDecrypt(comid, 0, NULL, algo,
+			dataBlockFlag,
+			encryptFlag,
+			algoOperationMode,
+			inputFormat,
+			outputFormat,
+			keyType,
+			key,
+			paddingMode,
+			paddingChar,
+			paddingFlag,
+			iv,
+			&outFlag,
+			&dataLen,
+			data);
+		if (ret < 0) {
+			printf("RET:%d\n", ret);
+			return;
+		}
+		printf("LEN:%d\n", dataLen);
+		printf("DATA:%s\n", data);
+	}
+	__finally
+	{
+		CloseHsmDevice(comid);
+	}
+}
+
+int genhashImpl() {
+	char ip[] = "192.168.1.209";
+	int port = 8000;
+	int timeout = 0;
+	int ret = -1;
+	int cmdid;
+
+	cmdid = InitHsmDevice(ip, port, timeout);
+	if (cmdid<0) {
+		puts("connect error");
+	}
+	puts("connect success");
+
+	ret = testHSM(cmdid, 0, NULL, NULL, NULL);
+	if (ret != 0) {
+		printf("RETURN: %d\n", ret);
+	}
+
+	const int rndLen = 64;
+	UCHAR rnd[rndLen + 1];
+
+	ret = genrandom(cmdid, 0, NULL, rndLen, rnd);
+	if (ret != 0) {
+		printf("RETURN: %d LINE: %d\n", ret, __LINE__);
+	}
+	puts("------------------------RANDOM------------------------------");
+	for (int i = 0; i<rndLen; i++) {
+		printf("%02X ", rnd[i]);
+	}
+	printf("\n");
+
+	int hash_id = HASH_SHA1;
+	UCHAR data[] = "zhuheng";
+	int data_len = strlen((char*)data);
+	UCHAR hash_value[256];
+	memset(hash_value, 0x00, sizeof(hash_value));
+
+	ret = genhash(cmdid, 0, NULL, hash_id, data_len, data, hash_value);
+	if (ret != 0) {
+		printf("RETURN: %d LINE: %d\n", ret, __LINE__);
+	}
+
+	printf("DATA LEN: %d\n", data_len);
+	puts("------------------------HASH------------------------------");
+	for (int i = 0; i<strlen((char*)hash_value); i++) {
+		printf("%02X ", hash_value[i]);
+	}
+	printf("\n");
+
+	CloseHsmDevice(cmdid);
+	return ret;
+}
+
+int rsaprisignImpl() {
+
+	UCHAR public_key[4096];
+	int  public_key_len;
+	UCHAR private_key[4096];
+	int  private_key_len;
+	//testEight(public_key, &public_key_len, private_key, &private_key_len);
+	printf("PUBLEN: %d PRILEN:%d\n", public_key_len, private_key_len);
+
+	puts("------------------------------------------------------------------------");
+
+	////////////////////////////////
+	char ip[] = "192.168.1.205";
+	int port = 8000;
+	int timeout = 0;
+	int comid;
+	int ret;
+
+	comid = InitHsmDevice(ip, port, timeout);
+	if (comid < 0) {
+		puts("connect error");
+	}
+	puts("------------>connect success");
+	__try {
+		int msghdlen = 0;
+		char *msghd = NULL;
+		int hash_id = 01;
+		int sign_id = 01;
+		int pad_mode = 01;
+		int mgfHash = NULL;
+		int OAEP_parm_len = NULL;
+		UCHAR *OAEP_parm = NULL;
+		int pssRule = NULL;
+		int trailerField = NULL;
+		int data_length = 8;
+		UCHAR data[] = "zhuheng0";
+		int index = 99;
+		UCHAR sign[4096];
+		int sign_length;
+		int authenDataLen = 0;
+		UCHAR * authenData = NULL;
+
+		ret = rsaprisign(comid, msghdlen, msghd, hash_id, sign_id,
+			pad_mode,
+			mgfHash,
+			OAEP_parm_len,
+			OAEP_parm,
+			pssRule,
+			trailerField,
+			data_length,
+			data,
+			index,
+			private_key_len,
+			private_key,
+			sign,
+			&sign_length);
+		if (ret < 0) {
+			printf("RET:%d\n", ret);
+			return;
+		}
+		printf("LEN:%d\n", sign_length);
+
+		///////////////////////////////////
+
+		ret = rsapubverify(comid, msghdlen, msghd, hash_id, sign_id,
+			pad_mode,
+			mgfHash,
+			OAEP_parm_len,
+			OAEP_parm,
+			pssRule,
+			trailerField,
+			sign_length,
+			sign,
+			data_length,
+			data,
+			index,
+			NULL,
+			public_key,
+			public_key_len,
+			authenDataLen,
+			authenData
+		);
+		printf("RET:%d\n", ret);
+	}
+	__finally
+	{
+		CloseHsmDevice(comid);
+	}
+
+	////////////////////////////////
+}
+
+int rsapubverifyImpl() {
+
+	UCHAR public_key[4096];
+	int  public_key_len;
+	UCHAR private_key[4096];
+	int  private_key_len;
+	//testEight(public_key, &public_key_len, private_key, &private_key_len);
+	printf("PUBLEN: %d PRILEN:%d\n", public_key_len, private_key_len);
+
+	puts("------------------------------------------------------------------------");
+
+	////////////////////////////////
+	char ip[] = "192.168.1.205";
+	int port = 8000;
+	int timeout = 0;
+	int comid;
+	int ret;
+
+	comid = InitHsmDevice(ip, port, timeout);
+	if (comid < 0) {
+		puts("connect error");
+	}
+	puts("------------>connect success");
+	__try {
+		int msghdlen = 0;
+		char *msghd = NULL;
+		int hash_id = 01;
+		int sign_id = 01;
+		int pad_mode = 01;
+		int mgfHash = NULL;
+		int OAEP_parm_len = NULL;
+		UCHAR *OAEP_parm = NULL;
+		int pssRule = NULL;
+		int trailerField = NULL;
+		int data_length = 8;
+		UCHAR data[] = "zhuheng0";
+		int index = 99;
+		UCHAR sign[4096];
+		int sign_length;
+		int authenDataLen = 0;
+		UCHAR * authenData = NULL;
+
+		ret = rsaprisign(comid, msghdlen, msghd, hash_id, sign_id,
+			pad_mode,
+			mgfHash,
+			OAEP_parm_len,
+			OAEP_parm,
+			pssRule,
+			trailerField,
+			data_length,
+			data,
+			index,
+			private_key_len,
+			private_key,
+			sign,
+			&sign_length);
+		if (ret<0) {
+			printf("RET:%d\n", ret);
+			return;
+		}
+		printf("LEN:%d\n", sign_length);
+
+		///////////////////////////////////
+
+		ret = rsapubverify(comid, msghdlen, msghd, hash_id, sign_id,
+			pad_mode,
+			mgfHash,
+			OAEP_parm_len,
+			OAEP_parm,
+			pssRule,
+			trailerField,
+			sign_length,
+			sign,
+			data_length,
+			data,
+			index,
+			NULL,
+			public_key,
+			public_key_len,
+			authenDataLen,
+			authenData
+		);
+		printf("RET:%d\n", ret);
+	}
+	__finally
+	{
+		CloseHsmDevice(comid);
+	}
+
+	////////////////////////////////
+}
+

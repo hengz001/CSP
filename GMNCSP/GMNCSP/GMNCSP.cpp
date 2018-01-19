@@ -674,7 +674,7 @@ CSPINTERFACE BOOL WINAPI CPSetKeyParam(
 }
 
 
-//14 CPDecrypt
+//14 CPDecrypt			ACTION
 CSPINTERFACE BOOL WINAPI CPDecrypt(
 	__in HCRYPTPROV hProv,
 	__in HCRYPTKEY hKey,
@@ -697,6 +697,9 @@ CSPINTERFACE BOOL WINAPI CPDecrypt(
 		CSP_UnlockMutex();
 		return FALSE;
 	}
+
+	//加解密模型 后期需修改参数
+	int encryptDecryptImpl();
 	
 	CSP_UnlockMutex();
 	LogEntry("CPDecrypt", "end", 0, 10);
@@ -704,7 +707,7 @@ CSPINTERFACE BOOL WINAPI CPDecrypt(
 }
 
 
-//15 CPEncrypt
+//15 CPEncrypt			ACTION
 CSPINTERFACE BOOL WINAPI CPEncrypt(
 	__in HCRYPTPROV hProv,
 	__in HCRYPTKEY hKey,
@@ -729,13 +732,16 @@ CSPINTERFACE BOOL WINAPI CPEncrypt(
 		return FALSE;
 	}
 	
+	//加解密模型 后期需修改参数
+	int encryptDecryptImpl();
+	
 	CSP_UnlockMutex();
 	LogEntry("CPEncrypt", "end", 0, 10);
 	return TRUE;
 }
 
 
-//16 CPCreateHash
+//16 CPCreateHash		ACTION
 CSPINTERFACE BOOL WINAPI CPCreateHash(
 	__in HCRYPTPROV hProv,
 	__in ALG_ID Algid,
@@ -757,13 +763,16 @@ CSPINTERFACE BOOL WINAPI CPCreateHash(
 		return FALSE;
 	}
 	
+	//函数模型 需修改参数
+	genhashImpl();
+
 	CSP_UnlockMutex();
 	LogEntry("CPCreateHash", "end", 0, 10);
 	return TRUE;
 }
 
 
-//17 CPDestroyHash
+//17 CPDestroyHash			SUCCESS
 CSPINTERFACE BOOL WINAPI CPDestroyHash(
 	__in HCRYPTPROV hProv,
 	__in HCRYPTHASH hHash
@@ -780,6 +789,10 @@ CSPINTERFACE BOOL WINAPI CPDestroyHash(
 		VarLogEntry(" HCRYPTPROV hProv", "error %d %u", -1, 0, getMutexFlag(), hProv);
 		CSP_UnlockMutex();
 		return FALSE;
+	}
+
+	if (NULL != hHash) {
+		free((void *)hHash);
 	}
 	
 	CSP_UnlockMutex();
@@ -846,7 +859,7 @@ CSPINTERFACE BOOL WINAPI CPGetHashParam(
 }
 
 
-//20 CPHashData
+//20 CPHashData			ACTION
 CSPINTERFACE BOOL WINAPI CPHashData(
 	__in HCRYPTPROV hProv,
 	__in HCRYPTHASH hHash,
@@ -868,6 +881,9 @@ CSPINTERFACE BOOL WINAPI CPHashData(
 		return FALSE;
 	}
 	
+	//函数模型 需修改参数
+	genhashImpl();
+
 	CSP_UnlockMutex();
 	LogEntry("CPHashData", "end", 0, 10);
 
@@ -904,7 +920,7 @@ CSPINTERFACE BOOL WINAPI CPSetHashParam(
 }
 
 
-//22 CPSignHash
+//22 CPSignHash		ACTION
 CSPINTERFACE BOOL WINAPI CPSignHash(
 	__in HCRYPTPROV hProv,
 	__in HCRYPTHASH hHash,
@@ -927,6 +943,9 @@ CSPINTERFACE BOOL WINAPI CPSignHash(
 		CSP_UnlockMutex();
 		return FALSE;
 	}
+
+	//需完善
+	int rsaprisignImpl();
 	
 	CSP_UnlockMutex();
 	LogEntry("CPSignHash", "end", 0, 10);
@@ -934,7 +953,7 @@ CSPINTERFACE BOOL WINAPI CPSignHash(
 }
 
 
-//23 CPVerifySignature
+//23 CPVerifySignature		ACTION
 CSPINTERFACE BOOL WINAPI CPVerifySignature(
 	__in HCRYPTPROV hProv,
 	__in HCRYPTHASH hHash,
@@ -958,6 +977,9 @@ CSPINTERFACE BOOL WINAPI CPVerifySignature(
 		return FALSE;
 	}
 	
+	//需完善
+	int rsapubverifyImpl();
+
 	CSP_UnlockMutex();
 	LogEntry("CPVerifySignature", "end", 0, 10);
 	return TRUE;
@@ -992,7 +1014,7 @@ CSPINTERFACE BOOL WINAPI CPDuplicateKey(
 }
 
 
-//25 CPHashSessionKey
+//25 CPHashSessionKey	ACTION
 CSPINTERFACE BOOL WINAPI CPHashSessionKey(
 	__in HCRYPTPROV hProv,
 	__in HCRYPTHASH hHash,
@@ -1012,6 +1034,9 @@ CSPINTERFACE BOOL WINAPI CPHashSessionKey(
 		CSP_UnlockMutex();
 		return FALSE;
 	}
+
+	//函数模型 需修改参数
+	genhashImpl();
 	
 	CSP_UnlockMutex();
 	LogEntry("CPHashSessionKey", "end", 0, 10);

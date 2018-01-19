@@ -8,3 +8,13 @@ int genrsakeyImpl(DWORD dwFlags, HPKEY_Z *pKey, int comid);
 int exportrsadeskeyImpl(HCRYPTKEY hKey, HCRYPTKEY hPubKey, UCHAR * data, int * data_length);
 
 int importrsadeskeyImpl(UCHAR * data, int data_length, UCHAR * private_key, int  private_key_len, UCHAR * wkLmk, int * keylen, UCHAR * cv);
+
+int encryptDecryptImpl();
+
+int genhashImpl();
+
+int rsaprisignImpl();
+
+int rsapubverifyImpl();
+
+

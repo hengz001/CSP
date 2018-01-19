@@ -75,6 +75,7 @@ int generateKey(int comid, int msghdlen, char *msghd, int algo, int genMod, char
 	return ret;
 }
 
+//E0
 int encryptDecrypt(int comid, int msghdlen, char *msghd, int algo,
 	int dataBlockFlag,
 	int encryptFlag,
@@ -87,8 +88,10 @@ int encryptDecrypt(int comid, int msghdlen, char *msghd, int algo,
 	char * paddingChar,
 	int paddingFlag,
 	char *iv,
-	int dataLen,
-	char *data) {
+	int *outFlag,
+	int * dataLen,
+	char *data) 
+{
 	int ret = 0;
 	char *cmd, *p;
 	int cmdLen, rspLen;
@@ -115,7 +118,7 @@ int encryptDecrypt(int comid, int msghdlen, char *msghd, int algo,
 		+1
 		+32
 		+4
-		+dataLen
+		+*dataLen
 		+ 1);	//0x00
 	if (NULL == cmd) {
 		return (-1);
@@ -141,15 +144,18 @@ int encryptDecrypt(int comid, int msghdlen, char *msghd, int algo,
 	*p++ = paddingMode + '0';
 	memcpy(p,paddingChar,4);
 	p += 4;
+	*p++ = paddingFlag + '0';
 	if (NULL != iv) {
 		int ivLen = strlen(iv);
 		memcpy(p, iv, ivLen);
 		p += ivLen;
 	}
-	memcpy(p,"%04X",dataLen);
+	
+	sprintf(p,"%04X",*dataLen);
 	p += 4;
-	memcpy(p,data,dataLen);
-	p += dataLen;
+
+	memcpy(p,data,*dataLen*2);
+	p += *dataLen*2;
 	*p = 0x00;
 
 	cmdLen = p - cmd;
@@ -162,13 +168,14 @@ int encryptDecrypt(int comid, int msghdlen, char *msghd, int algo,
 	}
 
 	p = rsp;
-
+	*outFlag = *p - '0';
+	p++;
 	memcpy(cLen,p,4);
 	p += 4;
 	cLen[4] = 0x00;
-	scanf(cLen,"%d",dataLen);
-	memcpy(data,p,dataLen);
-	p += dataLen;
+	*dataLen = atoi(cLen);
+	memcpy(data,p,*dataLen*2);
+	p += *dataLen*2;
 
 	return ret;
 }
