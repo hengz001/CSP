@@ -84,6 +84,7 @@
     <ClInclude Include="config.h" />
     <ClInclude Include="csp.h" />
     <ClInclude Include="cspService.h" />
+    <ClInclude Include="cspServiceImpl.h" />
     <ClInclude Include="hsmcmd.h" />
     <ClInclude Include="hsmdefs.h" />
     <ClInclude Include="hsm_com.h" />
@@ -100,6 +101,7 @@
     <ClCompile Include="common_util.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="cspService.cpp" />
+    <ClCompile Include="cspServiceImpl.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

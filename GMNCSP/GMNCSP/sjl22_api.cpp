@@ -2800,10 +2800,11 @@ int exportrsadeskey(
 	}
 	p += 4;
 
-	memcpy(data, p, len);
+	if (NULL != data) {
+		memcpy(data, p, len);
+	}
 	p += len;
 	*data_length = len;
-
 	return 0;
 }
 

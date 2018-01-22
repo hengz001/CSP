@@ -9,22 +9,22 @@
 //7 CPExportKey			SUCCESS
 //8 CPGenKey			SUCCESS
 //9 CPGenRandom			SUCCESS
-//10 CPGetKeyParam		
-//11 CPGetUserKey		
+//10 CPGetKeyParam		SUCCESS
+//11 CPGetUserKey		SUCCESS
 //12 CPImportKey		SUCCESS
-//13 CPSetKeyParam		
-//14 CPDecrypt			
-//15 CPEncrypt			
-//16 CPCreateHash		
-//17 CPDestroyHash		
-//18 CPDuplicateHash					附加函数
-//19 CPGetHashParam
-//20 CPHashData
-//21 CPSetHashParam
-//22 CPSignHash
-//23 CPVerifySignature
+//13 CPSetKeyParam		SUCCESS
+//14 CPDecrypt			SUCCESS
+//15 CPEncrypt			SUCCESS
+//16 CPCreateHash		SUCCESS	
+//17 CPDestroyHash		SUCCESS
+//18 CPDuplicateHash	SUCCESS			附加函数
+//19 CPGetHashParam		SUCCESS
+//20 CPHashData			SUCCESS
+//21 CPSetHashParam		SUCCESS
+//22 CPSignHash			SUCCESS	
+//23 CPVerifySignature	ACTION
 //24 CPDuplicateKey						附加函数
-//25 CPHashSessionKey
+//25 CPHashSessionKey	ACTION
 */
 
 #ifndef CSP_SPI
@@ -42,17 +42,36 @@
 #endif
 
 typedef struct _key {
+	UCHAR ALGID[64];
+	UCHAR BLOCKLEN[64]; 
+	UCHAR KEYLEN[64]; 
+	UCHAR SALT[64]; 
+	UCHAR PERMISSIONS[64];
+	UCHAR IV[64]; 
+	UCHAR PADDING[64]; 
+	UCHAR MODE[64]; 
+	UCHAR MODE_BITS[64]; 
+	UCHAR EFFECTIVE_KEYLEN[64];
+
 	int len;
 	UCHAR key[256];
 	UCHAR cv[64];
-}HKEY_Z,* PHKEY_Z;
-
-typedef struct _pupvkey {
 	int puLen;
 	UCHAR puKey[4096];
 	int pvLen;
 	UCHAR pvKey[4096];
-}HPKEY_Z, *PHPKEY_Z;
+}HKEY_Z,* PHKEY_Z, HPKEY_Z, *PHPKEY_Z;
+
+typedef struct _hash {
+	UCHAR ALGID[64];
+	UCHAR HASHVAL[64];
+	UCHAR HASHSIZE[64];
+	UCHAR HMAC_INFO[64];
+	UCHAR TLS1PRF_LABEL[64];
+	UCHAR TLS1PRF_SEED[64];
+	
+	PHKEY_Z phKey;
+}HHASH_Z, * PHHASH_Z;
 
 typedef struct _VTableProvStruc {
 	DWORD   Version;
@@ -277,7 +296,7 @@ CSPINTERFACE BOOL WINAPI   CPCreateHash(
 	//
 	__in DWORD dwFlags,
 	//返回HASH对象句柄
-	__out HCRYPTHASH *phHasg
+	__out HCRYPTHASH *phHash
 	);
 
 //17 CPDestroyHash

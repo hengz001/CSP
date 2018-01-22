@@ -3,7 +3,7 @@ int initCSP(void);
 
 int testSjl22(void);
 
-int genrsakeyImpl(DWORD dwFlags, HPKEY_Z *pKey, int comid);
+int genrsakeyImpl(DWORD dwFlags, PHPKEY_Z pKey, int comid);
 
 int exportrsadeskeyImpl(HCRYPTKEY hKey, HCRYPTKEY hPubKey, UCHAR * data, int * data_length);
 
@@ -16,5 +16,11 @@ int genhashImpl();
 int rsaprisignImpl();
 
 int rsapubverifyImpl();
+
+int generateKeyImpl(int comid, PHKEY_Z  hKey);
+
+int initJudgment(HCRYPTPROV hProv);
+
+
 
 

@@ -66,9 +66,6 @@
     <ClInclude Include="regedit.h">
       <Filter>头文件\service</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>头文件\sys</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>头文件\sys</Filter>
     </ClInclude>
@@ -80,6 +77,12 @@
     </ClInclude>
     <ClInclude Include="hsmdefs.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="cspServiceImpl.h">
+      <Filter>头文件\service</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="sjl22_api_zh.cpp">
       <Filter>源文件\tcp</Filter>
+    </ClCompile>
+    <ClCompile Include="cspServiceImpl.cpp">
+      <Filter>源文件\service</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
