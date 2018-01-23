@@ -124,6 +124,7 @@
     <ClCompile Include="util_tools.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GMNCSP.CONFIG" />
     <None Include="Source.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

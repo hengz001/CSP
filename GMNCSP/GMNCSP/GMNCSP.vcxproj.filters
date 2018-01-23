@@ -130,7 +130,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source.def">
+    <None Include="Source.def" />
+    <None Include="GMNCSP.CONFIG">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
