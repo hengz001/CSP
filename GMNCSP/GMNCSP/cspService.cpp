@@ -86,7 +86,7 @@ int testSjl22(void){
 }
 
 //RSA
-int genrsakeyImpl(HCRYPTPROV hProv,DWORD dwFlags, PHPKEY_Z pKey, int comid) {
+int genrsakeyImpl(HCRYPTPROV hProv,DWORD dwFlags, PHPKEY_Z pKey, int comid, int Algid) {
 	int key_usage = 2;
 	int mode_flag = 0;
 	int key_length = 2048;
@@ -125,10 +125,8 @@ int genrsakeyImpl(HCRYPTPROV hProv,DWORD dwFlags, PHPKEY_Z pKey, int comid) {
 	pKey->pvLen = private_key_len;
 	memcpy(pKey->puKey, public_key, public_key_len);
 	memcpy(pKey->pvKey, private_key, private_key_len);
-	sprintf((CHAR*)pKey->ALGID, "RSA");
-	sprintf((CHAR*)pKey->BLOCKLEN,"%04d",key_length);
-	sprintf((CHAR*)pKey->KEYLEN,"PUBLICKEY:%04d PRIVATEKEY:%04d", public_key_len, private_key_len);
-	
+	sprintf((CHAR*)pKey->ALGID, "%02d",  Algid);
+
 	/*
 	从密钥容器中获取已持久化的用户密钥句柄:从容器中获取RSA的密钥文件ID标识和。
 	dwKeySpec phUserKey 根据密钥属性获取密钥句柄
@@ -139,13 +137,13 @@ int genrsakeyImpl(HCRYPTPROV hProv,DWORD dwFlags, PHPKEY_Z pKey, int comid) {
 		switch (dwFlags)
 		{
 		case AT_KEYEXCHANGE:
-			ret = CPSetProvParamImpl( hProv,AT_KEYEXCHANGE, (BYTE *)pKey, REG_BINARY);
+			ret = cpSetProvParamImpl( hProv,AT_KEYEXCHANGE, (BYTE *)pKey, REG_BINARY);
 			if (ERROR_SUCCESS != ret) {
 				VarLogEntry(" genrsakeyImpl", "AT_KEYEXCHANGE error", ret, 0);
 			}
 			break;
 		case AT_SIGNATURE:
-			ret = CPSetProvParamImpl( hProv,AT_SIGNATURE, (BYTE *)pKey, REG_BINARY);
+			ret = cpSetProvParamImpl( hProv,AT_SIGNATURE, (BYTE *)pKey, REG_BINARY);
 			if (ERROR_SUCCESS != ret) {
 				VarLogEntry(" genrsakeyImpl", "AT_SIGNATURE error", ret, 0);
 			}
@@ -642,8 +640,9 @@ int generateKeyImpl(int comid, PHKEY_Z  hKey,int algo) {
 	int genMod;
 	genMod = 0;
 	int ret = 0;
+	char * keyType = ZEK_TYPE;
 
-	ret = generateKey(comid, 0, NULL, algo, genMod, ZMK_TYPE, 'X', key, checkValue);
+	ret = generateKey(comid, 0, NULL, algo, genMod, keyType, 'X', key, checkValue);
 	if (ret<0) {
 		VarLogEntry(" CPGenKey", "DES/TDES error", ret, 0);
 		return ret;
@@ -658,6 +657,7 @@ int generateKeyImpl(int comid, PHKEY_Z  hKey,int algo) {
 	memcpy(hKey->cv, checkValue, strlen(checkValue));
 	sprintf((CHAR*)hKey->ALGID, "%02d",algo);
 	sprintf((CHAR*)hKey->KEYLEN,"%04d",hKey->len);
+	memcpy(hKey->keyType, keyType,strlen(keyType));
 	return ret;
 }
 
@@ -784,4 +784,259 @@ int getHashParam(DWORD dwParam, PHHASH_Z phzHash , LPBYTE pbData, LPDWORD pdwDat
 	}
 	return ret;
 }
+
+int genSm2Key_backup() {
+	int ret = 0;
+
+	///////////////////////////
+	int comid;
+	int msghdlen = 0;
+	char *msghd = NULL;
+	int algflag = 3;
+	int key_usage = 3;
+	int compflag = 4;
+	int key_length = 256;
+	int index = 01;
+	int Plen = 0;
+	UCHAR *Pbuf = NULL;
+	int Alen = 0;
+	UCHAR *Abuf = NULL;
+	int Blen = 0;
+	UCHAR *Bbuf = NULL;
+	int Gxlen = 0;
+	UCHAR *Gxbuf = NULL;
+	int Gylen = 0;
+	UCHAR *Gybuf = NULL;
+	int Nlen = 0;
+	UCHAR *Nbuf = NULL;
+	UCHAR puKey[4096], pvKey[4096], deKey[4096];
+	int puLen, pvLen, deLen;
+	UCHAR *public_key = puKey;
+	int * public_key_len = &puLen;
+	UCHAR *private_key = pvKey;;
+	int *private_key_len = &pvLen;
+	UCHAR *derpubkey = deKey;
+	int * derpubkeylen = &deLen;
+	///////////////////////////////////////////
+
+	char ip[] = "192.168.1.205";
+	int port = 8000;
+	int timeout = 0;
+
+	comid = InitHsmDevice(ip, port, timeout);
+	if (comid < 0) {
+		puts("connect error");
+	}
+	puts("------------>connect success");
+	__try {
+		ret = gensm2key(comid, msghdlen, msghd, algflag, key_usage, compflag, key_length, index, Plen, Pbuf, Alen, Abuf, Blen,
+			Bbuf, Gxlen, Gxbuf, Gylen, Gybuf, Nlen, Nbuf, public_key, public_key_len, private_key, private_key_len, derpubkey, derpubkeylen);
+		printf("RET:%d\n", ret);
+		printf("PUBLIC KEY LEN %d\n", puLen);
+		printf("PUBLIC KEY LEN %d\n", pvLen);
+		printf("PUBLIC KEY LEN %d\n", deLen);
+	}
+	__finally {
+		CloseHsmDevice(comid);
+	}
+	return ret;
+}
+
+int genSm2Key(PHKEY_Z hKey,int comid, int Algid) {
+	int ret = 0;
+
+	///////////////////////////
+	int msghdlen = 0;
+	char *msghd = NULL;
+	int algflag = 3;
+	int key_usage = 3;
+	int compflag = 4;
+	int key_length = 256;
+	int index = 01;
+	int Plen = 0;
+	UCHAR *Pbuf = NULL;
+	int Alen = 0;
+	UCHAR *Abuf = NULL;
+	int Blen = 0;
+	UCHAR *Bbuf = NULL;
+	int Gxlen = 0;
+	UCHAR *Gxbuf = NULL;
+	int Gylen = 0;
+	UCHAR *Gybuf = NULL;
+	int Nlen = 0;
+	UCHAR *Nbuf = NULL;
+	UCHAR puKey[4096], pvKey[4096], deKey[4096];
+	int puLen, pvLen, deLen;
+
+	///////////////////////////////////////////
+
+	char * ip = getHsmIP();
+	int port = getHsmPORT();
+	int timeout = 0;
+
+	ret = gensm2key(comid, msghdlen, msghd, algflag, key_usage, compflag, key_length, index, Plen, Pbuf, Alen, Abuf, Blen,
+		Bbuf, Gxlen, Gxbuf, Gylen, Gybuf, Nlen, Nbuf, puKey, &puLen, pvKey, &pvLen, deKey, &deLen);
+	if (ret != 0) {
+		VarLogEntry(" genSm2Key", "gensm2key error", ret, 0);
+		return -1;
+	}
+	hKey = (PHKEY_Z)malloc(sizeof(HKEY_Z));
+	if (NULL == hKey) {
+		VarLogEntry(" genSm2Key", "Memory error", ret, 0);
+		return -1;
+	}
+	sprintf((CHAR*)hKey->ALGID,"%02d",Algid);
+	memcpy(puKey, hKey->puKey , puLen);
+	memcpy(pvKey, hKey->pvKey, pvLen);
+	memcpy(deKey, hKey->derPuKey , deLen);
+	hKey->puLen = puLen;
+	hKey->pvLen = pvLen;
+	hKey->derPuLen =  deLen;
+	return ret;
+}
+
+int decryptAlgo(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen) {
+	int ret = 0;
+	int algo;
+
+	algo = atoi((CHAR*)phKey->ALGID);
+	switch (algo)
+	{
+	case ALGO_DESTDES:
+		ret = decryptDES( comid,  phKey, pbData, pdwDataLen);
+		break;
+	case ALGO_RSA:
+		ret = decryptRSA(comid, phKey, pbData, pdwDataLen);
+		break;
+	case ALGO_SM2:
+		ret = decryptSM2(comid, phKey, pbData, pdwDataLen);
+		break;
+	default:
+
+		return -1;
+	}
+	return ret;
+}
+
+int encryptAlgo(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen) {
+	int ret = 0;
+	int algo;
+
+	algo = atoi((CHAR*)phKey->ALGID);
+	switch (algo)
+	{
+	case ALGO_DESTDES:
+		ret = encryptDES(comid, phKey, pbData, pdwDataLen);
+		break;
+	case ALGO_RSA:
+		ret = encryptRSA(comid, phKey, pbData, pdwDataLen);
+		break;
+	case ALGO_SM2:
+		ret = encryptSM2(comid, phKey, pbData, pdwDataLen);
+		break;
+	default:
+		VarLogEntry(" encryptAlgo", "key algo error", algo, 0);
+	}
+
+	return ret;
+}
+
+int decryptRSA(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen) {
+	int ret = 0;
+
+	return ret;
+}
+
+int encryptRSA(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen) {
+	int ret = 0;
+
+	return ret;
+}
+
+int decryptSM2(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen) {
+	int ret = 0;
+
+	return ret;
+}
+
+int encryptSM2(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen) {
+	int ret = 0;
+
+	return ret;
+}
+
+int decryptDES(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen) {
+	int ret = 0;
+	int algo = 0;
+	int dataBlockFlag = 0;
+	int encryptFlag = 0;
+	int algoOperationMode = 0;
+	int inputFormat = 1;
+	int outputFormat = 1;
+	char * keyType = (CHAR*)phKey->keyType;
+	int paddingMode = 0;
+	char paddingChar[] = "0000";
+	int paddingFlag = 0;
+	char *iv = NULL;
+	int outFlag;
+
+	encryptFlag = 1;
+	ret = encryptDecrypt(comid, 0, NULL, algo,
+		dataBlockFlag,
+		encryptFlag,
+		algoOperationMode,
+		inputFormat,
+		outputFormat,
+		keyType,
+		(CHAR*)phKey->key,
+		paddingMode,
+		paddingChar,
+		paddingFlag,
+		iv,
+		&outFlag,
+		(int *)pdwDataLen,
+		(CHAR*)pbData);
+	if (ret < 0) {
+		VarLogEntry(" CPDecryptImpl", "encryptDecrypt error", ret, 0);
+	}
+	return ret;
+}
+
+int encryptDES(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen) {
+	int ret;
+	int algo = 0;
+	int dataBlockFlag = 0;
+	int encryptFlag = 0;
+	int algoOperationMode = 0;
+	int inputFormat = 1;
+	int outputFormat = 1;
+	char * keyType = (CHAR*)phKey->keyType;
+	int paddingMode = 0;
+	char paddingChar[] = "0000";
+	int paddingFlag = 0;
+	char *iv = NULL;
+	int outFlag;
+
+	ret = encryptDecrypt(comid, 0, NULL, algo,
+		dataBlockFlag,
+		encryptFlag,
+		algoOperationMode,
+		inputFormat,
+		outputFormat,
+		keyType,
+		(CHAR*)phKey->key,
+		paddingMode,
+		paddingChar,
+		paddingFlag,
+		iv,
+		&outFlag,
+		(int*)pdwDataLen,
+		(CHAR*)pbData);
+	if (ret < 0) {
+		VarLogEntry(" CPEncryptImpl", "encryptDecrypt error", ret, 0);
+		return ret;
+	}
+	return ret;
+}
+
 

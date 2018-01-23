@@ -31,6 +31,18 @@
     <Filter Include="源文件\sys">
       <UniqueIdentifier>{25e7bb3c-0fc3-4e4b-a51d-d5ccdd417403}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\base">
+      <UniqueIdentifier>{ddf42506-24de-4740-99fe-8442a68d8b91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\base">
+      <UniqueIdentifier>{4dfd5010-5085-4192-8f56-d2b28bb18e55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\api">
+      <UniqueIdentifier>{f1c5972d-c26f-49e1-b045-7f31b3558e48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\api">
+      <UniqueIdentifier>{6b894f5b-7632-4c3d-9d46-3c3b06d2ef6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="csp.h">
@@ -45,49 +57,46 @@
     <ClInclude Include="hsmcmd.h">
       <Filter>头文件\tcp</Filter>
     </ClInclude>
-    <ClInclude Include="common_util.h">
-      <Filter>头文件\service</Filter>
-    </ClInclude>
-    <ClInclude Include="config.h">
-      <Filter>头文件\service</Filter>
-    </ClInclude>
     <ClInclude Include="cspService.h">
-      <Filter>头文件\service</Filter>
-    </ClInclude>
-    <ClInclude Include="log.h">
-      <Filter>头文件\service</Filter>
-    </ClInclude>
-    <ClInclude Include="mutex.h">
-      <Filter>头文件\service</Filter>
-    </ClInclude>
-    <ClInclude Include="regedit.h">
       <Filter>头文件\service</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>头文件\sys</Filter>
     </ClInclude>
-    <ClInclude Include="sjl22_api.h">
-      <Filter>头文件\tcp</Filter>
-    </ClInclude>
-    <ClInclude Include="sjl22_api_zh.h">
-      <Filter>头文件\tcp</Filter>
-    </ClInclude>
-    <ClInclude Include="hsmdefs.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="cspServiceImpl.h">
       <Filter>头文件\service</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>头文件\base</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>头文件\base</Filter>
+    </ClInclude>
+    <ClInclude Include="mutex.h">
+      <Filter>头文件\base</Filter>
+    </ClInclude>
+    <ClInclude Include="regedit.h">
+      <Filter>头文件\base</Filter>
+    </ClInclude>
+    <ClInclude Include="sjl22_api.h">
+      <Filter>头文件\api</Filter>
+    </ClInclude>
+    <ClInclude Include="sjl22_api_zh.h">
+      <Filter>头文件\api</Filter>
+    </ClInclude>
+    <ClInclude Include="hsmdefs.h">
+      <Filter>头文件\tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="attribute.h">
+      <Filter>头文件\base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GMNCSP.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="sjl22_api.cpp">
-      <Filter>源文件\tcp</Filter>
     </ClCompile>
     <ClCompile Include="util_tools.cpp">
       <Filter>源文件\tcp</Filter>
@@ -95,22 +104,7 @@
     <ClCompile Include="hsm_tcpcom.cpp">
       <Filter>源文件\tcp</Filter>
     </ClCompile>
-    <ClCompile Include="common_util.cpp">
-      <Filter>源文件\service</Filter>
-    </ClCompile>
-    <ClCompile Include="config.cpp">
-      <Filter>源文件\service</Filter>
-    </ClCompile>
     <ClCompile Include="cspService.cpp">
-      <Filter>源文件\service</Filter>
-    </ClCompile>
-    <ClCompile Include="log.cpp">
-      <Filter>源文件\service</Filter>
-    </ClCompile>
-    <ClCompile Include="mutex.cpp">
-      <Filter>源文件\service</Filter>
-    </ClCompile>
-    <ClCompile Include="regedit.cpp">
       <Filter>源文件\service</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
@@ -119,11 +113,29 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件\sys</Filter>
     </ClCompile>
-    <ClCompile Include="sjl22_api_zh.cpp">
-      <Filter>源文件\tcp</Filter>
-    </ClCompile>
     <ClCompile Include="cspServiceImpl.cpp">
       <Filter>源文件\service</Filter>
+    </ClCompile>
+    <ClCompile Include="regedit.cpp">
+      <Filter>源文件\base</Filter>
+    </ClCompile>
+    <ClCompile Include="mutex.cpp">
+      <Filter>源文件\base</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>源文件\base</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>源文件\base</Filter>
+    </ClCompile>
+    <ClCompile Include="sjl22_api_zh.cpp">
+      <Filter>源文件\api</Filter>
+    </ClCompile>
+    <ClCompile Include="sjl22_api.cpp">
+      <Filter>源文件\api</Filter>
+    </ClCompile>
+    <ClCompile Include="attribute.cpp">
+      <Filter>源文件\base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

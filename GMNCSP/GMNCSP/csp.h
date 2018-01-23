@@ -56,10 +56,13 @@ typedef struct _key {
 	int len;
 	UCHAR key[256];
 	UCHAR cv[64];
+	UCHAR keyType[8];
 	int puLen;
 	UCHAR puKey[4096];
 	int pvLen;
 	UCHAR pvKey[4096];
+	int derPuLen;
+	UCHAR derPuKey[4096];
 }HKEY_Z,* PHKEY_Z, HPKEY_Z, *PHPKEY_Z;
 
 typedef struct _hash {

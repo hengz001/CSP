@@ -47,6 +47,9 @@ typedef long		HSM_DEV;
 #define ALGO_AES                4
 #define ALGO_SM4                5
 
+#define ALGO_RSA                6
+#define ALGO_SM2                7
+
 
 #define HASH_MD2        0
 #define HASH_SHA1       1

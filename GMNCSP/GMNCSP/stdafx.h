@@ -25,7 +25,7 @@
 #include "mutex.h"
 #include "log.h"
 #include "cspService.h"
-#include "common_util.h"
+#include "attribute.h"
 #include "config.h"
 #include "regedit.h"
 #include "sjl22_api.h"

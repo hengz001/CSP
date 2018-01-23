@@ -80,7 +80,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="common_util.h" />
+    <ClInclude Include="attribute.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="csp.h" />
     <ClInclude Include="cspService.h" />
@@ -98,7 +98,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="common_util.cpp" />
+    <ClCompile Include="attribute.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="cspService.cpp" />
     <ClCompile Include="cspServiceImpl.cpp" />

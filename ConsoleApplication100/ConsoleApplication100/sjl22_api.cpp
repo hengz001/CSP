@@ -1356,27 +1356,12 @@ int rsapubkeyoper(
  // 		p += len;
 
 
-		if (sig_alg == SIG_ALGO_RSA) {
-			memset(p, 0x00, 4);
-			p += 4;
-			/* Public key */
-			memcpy(p, public_key, len);
-			p += len;
-			/* Authentication data */
-			if (authenDataLen > 0)
-			{
-				memcpy(p, authenData, authenDataLen);
-				p += authenDataLen;
-			}
-		}
-		else {
-			sprintf((char *)p, "%04d", public_key_len);
-			p += 4;
+		sprintf((char *)p, "%04d", public_key_len);
+		p += 4;
 
-			/* Public key */
-			memcpy(p, public_key, public_key_len);
-			p += public_key_len;
-		}
+		/* Public key */
+		memcpy(p, public_key, public_key_len);
+		p += public_key_len;
 
 
 	}

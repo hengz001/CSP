@@ -25,7 +25,7 @@ CSPINTERFACE BOOL WINAPI CPAcquireContext(
 		CSP_LockMutex();
 		LogEntry("CPAcquireContext", "start", 0, 10);
 
-		ret = CPAcquireContextImpl(phProv,pszContainer,dwFlags,pVTable);
+		ret = cpAcquireContextImpl(phProv,pszContainer,dwFlags,pVTable);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -57,7 +57,7 @@ CSPINTERFACE BOOL WINAPI CPGetProvParam(
 		CSP_LockMutex();
 		LogEntry("CPGetProvParam", "start", 0, 10);
 		//
-		ret = CPGetProvParamImpl( hProv,dwParam,pbData,pdwDataLen,dwFlags);
+		ret = cpGetProvParamImpl( hProv,dwParam,pbData,pdwDataLen,dwFlags);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -84,7 +84,7 @@ CSPINTERFACE BOOL WINAPI CPReleaseContext(
 	LogEntry("CPReleaseContext", "end", 0, 10);
 	CSP_UnlockMutex();
 	//结束线程同步
-	CPReleaseContextImpl(hProv, dwFlags);
+	cpReleaseContextImpl(hProv, dwFlags);
 	return TRUE;
 }
 
@@ -106,7 +106,7 @@ CSPINTERFACE BOOL WINAPI CPSetProvParam(
 		CSP_LockMutex();
 		LogEntry("CPSetProvParam", "start", 0, 10);
 
-		ret = CPSetProvParamImpl(hProv,dwParam,pbData,dwFlags);
+		ret = cpSetProvParamImpl(hProv,dwParam,pbData,dwFlags);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -138,7 +138,7 @@ CSPINTERFACE BOOL WINAPI CPDeriveKey(
 		LogEntry("CPDeriveKey", "start", 0, 10);
 
 		//派生密钥
-		ret = CPDeriveKeyImpl(hProv, Algid, hBaseData, dwFlags, phKey);
+		ret = cpDeriveKeyImpl(hProv, Algid, hBaseData, dwFlags, phKey);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -167,7 +167,7 @@ CSPINTERFACE BOOL WINAPI CPDestroyKey(
 		CSP_LockMutex();
 		LogEntry("CPDestroyKey", "start", 0, 10);
 	
-		ret = CPDestroyKeyImpl( hProv,  hKey);
+		ret = cpDestroyKeyImpl( hProv,  hKey);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -201,7 +201,7 @@ CSPINTERFACE BOOL WINAPI CPExportKey(
 		LogEntry("CPExportKey", "start", 0, 10);
 
 		//RSA导出DES密钥
-		ret = CPExportKeyImpl(hProv, hKey, hPubKey, dwBlobType, dwFlags, pbData, pdwDataLen);
+		ret = cpExportKeyImpl(hProv, hKey, hPubKey, dwBlobType, dwFlags, pbData, pdwDataLen);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -231,7 +231,7 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 		LogEntry("CPGenKey", "start", 0, 10);
 
 		//生成密钥
-		ret = CPGenKeyImpl(hProv,Algid,dwFlags,phKey);
+		ret = cpGenKeyImpl(hProv,Algid,dwFlags,phKey);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -261,7 +261,7 @@ CSPINTERFACE BOOL WINAPI CPGenRandom(
 		LogEntry("CPGenRandom", "start", 0, 10);
 	
 		//生成随机数
-		ret = CPGenRandomImpl(hProv,dwLen,pbBuffer);
+		ret = cpGenRandomImpl(hProv,dwLen,pbBuffer);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -295,7 +295,7 @@ CSPINTERFACE BOOL WINAPI CPGetKeyParam(
 		LogEntry("CPGetKeyParam", "start", 0, 10);
 	
 		///////
-		ret = CPGetKeyParamImpl( hProv,hKey,dwParam,pbData,pcbDataLen,dwFlags);
+		ret = cpGetKeyParamImpl( hProv,hKey,dwParam,pbData,pcbDataLen,dwFlags);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -325,7 +325,7 @@ CSPINTERFACE BOOL WINAPI CPGetUserKey(
 		CSP_LockMutex();
 		LogEntry("CPGetUserKey", "start", 0, 10);
 
-		ret = CPGetUserKeyImpl(hProv,dwKeySpec,phUserKey);
+		ret = cpGetUserKeyImpl(hProv,dwKeySpec,phUserKey);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -360,7 +360,7 @@ CSPINTERFACE BOOL WINAPI CPImportKey(
 		LogEntry("CPImportKey", "start", 0, 10);
 
 		////
-		ret = CPImportKeyImpl(hProv,pbData, dwDataLen, hPubKey, dwFlags,phKey);
+		ret = cpImportKeyImpl(hProv,pbData, dwDataLen, hPubKey, dwFlags,phKey);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -394,7 +394,7 @@ CSPINTERFACE BOOL WINAPI CPSetKeyParam(
 		LogEntry("CPSetKeyParam", "start", 0, 10);
 	
 		////
-		ret = CPSetKeyParamImpl(hProv,hKey,dwParam,pbData,dwFlags);
+		ret = cpSetKeyParamImpl(hProv,hKey,dwParam,pbData,dwFlags);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -429,7 +429,7 @@ CSPINTERFACE BOOL WINAPI CPDecrypt(
 		LogEntry("CPDecrypt", "start", 0, 10);
 
 		////
-		ret =  CPDecryptImpl(hProv,hKey, hHash, Final,dwFlags,pbData,pdwDataLen);
+		ret =  cpDecryptImpl(hProv,hKey, hHash, Final,dwFlags,pbData,pdwDataLen);
 		if (ret != 0) {
 			return FALSE;
 		}	
@@ -465,7 +465,7 @@ CSPINTERFACE BOOL WINAPI CPEncrypt(
 		LogEntry("CPEncrypt", "start", 0, 10);
 	
 		//容器是否初始化
-		ret =  CPEncryptImpl(hProv, hKey, hHash, Final, dwFlags,pbData, pdwDataLen,dwBufLen);
+		ret =  cpEncryptImpl(hProv, hKey, hHash, Final, dwFlags,pbData, pdwDataLen,dwBufLen);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -497,7 +497,7 @@ CSPINTERFACE BOOL WINAPI CPCreateHash(
 		LogEntry("CPCreateHash", "start", 0, 10);
 	
 		////
-		ret = CPCreateHashImpl(hProv, Algid,  hKey,  dwFlags, phHash);
+		ret = cpCreateHashImpl(hProv, Algid,  hKey,  dwFlags, phHash);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -525,7 +525,7 @@ CSPINTERFACE BOOL WINAPI CPDestroyHash(
 		LogEntry("CPDestroyHash", "start", 0, 10);
 		CSP_LockMutex();
 		//容器是否初始化
-		ret = CPDestroyHashImpl( hProv, hHash);
+		ret = cpDestroyHashImpl( hProv, hHash);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -557,7 +557,7 @@ CSPINTERFACE BOOL WINAPI CPDuplicateHash(
 		CSP_LockMutex();
 		LogEntry("CPDuplicateHash", "start", 0, 10);
 		
-		ret = CPDuplicateHashImpl( hProv,  hHash, pdwReserved,  dwFlags, phHash);
+		ret = cpDuplicateHashImpl( hProv,  hHash, pdwReserved,  dwFlags, phHash);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -590,7 +590,7 @@ CSPINTERFACE BOOL WINAPI CPGetHashParam(
 		LogEntry("CPGetHashParam", "start", 0, 10);
 	
 		////
-		ret =  CPGetHashParamImpl(hProv, hHash,  dwParam, pbData, pdwDataLen, dwFlags);
+		ret =  cpGetHashParamImpl(hProv, hHash,  dwParam, pbData, pdwDataLen, dwFlags);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -622,7 +622,7 @@ CSPINTERFACE BOOL WINAPI CPHashData(
 		LogEntry("CPHashData", "start", 0, 10);
 		
 		////
-		ret = CPHashDataImpl( hProv,  hHash, pbData,  dwDataLen,  dwFlags);
+		ret = cpHashDataImpl( hProv,  hHash, pbData,  dwDataLen,  dwFlags);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -655,7 +655,7 @@ CSPINTERFACE BOOL WINAPI CPSetHashParam(
 		LogEntry("CPSetHashParam", "start", 0, 10);
 		
 		////
-		ret = CPSetHashParamImpl( hProv,  hHash,  dwParam, pbData, dwFlags);
+		ret = cpSetHashParamImpl( hProv,  hHash,  dwParam, pbData, dwFlags);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -689,7 +689,7 @@ CSPINTERFACE BOOL WINAPI CPSignHash(
 		LogEntry("CPSignHash", "start", 0, 10);
 		
 		//
-		ret = CPSignHashImpl( hProv,  hHash,  dwKeySpec,  sDescription,  dwFlags, pbSignature, pdwSigLen);
+		ret = cpSignHashImpl( hProv,  hHash,  dwKeySpec,  sDescription,  dwFlags, pbSignature, pdwSigLen);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -722,7 +722,7 @@ CSPINTERFACE BOOL WINAPI CPVerifySignature(
 		CSP_LockMutex();
 		LogEntry("CPVerifySignature", "start", 0, 10);
 	
-		ret = CPVerifySignatureImpl( hProv,  hHash, pbSignature,  dwSigLen,  hPubKey,  sDescription,  dwFlags);
+		ret = cpVerifySignatureImpl( hProv,  hHash, pbSignature,  dwSigLen,  hPubKey,  sDescription,  dwFlags);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -752,7 +752,7 @@ CSPINTERFACE BOOL WINAPI CPDuplicateKey(
 		CSP_LockMutex();
 		LogEntry("CPDuplicateKey", "start", 0, 10);
 	
-		ret = CPDuplicateKeyImpl( hUID,  hKey,  pdwReserved,  dwFlags,  phKey);
+		ret = cpDuplicateKeyImpl( hUID,  hKey,  pdwReserved,  dwFlags,  phKey);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -784,7 +784,7 @@ CSPINTERFACE BOOL WINAPI CPHashSessionKey(
 		LogEntry("CPHashSessionKey", "start", 0, 10);
 		
 		/////
-		ret = CPHashSessionKeyImpl( hProv,  hHash,  hKey,  dwFlags);
+		ret = cpHashSessionKeyImpl( hProv,  hHash,  hKey,  dwFlags);
 		if (ret != 0) {
 			return FALSE;
 		}
