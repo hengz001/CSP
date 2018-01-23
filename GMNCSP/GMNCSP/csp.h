@@ -71,6 +71,7 @@ typedef struct _hash {
 	UCHAR TLS1PRF_SEED[64];
 	
 	PHKEY_Z phKey;
+	UCHAR keyHashValue[256];
 }HHASH_Z, * PHHASH_Z;
 
 typedef struct _VTableProvStruc {

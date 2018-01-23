@@ -86,7 +86,7 @@ int testSjl22(void){
 }
 
 //RSA
-int genrsakeyImpl(DWORD dwFlags, PHPKEY_Z pKey, int comid) {
+int genrsakeyImpl(HCRYPTPROV hProv,DWORD dwFlags, PHPKEY_Z pKey, int comid) {
 	int key_usage = 2;
 	int mode_flag = 0;
 	int key_length = 2048;
@@ -139,13 +139,13 @@ int genrsakeyImpl(DWORD dwFlags, PHPKEY_Z pKey, int comid) {
 		switch (dwFlags)
 		{
 		case AT_KEYEXCHANGE:
-			ret = CPSetProvParamImpl(AT_KEYEXCHANGE, (BYTE *)pKey, REG_BINARY);
+			ret = CPSetProvParamImpl( hProv,AT_KEYEXCHANGE, (BYTE *)pKey, REG_BINARY);
 			if (ERROR_SUCCESS != ret) {
 				VarLogEntry(" genrsakeyImpl", "AT_KEYEXCHANGE error", ret, 0);
 			}
 			break;
 		case AT_SIGNATURE:
-			ret = CPSetProvParamImpl(AT_SIGNATURE, (BYTE *)pKey, REG_BINARY);
+			ret = CPSetProvParamImpl( hProv,AT_SIGNATURE, (BYTE *)pKey, REG_BINARY);
 			if (ERROR_SUCCESS != ret) {
 				VarLogEntry(" genrsakeyImpl", "AT_SIGNATURE error", ret, 0);
 			}

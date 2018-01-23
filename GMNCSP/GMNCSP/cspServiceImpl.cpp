@@ -17,10 +17,15 @@ int CPAcquireContextImpl() {
 	return 0;
 }
 
-int CPGetProvParamImpl(DWORD dwParam, DWORD dwFlags, BYTE *pbData, DWORD *pdwDataLen) {
+int CPGetProvParamImpl(HCRYPTPROV hProv, DWORD dwParam, DWORD dwFlags, BYTE *pbData, DWORD *pdwDataLen) {
 	int ret = 0;
 	HKEY hKey;
 
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	//获取注册表属性
 	ret = GMN_RegOpen(&hKey);
 	if (ERROR_SUCCESS != ret) {
@@ -40,9 +45,15 @@ int CPGetProvParamImpl(DWORD dwParam, DWORD dwFlags, BYTE *pbData, DWORD *pdwDat
 	return ret;
 }
 
-int CPSetProvParamImpl(DWORD dwParam, BYTE *pbData, DWORD dwFlags) {
+int CPSetProvParamImpl(HCRYPTPROV hProv, DWORD dwParam, BYTE *pbData, DWORD dwFlags) {
 	int ret = 0;
 	HKEY hKey;
+	
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	//获取注册表属性
 	ret = GMN_RegOpen(&hKey);
 	if (ERROR_SUCCESS != ret) {
@@ -61,7 +72,7 @@ int CPSetProvParamImpl(DWORD dwParam, BYTE *pbData, DWORD dwFlags) {
 	return ret;
 }
 
-int CPDeriveKeyImpl(ALG_ID Algid,HCRYPTHASH hBaseData,HCRYPTKEY *phKey) {
+int CPDeriveKeyImpl(HCRYPTPROV hProv, ALG_ID Algid,HCRYPTHASH hBaseData,HCRYPTKEY *phKey) {
 	int ret = 0;
 	///////////////////////////
 	int timeout = 0;
@@ -83,6 +94,11 @@ int CPDeriveKeyImpl(ALG_ID Algid,HCRYPTHASH hBaseData,HCRYPTKEY *phKey) {
 	int deriveKeyLen;
 	HKEY_Z *hKey_deri;
 	
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	comid = InitHsmDevice(getHsmIP(), getHsmPORT(), timeout);
 	if (comid<0) {
 		VarLogEntry(" InitHsmDevice", "connect error", comid, 0);
@@ -118,8 +134,14 @@ int CPDeriveKeyImpl(ALG_ID Algid,HCRYPTHASH hBaseData,HCRYPTKEY *phKey) {
 	return ret;
 }
 
-int CPExportKeyImpl(HCRYPTKEY hKey,HCRYPTKEY hPubKey,BYTE *pbData,DWORD *pdwDataLen) {
+int CPExportKeyImpl(HCRYPTPROV hProv, HCRYPTKEY hKey,HCRYPTKEY hPubKey,BYTE *pbData,DWORD *pdwDataLen) {
 	int ret = 0;
+	
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	ret = exportrsadeskeyImpl(hKey, hPubKey, pbData, (int *)pdwDataLen);
 	if (ret<0 || pdwDataLen<0) {
 		VarLogEntry("CPExportKey", "exportrsadeskeyImpl error", ret, 0);
@@ -128,12 +150,17 @@ int CPExportKeyImpl(HCRYPTKEY hKey,HCRYPTKEY hPubKey,BYTE *pbData,DWORD *pdwData
 	return ret;
 }
 
-int CPGenKeyImpl(ALG_ID Algid,DWORD dwFlags,HCRYPTKEY *phKey) {
+int CPGenKeyImpl(HCRYPTPROV hProv, ALG_ID Algid,DWORD dwFlags,HCRYPTKEY *phKey) {
 	int ret = 0;
 	int timeout = 0;
 	int comid;
 	PHKEY_Z hKey = NULL;
 
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	__try {
 		comid = InitHsmDevice(getHsmIP(), getHsmPORT(), timeout);
 		if (comid<0) {
@@ -150,7 +177,7 @@ int CPGenKeyImpl(ALG_ID Algid,DWORD dwFlags,HCRYPTKEY *phKey) {
 			}
 			break;
 		case SIG_ALGO_RSA:
-			ret = genrsakeyImpl(dwFlags, hKey, comid);
+			ret = genrsakeyImpl(hProv,dwFlags, hKey, comid);
 			if (ret < 0) {
 				return ret;
 			}
@@ -167,11 +194,16 @@ int CPGenKeyImpl(ALG_ID Algid,DWORD dwFlags,HCRYPTKEY *phKey) {
 	return ret;
 }
 
-int CPGenRandomImpl(DWORD dwLen,BYTE *pbBuffer) {
+int CPGenRandomImpl(HCRYPTPROV hProv, DWORD dwLen,BYTE *pbBuffer) {
 	int comid;
 	int ret = 0;
 	int timeout = 0;
 
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	////////////////////////////
 	comid = InitHsmDevice(getHsmIP(), getHsmPORT(), timeout);
 	if (comid<0) {
@@ -193,9 +225,14 @@ int CPGenRandomImpl(DWORD dwLen,BYTE *pbBuffer) {
 	return ret;
 }
 
-int CPGetKeyParamImpl(HCRYPTKEY hKey,DWORD dwParam,LPBYTE pbData,LPDWORD pcbDataLen) {
+int CPGetKeyParamImpl(HCRYPTPROV hProv, HCRYPTKEY hKey,DWORD dwParam,LPBYTE pbData,LPDWORD pcbDataLen) {
 	int ret = 0;
 
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	/////
 	if (hKey == NULL) {
 		VarLogEntry(" CPGetKeyParam", "hKey == NULL error", -1, 0);
@@ -346,12 +383,17 @@ int CPGetKeyParamImpl(HCRYPTKEY hKey,DWORD dwParam,LPBYTE pbData,LPDWORD pcbData
 	return ret;
 }
 
-int CPGetUserKeyImpl(DWORD dwKeySpec,HCRYPTKEY *phUserKey) {
+int CPGetUserKeyImpl(HCRYPTPROV hProv, DWORD dwKeySpec,HCRYPTKEY *phUserKey) {
 	int ret = 0;
 	HKEY_Z * hzKey;
 
 	DWORD dwKeyLen = sizeof(HKEY_Z);
 	hzKey = (PHKEY_Z)malloc(dwKeyLen);
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	if (NULL == hzKey) {
 		LogEntry("CPGetUserKey", "Memory error", -1, 0);
 		return -1;
@@ -365,7 +407,7 @@ int CPGetUserKeyImpl(DWORD dwKeySpec,HCRYPTKEY *phUserKey) {
 	switch (dwKeySpec)
 	{
 	case AT_KEYEXCHANGE:
-		ret = CPGetProvParamImpl(AT_KEYEXCHANGE, REG_BINARY, (BYTE *)hzKey, &dwKeyLen);
+		ret = CPGetProvParamImpl(hProv,AT_KEYEXCHANGE, REG_BINARY,(BYTE*)hzKey,&dwKeyLen);
 		if (ERROR_SUCCESS != ret || dwKeyLen <= 0) {
 			free(hzKey);
 			return -1;
@@ -373,7 +415,7 @@ int CPGetUserKeyImpl(DWORD dwKeySpec,HCRYPTKEY *phUserKey) {
 		}
 		break;
 	case AT_SIGNATURE:
-		ret = CPGetProvParamImpl(AT_SIGNATURE, REG_BINARY, (BYTE *)hzKey, &dwKeyLen);
+		ret = CPGetProvParamImpl(hProv,AT_SIGNATURE, REG_BINARY, (BYTE *)hzKey, &dwKeyLen);
 		if (ERROR_SUCCESS != ret || dwKeyLen <= 0) {
 			free(hzKey);
 			return -1;
@@ -390,7 +432,7 @@ int CPGetUserKeyImpl(DWORD dwKeySpec,HCRYPTKEY *phUserKey) {
 	return ret;
 }
 
-int CPImportKeyImpl(const BYTE *pbData,DWORD dwDataLen,HCRYPTKEY hPubKey,DWORD dwFlags,HCRYPTKEY *phKey) {
+int CPImportKeyImpl(HCRYPTPROV hProv, const BYTE *pbData,DWORD dwDataLen,HCRYPTKEY hPubKey,DWORD dwFlags,HCRYPTKEY *phKey) {
 	int ret = 0;
 	HPKEY_Z * pKey;
 	HKEY_Z * hKey;
@@ -398,6 +440,11 @@ int CPImportKeyImpl(const BYTE *pbData,DWORD dwDataLen,HCRYPTKEY hPubKey,DWORD d
 	int keylen;
 	UCHAR cv[64];
 	
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	pKey = (HPKEY_Z*)hPubKey;
 	ret = importrsadeskeyImpl((UCHAR *)pbData, dwDataLen, pKey->pvKey, pKey->pvLen, wkLmk, &keylen, cv);
 	if (ret != 0) {
@@ -416,9 +463,14 @@ int CPImportKeyImpl(const BYTE *pbData,DWORD dwDataLen,HCRYPTKEY hPubKey,DWORD d
 	return ret;
 }
 
-int CPSetKeyParamImpl(HCRYPTKEY hKey,DWORD dwParam,BYTE *pbData,DWORD dwFlags) {
+int CPSetKeyParamImpl(HCRYPTPROV hProv, HCRYPTKEY hKey,DWORD dwParam,BYTE *pbData,DWORD dwFlags) {
 	int ret = 0;
 
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	PHKEY_Z phKey = (PHKEY_Z)hKey;
 	if (phKey == NULL) {
 		VarLogEntry(" CPSetKeyParamImpl", "Memory error", -1, 0);
@@ -464,7 +516,7 @@ int CPSetKeyParamImpl(HCRYPTKEY hKey,DWORD dwParam,BYTE *pbData,DWORD dwFlags) {
 	return ret;
 }
 
-int CPDecryptImpl(HCRYPTKEY hKey,HCRYPTHASH hHash,BOOL Final,DWORD dwFlags,BYTE *pbData,DWORD *pdwDataLen) {
+int CPDecryptImpl(HCRYPTPROV hProv, HCRYPTKEY hKey,HCRYPTHASH hHash,BOOL Final,DWORD dwFlags,BYTE *pbData,DWORD *pdwDataLen) {
 	int ret = 0;
 	int timeout = 0;
 	int comid;
@@ -475,11 +527,6 @@ int CPDecryptImpl(HCRYPTKEY hKey,HCRYPTHASH hHash,BOOL Final,DWORD dwFlags,BYTE 
 	char *ip; 
 	int port; 
 	
-	phKey = (PHKEY_Z)hKey;
-	if (NULL == phKey) {
-		VarLogEntry(" CPDecryptImpl", "hKey error", -1, 0);
-		return -1;
-	}
 
 	ip = getHsmIP();
 	port = getHsmPORT();
@@ -487,6 +534,16 @@ int CPDecryptImpl(HCRYPTKEY hKey,HCRYPTHASH hHash,BOOL Final,DWORD dwFlags,BYTE 
 	dataLen = *pdwDataLen;
 	data = (CHAR*)pbData;
 
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
+	phKey = (PHKEY_Z)hKey;
+	if (NULL == phKey) {
+		VarLogEntry(" CPDecryptImpl", "hKey error", -1, 0);
+		return -1;
+	}
 	comid = InitHsmDevice(ip, port, timeout);
 	if (comid < 0) {
 		VarLogEntry(" CPDecryptImpl", "InitHsmDevice error", comid, 0);
@@ -538,7 +595,7 @@ int CPDecryptImpl(HCRYPTKEY hKey,HCRYPTHASH hHash,BOOL Final,DWORD dwFlags,BYTE 
 	return ret;
 }
 
-int CPEncryptImpl( HCRYPTKEY hKey,HCRYPTHASH hHash,BOOL Final,DWORD dwFlags,BYTE *pbData, DWORD *pdwDataLen, DWORD dwBufLen) {
+int CPEncryptImpl(HCRYPTPROV hProv, HCRYPTKEY hKey,HCRYPTHASH hHash,BOOL Final,DWORD dwFlags,BYTE *pbData, DWORD *pdwDataLen, DWORD dwBufLen) {
 	int ret = 0;
 	int timeout = 0;
 	int comid;
@@ -547,14 +604,20 @@ int CPEncryptImpl( HCRYPTKEY hKey,HCRYPTHASH hHash,BOOL Final,DWORD dwFlags,BYTE
 	char *ip;
 	int port;
 	phKey = (PHKEY_Z)hKey;
-	if (NULL == phKey) {
-		VarLogEntry(" CPEncryptImpl", "hKey error", -1, 0);
-		return -1;
-	}
+	
 
 	ip = getHsmIP();
 	port = getHsmPORT();
 	key = (CHAR*)phKey->key;
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
+	if (NULL == phKey) {
+		VarLogEntry(" CPEncryptImpl", "hKey error", -1, 0);
+		return -1;
+	}
 	
 	comid = InitHsmDevice(ip, port, timeout);
 	if (comid < 0) {
@@ -603,7 +666,7 @@ int CPEncryptImpl( HCRYPTKEY hKey,HCRYPTHASH hHash,BOOL Final,DWORD dwFlags,BYTE
 	return ret;
 }
 
-int CPCreateHashImpl( ALG_ID Algid, HCRYPTKEY hKey, DWORD dwFlags, HCRYPTHASH *phHash) {
+int CPCreateHashImpl(HCRYPTPROV hProv, ALG_ID Algid, HCRYPTKEY hKey, DWORD dwFlags, HCRYPTHASH *phHash) {
 	int ret = 0;
 	int algo;
 	PHHASH_Z phHash_z;
@@ -625,6 +688,11 @@ int CPCreateHashImpl( ALG_ID Algid, HCRYPTKEY hKey, DWORD dwFlags, HCRYPTHASH *p
 	 HASH_SM3  14
 	*/
 
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	switch (Algid)
 	{
 	case HASH_MD2:
@@ -687,9 +755,14 @@ int CPCreateHashImpl( ALG_ID Algid, HCRYPTKEY hKey, DWORD dwFlags, HCRYPTHASH *p
 	return ret;
 }
 
-int CPGetHashParamImpl( HCRYPTHASH hHash, DWORD dwParam, BYTE *pbData, DWORD *pdwDataLen, DWORD dwFlags) {
+int CPGetHashParamImpl(HCRYPTPROV hProv, HCRYPTHASH hHash, DWORD dwParam, BYTE *pbData, DWORD *pdwDataLen, DWORD dwFlags) {
 	int ret = 0;
 
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	/*
 	HP_ALGID
 	HP_HASHVAL
@@ -783,6 +856,11 @@ int CPHashDataImpl(HCRYPTPROV hProv, HCRYPTHASH hHash, const BYTE *pbData, DWORD
 	int hash_id = atoi((CHAR*)phzHash->ALGID);
 	UCHAR *data = (UCHAR*)pbData;
 
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	//
 	if (NULL == phzHash) {
 		VarLogEntry(" CPHashDataImpl", "hHash error", -1, 0);
@@ -809,6 +887,12 @@ int CPHashDataImpl(HCRYPTPROV hProv, HCRYPTHASH hHash, const BYTE *pbData, DWORD
 int CPSetHashParamImpl(HCRYPTPROV hProv, HCRYPTHASH hHash, DWORD dwParam, BYTE *pbData, DWORD dwFlags) {
 	int ret = 0;
 	DWORD *pdwDataLen = 0;
+
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	/*
 	HP_ALGID
 	HP_HASHVAL
@@ -892,6 +976,11 @@ int CPSignHashImpl(HCRYPTPROV hProv, HCRYPTHASH hHash, DWORD dwKeySpec, LPCWSTR 
 	int data_length = *pdwSigLen;
 	UCHAR * data = pbSignature;
 
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
 	//hash对象
 	phzHash = (PHHASH_Z)hHash;
 	if (NULL == phzHash) {
@@ -948,6 +1037,128 @@ int CPSignHashImpl(HCRYPTPROV hProv, HCRYPTHASH hHash, DWORD dwKeySpec, LPCWSTR 
 	{
 		CloseHsmDevice(comid);
 	}
+	return ret;
+}
+
+int CPVerifySignatureImpl(HCRYPTPROV hProv, HCRYPTHASH hHash, const BYTE *pbSignature, DWORD dwSigLen, HCRYPTKEY hPubKey, LPCWSTR sDescription, DWORD dwFlags) {
+	int ret = 0;
+	int timeout = 0;
+	int comid;
+	PHHASH_Z phzHash;
+	PHKEY_Z phzKey;
+	char * ip = getHsmIP();
+	int port = getHsmPORT();
+
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
+	////////////////////////////////
+	//hash对象
+	phzHash = (PHHASH_Z)hHash;
+	if (NULL == phzHash) {
+		VarLogEntry(" CPVerifySignatureImpl", "hHash error", -1, 0);
+		return -1;
+	}
+	//密钥对象
+	phzKey = phzHash->phKey;
+	if (NULL == phzKey) {
+		VarLogEntry(" CPVerifySignatureImpl", "hKey error", -1, 0);
+		return -1;
+	}
+	//////////////
+	comid = InitHsmDevice(ip, port, timeout);
+	if (comid < 0) {
+		VarLogEntry(" CPVerifySignatureImpl", "InitHsmDevice error", comid, 0);
+		return (comid);
+	}
+	__try {
+		int msghdlen = 0;
+		char *msghd = NULL;
+		int hash_id = 01;
+		int sign_id = 01;
+		int pad_mode = 01;
+		int mgfHash = NULL;
+		int OAEP_parm_len = NULL;
+		UCHAR *OAEP_parm = NULL;
+		int pssRule = NULL;
+		int trailerField = NULL;
+		int index = 99;
+		int authenDataLen = 0;
+		UCHAR * authenData = NULL;
+		///////////////////////////////////
+		ret = rsapubverify(comid, msghdlen, msghd, hash_id, sign_id,
+			pad_mode,
+			mgfHash,
+			OAEP_parm_len,
+			OAEP_parm,
+			pssRule,
+			trailerField,
+			dwSigLen,
+			(UCHAR*)pbSignature,
+			strlen((CHAR*)dwFlags),
+			(UCHAR*)dwFlags,
+			index,
+			NULL,
+			phzKey->puKey,
+			phzKey->puLen,
+			authenDataLen,
+			authenData
+		);
+		if (0 != ret) {
+			VarLogEntry(" CPVerifySignatureImpl", "rsapubverify error", ret, 0);
+			return ret;
+		}
+	}
+	__finally
+	{
+		CloseHsmDevice(comid);
+	}
+	////////////////////////////////
+	return ret;
+}
+
+int CPHashSessionKeyImpl(HCRYPTPROV hProv, HCRYPTHASH hHash, HCRYPTKEY hKey, DWORD dwFlags) {
+	int ret = 0;
+	int timeout = 0;
+	int cmdid;
+	char * ip = getHsmIP();
+	int port = getHsmPORT();
+	PHHASH_Z phzHash = (PHHASH_Z)hHash;
+	int hash_id = atoi((CHAR*)phzHash->ALGID);
+	PHKEY_Z phzKey = (PHKEY_Z)hKey;
+
+	//容器是否初始化
+	ret = initJudgment(hProv);
+	if (ret != 0) {
+		return ret;
+	}
+	//
+	if (NULL == phzHash) {
+		VarLogEntry(" CPHashSessionKeyImpl", "hHash NULL", -1, 0);
+		return -1;
+	}
+	//
+	if (NULL == phzKey) {
+		VarLogEntry(" CPHashSessionKeyImpl", "hKey NULL", -1, 0);
+		return -1;
+	}
+	//
+	cmdid = InitHsmDevice(ip, port, timeout);
+	if (cmdid<0) {
+		VarLogEntry(" CPHashSessionKeyImpl", "InitHsmDevice error", cmdid, 0);
+		return (-1);
+	}
+	//
+	ret = genhash(cmdid, 0, NULL, hash_id, phzKey->len, phzKey->key, phzHash->keyHashValue);
+	if (ret != 0) {
+		CloseHsmDevice(cmdid);
+		VarLogEntry(" CPHashSessionKeyImpl", "genhash error", ret, 0);
+		return (ret);
+	}
+	//
+	CloseHsmDevice(cmdid);
 	return ret;
 }
 

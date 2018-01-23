@@ -3,7 +3,7 @@ int initCSP(void);
 
 int testSjl22(void);
 
-int genrsakeyImpl(DWORD dwFlags, PHPKEY_Z pKey, int comid);
+int genrsakeyImpl(HCRYPTPROV hProv,DWORD dwFlags, PHPKEY_Z pKey, int comid);
 
 int exportrsadeskeyImpl(HCRYPTKEY hKey, HCRYPTKEY hPubKey, UCHAR * data, int * data_length);
 
