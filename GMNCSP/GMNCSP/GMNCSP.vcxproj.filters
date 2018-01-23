@@ -33,9 +33,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="csp.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -130,9 +127,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source.def" />
     <None Include="GMNCSP.CONFIG">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="Source.def">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
 </Project>
