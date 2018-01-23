@@ -9,34 +9,33 @@ CSPINTERFACE BOOL WINAPI CPAcquireContext(
 	__in CHAR *pszContainer,
 	__in DWORD dwFlags,
 	__in PVTableProvStruc pVTable
-	)
+)
 {
 #ifdef DEBUG
 	puts("CPAcquireContext");
 #endif
-	int rv;
-
-	//初始化线程同步
-	if ((rv = CSP_InitMutex()) != 0){
-		return FALSE;
-	}
-	//线程同步
-	CSP_LockMutex();
+	int ret;
 	
-	//////////////////////////
-	rv = CPAcquireContextImpl();
-	if (rv != 0) {
-		CSP_UnlockMutex();
+	//初始化线程同步
+	if ((ret = CSP_InitMutex()) != 0) {
 		return FALSE;
 	}
-	//////////////////////////
+	__try {
+		//线程同步
+		CSP_LockMutex();
+		LogEntry("CPAcquireContext", "start", 0, 10);
 
-	//返回密钥容器句柄
-	*phProv= getMutexFlag();
-	//日志
-	LogEntry("CPAcquireContext", "SUCCESS", 0, 10);
-	//线程同步 结束
-	CSP_UnlockMutex();
+		ret = CPAcquireContextImpl(phProv,pszContainer,dwFlags,pVTable);
+		if (ret != 0) {
+			return FALSE;
+		}
+	}
+	__finally
+	{
+		//线程同步 结束
+		LogEntry("CPAcquireContext", "end", 0, 10);
+		CSP_UnlockMutex();
+	}
 	return TRUE;
 }
 
@@ -58,7 +57,7 @@ CSPINTERFACE BOOL WINAPI CPGetProvParam(
 		CSP_LockMutex();
 		LogEntry("CPGetProvParam", "start", 0, 10);
 		//
-		ret = CPGetProvParamImpl(hProv,dwParam,dwFlags,pbData, pdwDataLen);
+		ret = CPGetProvParamImpl( hProv,dwParam,pbData,pdwDataLen,dwFlags);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -82,10 +81,10 @@ CSPINTERFACE BOOL WINAPI CPReleaseContext(
 #endif
 	CSP_LockMutex();
 	LogEntry("CPReleaseContext", "start", 0, 10);
+	LogEntry("CPReleaseContext", "end", 0, 10);
 	CSP_UnlockMutex();
 	//结束线程同步
-	CSP_Destroy_Mutex();
-	LogEntry("CPReleaseContext", "end", 0, 10);
+	CPReleaseContextImpl(hProv, dwFlags);
 	return TRUE;
 }
 
@@ -139,7 +138,7 @@ CSPINTERFACE BOOL WINAPI CPDeriveKey(
 		LogEntry("CPDeriveKey", "start", 0, 10);
 
 		//派生密钥
-		ret = CPDeriveKeyImpl(hProv,Algid,hBaseData, phKey);
+		ret = CPDeriveKeyImpl(hProv, Algid, hBaseData, dwFlags, phKey);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -164,20 +163,19 @@ CSPINTERFACE BOOL WINAPI CPDestroyKey(
 #ifdef DEBUG
 	puts("CPDestroyKey");
 #endif
-	CSP_LockMutex();
-	LogEntry("CPDestroyKey", "start", 0, 10);
+	__try {
+		CSP_LockMutex();
+		LogEntry("CPDestroyKey", "start", 0, 10);
 	
-	//容器是否初始化
-	ret = initJudgment(hProv);
-	if (ret != 0) {
-		return FALSE;
+		ret = CPDestroyKeyImpl( hProv,  hKey);
+		if (ret != 0) {
+			return FALSE;
+		}
 	}
-	if (NULL != hKey) {
-		free((void*)hKey);
+	__finally {
+		LogEntry("CPDestroyKey", "end", 0, 10);
+		CSP_UnlockMutex();
 	}
-	
-	LogEntry("CPDestroyKey", "end", 0, 10);
-	CSP_UnlockMutex();
 	return TRUE;
 }
 
@@ -203,7 +201,7 @@ CSPINTERFACE BOOL WINAPI CPExportKey(
 		LogEntry("CPExportKey", "start", 0, 10);
 
 		//RSA导出DES密钥
-		ret = CPExportKeyImpl(hProv,hKey, hPubKey,pbData,pdwDataLen);
+		ret = CPExportKeyImpl(hProv, hKey, hPubKey, dwBlobType, dwFlags, pbData, pdwDataLen);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -297,7 +295,7 @@ CSPINTERFACE BOOL WINAPI CPGetKeyParam(
 		LogEntry("CPGetKeyParam", "start", 0, 10);
 	
 		///////
-		ret = CPGetKeyParamImpl(hProv,hKey,dwParam,pbData,pcbDataLen);
+		ret = CPGetKeyParamImpl( hProv,hKey,dwParam,pbData,pcbDataLen,dwFlags);
 		if (ret != 0) {
 			return FALSE;
 		}
@@ -523,20 +521,20 @@ CSPINTERFACE BOOL WINAPI CPDestroyHash(
 #ifdef DEBUG
 	puts("CPDestroyHash");
 #endif
-	LogEntry("CPDestroyHash", "start", 0, 10);
-	CSP_LockMutex();
-	//容器是否初始化
-	ret = initJudgment(hProv);
-	if (ret != 0) {
-		return FALSE;
+	__try {
+		LogEntry("CPDestroyHash", "start", 0, 10);
+		CSP_LockMutex();
+		//容器是否初始化
+		ret = CPDestroyHashImpl( hProv, hHash);
+		if (ret != 0) {
+			return FALSE;
+		}
+	}
+	__finally {
+		CSP_UnlockMutex();
+		LogEntry("CPDestroyHash", "end", 0, 10);
 	}
 
-	if (NULL != hHash) {
-		free((void *)hHash);
-	}
-	
-	CSP_UnlockMutex();
-	LogEntry("CPDestroyHash", "end", 0, 10);
 	return TRUE;
 }
 
@@ -558,21 +556,11 @@ CSPINTERFACE BOOL WINAPI CPDuplicateHash(
 	__try {
 		CSP_LockMutex();
 		LogEntry("CPDuplicateHash", "start", 0, 10);
-	
-		//容器是否初始化
-		ret = initJudgment(hProv);
+		
+		ret = CPDuplicateHashImpl( hProv,  hHash, pdwReserved,  dwFlags, phHash);
 		if (ret != 0) {
 			return FALSE;
 		}
-
-		PHHASH_Z phzHash;
-		phzHash = (PHHASH_Z)malloc(sizeof(HHASH_Z));
-		if (NULL == phzHash) {
-			LogEntry("CPDuplicateHash", "Memory error", -1, 0);
-			return FALSE;
-		}
-		memcpy(phzHash,(PHHASH_Z)hHash,sizeof(HHASH_Z));
-		*phHash =(HCRYPTHASH)phzHash;
 	}
 	__finally {
 		LogEntry("CPDuplicateHash", "end", 0, 10);
@@ -632,11 +620,7 @@ CSPINTERFACE BOOL WINAPI CPHashData(
 	__try {
 		CSP_LockMutex();
 		LogEntry("CPHashData", "start", 0, 10);
-		//容器是否初始化
-		ret = initJudgment(hProv);
-		if (ret != 0) {
-			return FALSE;
-		}
+		
 		////
 		ret = CPHashDataImpl( hProv,  hHash, pbData,  dwDataLen,  dwFlags);
 		if (ret != 0) {
@@ -669,11 +653,7 @@ CSPINTERFACE BOOL WINAPI CPSetHashParam(
 	__try {
 		CSP_LockMutex();
 		LogEntry("CPSetHashParam", "start", 0, 10);
-		//容器是否初始化
-		ret = initJudgment(hProv);
-		if (ret != 0) {
-			return FALSE;
-		}
+		
 		////
 		ret = CPSetHashParamImpl( hProv,  hHash,  dwParam, pbData, dwFlags);
 		if (ret != 0) {
@@ -707,11 +687,7 @@ CSPINTERFACE BOOL WINAPI CPSignHash(
 	__try {
 		CSP_LockMutex();
 		LogEntry("CPSignHash", "start", 0, 10);
-		//容器是否初始化
-		ret = initJudgment(hProv);
-		if (ret != 0) {
-			return FALSE;
-		}
+		
 		//
 		ret = CPSignHashImpl( hProv,  hHash,  dwKeySpec,  sDescription,  dwFlags, pbSignature, pdwSigLen);
 		if (ret != 0) {
@@ -746,11 +722,6 @@ CSPINTERFACE BOOL WINAPI CPVerifySignature(
 		CSP_LockMutex();
 		LogEntry("CPVerifySignature", "start", 0, 10);
 	
-		//容器是否初始化
-		ret = initJudgment(hProv);
-		if (ret != 0) {
-			return FALSE;
-		}
 		ret = CPVerifySignatureImpl( hProv,  hHash, pbSignature,  dwSigLen,  hPubKey,  sDescription,  dwFlags);
 		if (ret != 0) {
 			return FALSE;
@@ -766,7 +737,7 @@ CSPINTERFACE BOOL WINAPI CPVerifySignature(
 
 //24 CPDuplicateKey 附加函数	SUCCESS
 CSPINTERFACE BOOL WINAPI CPDuplicateKey(
-	__in HCRYPTPROV hProv,
+	__in HCRYPTPROV hUID,
 	__in HCRYPTKEY hKey,
 	__in DWORD *pdwReserved,
 	__in DWORD dwFlags,
@@ -774,32 +745,17 @@ CSPINTERFACE BOOL WINAPI CPDuplicateKey(
 	)
 {
 	int ret = 0;
-	PHKEY_Z phzKey,dupKey;
-	int keyLen = sizeof(HKEY_Z);
 #ifdef DEBUG
 	puts("CPDuplicateKey");
 #endif
 	__try {
 		CSP_LockMutex();
 		LogEntry("CPDuplicateKey", "start", 0, 10);
-		//容器是否初始化
-		ret = initJudgment(hProv);
+	
+		ret = CPDuplicateKeyImpl( hUID,  hKey,  pdwReserved,  dwFlags,  phKey);
 		if (ret != 0) {
 			return FALSE;
 		}
-		//密钥对象
-		phzKey = (PHKEY_Z)hKey;
-		if (NULL == phzKey) {
-			VarLogEntry(" CPDuplicateKey", "hKey error", -1, 0);
-			return FALSE;
-		}
-		dupKey = (PHKEY_Z)malloc(keyLen);
-		if (NULL == dupKey) {
-			VarLogEntry(" CPDuplicateKey", "Memory error", -1, 0);
-			return FALSE;
-		}
-		memcpy(dupKey,phzKey, keyLen);
-		*phKey = (HCRYPTKEY)dupKey;
 	}
 	__finally {
 		LogEntry("CPDuplicateKey", "end", 0, 10);
@@ -826,11 +782,7 @@ CSPINTERFACE BOOL WINAPI CPHashSessionKey(
 	__try {
 		CSP_LockMutex();
 		LogEntry("CPHashSessionKey", "start", 0, 10);
-		//容器是否初始化
-		ret = initJudgment(hProv);
-		if (ret != 0) {
-			return FALSE;
-		}
+		
 		/////
 		ret = CPHashSessionKeyImpl( hProv,  hHash,  hKey,  dwFlags);
 		if (ret != 0) {

@@ -154,6 +154,7 @@ int comTcpCliSocketOpen(char *tcpaddr, int port, int timeout)
 
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = inet_addr(tcpaddr);
+	//serv_addr.sin_addr.S_un.S_addr = inet_addr(tcpaddr);
 	serv_addr.sin_port = htons((unsigned short)port);
 
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)

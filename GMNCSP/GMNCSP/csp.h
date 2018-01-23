@@ -22,9 +22,9 @@
 //20 CPHashData			SUCCESS
 //21 CPSetHashParam		SUCCESS
 //22 CPSignHash			SUCCESS	
-//23 CPVerifySignature	ACTION
-//24 CPDuplicateKey						附加函数
-//25 CPHashSessionKey	ACTION
+//23 CPVerifySignature	SUCCESS
+//24 CPDuplicateKey		SUCCESS 		附加函数
+//25 CPHashSessionKey	SUCCESS
 */
 
 #ifndef CSP_SPI

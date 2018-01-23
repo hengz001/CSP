@@ -636,12 +636,10 @@ int rsapubverifyImpl() {
 	////////////////////////////////
 }
 
-int generateKeyImpl(int comid, PHKEY_Z  hKey) {
+int generateKeyImpl(int comid, PHKEY_Z  hKey,int algo) {
 	char key[255];
 	char checkValue[6 + 1];
-	int algo;
 	int genMod;
-	algo = 0;
 	genMod = 0;
 	int ret = 0;
 
@@ -672,3 +670,118 @@ int initJudgment(HCRYPTPROV hProv) {
 	}
 	return 0;
 }
+
+int getKeyParamImpl(CHAR * data, LPBYTE pbData, LPDWORD pcbDataLen) {
+	int ret = 0;
+
+	*pcbDataLen = strlen(data);
+	if (pcbDataLen <= 0) {
+		return  -1;
+	}
+
+	if (NULL != pbData) {
+		memcpy(pbData, data, *pcbDataLen);
+	}
+
+	return ret;
+}
+
+int getKeyParam(DWORD dwParam, HKEY_Z * tmpKey, LPBYTE pbData, LPDWORD pcbDataLen) {
+	int ret = 0;
+
+	/*
+	KP_ALGID 表示返回密钥的算法标识
+	KP_BLOCKLEN表示返回密钥的算法数据块长度
+	KP_KEYLEN表示返回密钥的长度
+	KP_SALT 表示返回密钥的盐值
+	KP_PERMISSIONS 表示返回密钥的访问权限
+	KP_IV表示返回算法的初始向量
+	KP_PADDING 表示返回算法的填充方式
+	KP_MODE 表示返回算法的加密模式
+	KP_MODE_BITS表示返回算法的加密模式的反馈位数
+	KP_EFFECTIVE_KEYLEN 表示返回密钥的有效长度
+	*/
+	/////////////////////////////////////////////
+	switch (dwParam)
+	{
+	case KP_ALGID:
+		ret = getKeyParamImpl((CHAR*)tmpKey->ALGID,  pbData,  pcbDataLen);
+		break;
+	case KP_BLOCKLEN:
+		ret = getKeyParamImpl((CHAR*)tmpKey->BLOCKLEN, pbData, pcbDataLen);
+		break;
+	case KP_KEYLEN:
+		ret = getKeyParamImpl((CHAR*)tmpKey->KEYLEN, pbData, pcbDataLen);
+		break;
+	case KP_SALT:
+		ret = getKeyParamImpl((CHAR*)tmpKey->SALT, pbData, pcbDataLen);
+		break;
+	case KP_PERMISSIONS:
+		ret = getKeyParamImpl((CHAR*)tmpKey->PERMISSIONS, pbData, pcbDataLen);
+		break;
+	case KP_IV:
+		ret = getKeyParamImpl((CHAR*)tmpKey->IV, pbData, pcbDataLen);
+		break;
+	case KP_PADDING:
+		ret = getKeyParamImpl((CHAR*)tmpKey->PADDING, pbData, pcbDataLen);
+		break;
+	case KP_MODE:
+		ret = getKeyParamImpl((CHAR*)tmpKey->MODE, pbData, pcbDataLen);
+		break;
+	case KP_MODE_BITS:
+		ret = getKeyParamImpl((CHAR*)tmpKey->MODE_BITS, pbData, pcbDataLen);
+		break;
+	case KP_EFFECTIVE_KEYLEN:
+		ret = getKeyParamImpl((CHAR*)tmpKey->EFFECTIVE_KEYLEN, pbData, pcbDataLen);
+		break;
+	default:
+		VarLogEntry(" CPGetKeyParam", "dwParam error", dwParam, 0);
+		return -1;
+	}
+
+	if (0 != ret ) {
+		VarLogEntry(" CPGetKeyParam", "dwParam Empty error", dwParam, 0);
+	}
+	return ret;
+}
+
+int getHashParam(DWORD dwParam, PHHASH_Z phzHash , LPBYTE pbData, LPDWORD pdwDataLen) {
+	int ret = 0;
+	/*
+	HP_ALGID
+	HP_HASHVAL
+	HP_HASHSIZE
+	HP_HMAC_INFO
+	HP_TLS1PRF_LABEL
+	HP_TLS1PRF_SEED
+	*/
+	switch (dwParam)
+	{
+	case HP_ALGID:
+		ret = getKeyParamImpl((CHAR*)phzHash->ALGID, pbData, pdwDataLen);
+		break;
+	case HP_HASHVAL:
+		ret = getKeyParamImpl((CHAR*)phzHash->HASHVAL, pbData, pdwDataLen);
+		break;
+	case HP_HASHSIZE:
+		ret = getKeyParamImpl((CHAR*)phzHash->HASHSIZE, pbData, pdwDataLen);
+		break;
+	case HP_HMAC_INFO:
+		ret = getKeyParamImpl((CHAR*)phzHash->HMAC_INFO, pbData, pdwDataLen);
+		break;
+	case HP_TLS1PRF_LABEL:
+		ret = getKeyParamImpl((CHAR*)phzHash->TLS1PRF_LABEL, pbData, pdwDataLen);
+		break;
+	case HP_TLS1PRF_SEED:
+		ret = getKeyParamImpl((CHAR*)phzHash->TLS1PRF_SEED, pbData, pdwDataLen);
+		break;
+	default:
+		VarLogEntry(" CPGetHashParamImpl", "dwParam error", dwParam, 0);
+		return (-1);
+	}
+	if (0 != ret) {
+		VarLogEntry(" getHashParam", "dwParam Empty error", dwParam, 0);
+	}
+	return ret;
+}
+

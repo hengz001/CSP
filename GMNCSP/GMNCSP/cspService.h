@@ -17,10 +17,12 @@ int rsaprisignImpl();
 
 int rsapubverifyImpl();
 
-int generateKeyImpl(int comid, PHKEY_Z  hKey);
+int generateKeyImpl(int comid, PHKEY_Z  hKey,int algo);
 
 int initJudgment(HCRYPTPROV hProv);
 
+int getKeyParam(DWORD dwParam, HKEY_Z * tmpKey, LPBYTE pbData, LPDWORD pcbDataLen);
 
+int getKeyParamImpl(CHAR * data, LPBYTE pbData, LPDWORD pcbDataLen);
 
-
+int getHashParam(DWORD dwParam, PHHASH_Z phzHash, LPBYTE pbData, LPDWORD pdwDataLen);
