@@ -1356,14 +1356,13 @@ int rsapubkeyoper(
  // 		p += len;
 
 
-		sprintf((char *)p, "%04d", public_key_len);
+		//MAC
+		memset(p, 0x00, 4);
 		p += 4;
-
+	
 		/* Public key */
 		memcpy(p, public_key, public_key_len);
 		p += public_key_len;
-
-
 	}
 
 
@@ -1377,7 +1376,6 @@ int rsapubkeyoper(
 	/*        //TraceMessage("sjl22.log", rsp, rsplen);
 	*/
 	free(cmd);
-
 	if (ret < 0)
 	{
 		return (ret);

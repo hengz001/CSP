@@ -57,6 +57,12 @@ typedef struct _key {
 	UCHAR key[256];
 	UCHAR cv[64];
 	UCHAR keyType[8];
+
+	int dLen;
+	UCHAR dKey[256];
+	UCHAR dCv[64];
+	UCHAR dKeyType[8];
+
 	int puLen;
 	UCHAR puKey[4096];
 	int pvLen;
@@ -75,6 +81,9 @@ typedef struct _hash {
 	
 	PHKEY_Z phKey;
 	UCHAR keyHashValue[256];
+
+	UCHAR signature[2048];
+	int sigLen;
 }HHASH_Z, * PHHASH_Z;
 
 typedef struct _VTableProvStruc {

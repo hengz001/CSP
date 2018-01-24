@@ -57,14 +57,8 @@
     <ClInclude Include="hsmcmd.h">
       <Filter>头文件\tcp</Filter>
     </ClInclude>
-    <ClInclude Include="cspService.h">
-      <Filter>头文件\service</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>头文件\sys</Filter>
-    </ClInclude>
-    <ClInclude Include="cspServiceImpl.h">
-      <Filter>头文件\service</Filter>
     </ClInclude>
     <ClInclude Include="config.h">
       <Filter>头文件\base</Filter>
@@ -93,6 +87,18 @@
     <ClInclude Include="attribute.h">
       <Filter>头文件\base</Filter>
     </ClInclude>
+    <ClInclude Include="sjl22Service.h">
+      <Filter>头文件\service</Filter>
+    </ClInclude>
+    <ClInclude Include="cspService.h">
+      <Filter>头文件\service</Filter>
+    </ClInclude>
+    <ClInclude Include="source_backup.h">
+      <Filter>头文件\service</Filter>
+    </ClInclude>
+    <ClInclude Include="sjl22ServiceImpl.h">
+      <Filter>头文件\service</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GMNCSP.cpp">
@@ -104,17 +110,11 @@
     <ClCompile Include="hsm_tcpcom.cpp">
       <Filter>源文件\tcp</Filter>
     </ClCompile>
-    <ClCompile Include="cspService.cpp">
-      <Filter>源文件\service</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>源文件\sys</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件\sys</Filter>
-    </ClCompile>
-    <ClCompile Include="cspServiceImpl.cpp">
-      <Filter>源文件\service</Filter>
     </ClCompile>
     <ClCompile Include="regedit.cpp">
       <Filter>源文件\base</Filter>
@@ -136,6 +136,18 @@
     </ClCompile>
     <ClCompile Include="attribute.cpp">
       <Filter>源文件\base</Filter>
+    </ClCompile>
+    <ClCompile Include="sjl22Service.cpp">
+      <Filter>源文件\service</Filter>
+    </ClCompile>
+    <ClCompile Include="cspService.cpp">
+      <Filter>源文件\service</Filter>
+    </ClCompile>
+    <ClCompile Include="source_backup.cpp">
+      <Filter>源文件\service</Filter>
+    </ClCompile>
+    <ClCompile Include="sjl22ServiceImpl.cpp">
+      <Filter>源文件\service</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

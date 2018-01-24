@@ -331,7 +331,7 @@ int HsmCmdRun(int comid, int msghdlen, char * msghd, char *cmd, int cmdlen, char
 
 
 	*(ret_buf + ret_len) = 0;
-
+	printf("RET:%s\n",ret_buf+2);
 
 	/*
 	// Response: 2 Bytes Length + N bytes Message Header +

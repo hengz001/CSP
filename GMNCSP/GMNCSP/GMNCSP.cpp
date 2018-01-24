@@ -3,6 +3,10 @@
 
 #include "stdafx.h"
 
+/*
+	多线程   线程同步
+*/
+
 //1 CPAcquireContext		SUCCESS
 CSPINTERFACE BOOL WINAPI CPAcquireContext(
 	__out HCRYPTPROV *phProv,
@@ -14,7 +18,7 @@ CSPINTERFACE BOOL WINAPI CPAcquireContext(
 #ifdef DEBUG
 	puts("CPAcquireContext");
 #endif
-	int ret;
+	int ret = 0;
 	
 	//初始化线程同步
 	if ((ret = CSP_InitMutex()) != 0) {
@@ -51,7 +55,7 @@ CSPINTERFACE BOOL WINAPI CPGetProvParam(
 #ifdef DEBUG
 	puts("CPGetProvParam");
 #endif
-	int ret;
+	int ret = 0;
 
 	__try {
 		CSP_LockMutex();
@@ -191,7 +195,7 @@ CSPINTERFACE BOOL WINAPI CPExportKey(
 	__inout DWORD *pdwDataLen
 	)
 {
-	int ret;
+	int ret = 0;
 
 #ifdef DEBUG
 	puts("CPExportKey");
@@ -222,7 +226,7 @@ CSPINTERFACE BOOL WINAPI CPGenKey(
 	__out HCRYPTKEY *phKey
 	)
 {
-	int ret;
+	int ret = 0;
 #ifdef DEBUG
 	puts("CPGenKey");
 #endif
@@ -251,7 +255,7 @@ CSPINTERFACE BOOL WINAPI CPGenRandom(
 	__inout BYTE *pbBuffer
 	)
 {
-	int ret;
+	int ret = 0;
 
 #ifdef DEBUG
 	puts("CPGenRandom");
@@ -284,7 +288,7 @@ CSPINTERFACE BOOL WINAPI CPGetKeyParam(
 	__in DWORD dwFlags
 	)
 {
-	int ret;
+	int ret = 0;
 
 #ifdef DEBUG
 	puts("CPGetKeyParam");
@@ -350,7 +354,7 @@ CSPINTERFACE BOOL WINAPI CPImportKey(
 	__out HCRYPTKEY *phKey
 	)
 {
-	int ret;
+	int ret = 0;
 
 #ifdef DEBUG
 	puts("CPImportKey");
@@ -384,7 +388,7 @@ CSPINTERFACE BOOL WINAPI CPSetKeyParam(
 	__in DWORD dwFlags
 	)
 {
-	int ret;
+	int ret = 0;
 
 #ifdef DEBUG
 	puts("CPSetKeyParam");

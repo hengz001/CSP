@@ -1,47 +1,80 @@
 
-int initCSP(void);
+#ifndef __CSP_SERVICE_IMPL__
+#define __CSP_SERVICE_IMPL__
 
-int testSjl22(void);
+//1 CPAcquireContext
+int cpAcquireContextImpl(HCRYPTPROV *phProv,CHAR *pszContainer,DWORD dwFlags,PVTableProvStruc pVTable);
 
-int genrsakeyImpl(HCRYPTPROV hProv,DWORD dwFlags, PHPKEY_Z pKey, int comid, int Algid);
+//2 cpGetProvParam
+int   cpGetProvParamImpl(HCRYPTPROV hProv,DWORD dwParam,BYTE *pbData,DWORD *pdwDataLen,DWORD dwFlags);
 
-int exportrsadeskeyImpl(HCRYPTKEY hKey, HCRYPTKEY hPubKey, UCHAR * data, int * data_length);
+//3 cpReleaseContext
+int   cpReleaseContextImpl(HCRYPTPROV hProv,DWORD dwFlags);
 
-int importrsadeskeyImpl(UCHAR * data, int data_length, UCHAR * private_key, int  private_key_len, UCHAR * wkLmk, int * keylen, UCHAR * cv);
+//4 cpSetProvParam
+int   cpSetProvParamImpl(HCRYPTPROV hProv,DWORD dwParam,BYTE *pbData,DWORD dwFlags);
 
-int encryptDecryptImpl();
+//5 cpDeriveKey
+int   cpDeriveKeyImpl(HCRYPTPROV hProv,ALG_ID Algid,HCRYPTHASH hBaseData,DWORD dwFlags,HCRYPTKEY *phKey);
 
-int genhashImpl();
+//6 cpDestroyKey
+int   cpDestroyKeyImpl(HCRYPTPROV hProv,HCRYPTKEY hKey);
 
-int rsaprisignImpl();
+//7 cpExportKey
+int   cpExportKeyImpl(HCRYPTPROV hProv,HCRYPTKEY hKey,HCRYPTKEY hPubKey,DWORD dwBlobType,DWORD dwFlags,BYTE *pbData,DWORD *pdwDataLen);
 
-int rsapubverifyImpl();
+//8 cpGenKey
+int   cpGenKeyImpl(HCRYPTPROV hProv,ALG_ID Algid,DWORD dwFlags,HCRYPTKEY *phKey);
 
-int generateKeyImpl(int comid, PHKEY_Z  hKey,int algo);
+//9 cpGenRandom
+int   cpGenRandomImpl(HCRYPTPROV hProv,DWORD dwLen,BYTE *pbBuffer);
 
-int initJudgment(HCRYPTPROV hProv);
+//10 cpGetKeyParam
+int   cpGetKeyParamImpl(HCRYPTPROV hProv,HCRYPTKEY hKey,DWORD dwParam,LPBYTE pbData,LPDWORD pcbDataLen,DWORD dwFlags);
 
-int getKeyParam(DWORD dwParam, HKEY_Z * tmpKey, LPBYTE pbData, LPDWORD pcbDataLen);
+//11 cpGetUserKey
+int   cpGetUserKeyImpl(HCRYPTPROV hProv,DWORD dwKeySpec,HCRYPTKEY *phUserKey);
 
-int getKeyParamImpl(CHAR * data, LPBYTE pbData, LPDWORD pcbDataLen);
+//12 cpImportKey
+int   cpImportKeyImpl(HCRYPTPROV hProv,const BYTE *pbData,DWORD dwDataLen,HCRYPTKEY hPubKey,DWORD dwFlags,HCRYPTKEY *phKey);
 
-int getHashParam(DWORD dwParam, PHHASH_Z phzHash, LPBYTE pbData, LPDWORD pdwDataLen);
+//13 cpSetKeyParam
+int   cpSetKeyParamImpl(HCRYPTPROV hProv,HCRYPTKEY hKey,DWORD dwParam,BYTE *pbData,DWORD dwFlags);
 
-int genSm2Key(PHKEY_Z hKey, int comid, int Algid);
+//14 cpDecrypt
+int   cpDecryptImpl(HCRYPTPROV hProv,HCRYPTKEY hKey,HCRYPTHASH hHash,BOOL Final,DWORD dwFlags,BYTE *pbData,DWORD *pdwDataLen);
 
-int decryptDES(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen);
+//15 cpEncrypt
+int   cpEncryptImpl(HCRYPTPROV hProv,HCRYPTKEY hKey,HCRYPTHASH hHash,BOOL Final,DWORD dwFlags,BYTE *pbData,DWORD *pdwDataLen,DWORD dwBufLen);
 
-int encryptDES(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen);
+//16 cpCreateHash
+int   cpCreateHashImpl(HCRYPTPROV hProv,ALG_ID Algid,HCRYPTKEY hKey,DWORD dwFlags,HCRYPTHASH *phHash);
 
-int decryptRSA(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen);
+//17 cpDestroyHash
+int   cpDestroyHashImpl(HCRYPTPROV hProv,HCRYPTHASH hHash);
 
-int encryptRSA(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen);
+//18 cpDuplicateHash 附加函数
+int   cpDuplicateHashImpl(HCRYPTPROV hProv,HCRYPTHASH hHash,DWORD *pdwReserved,DWORD dwFlags,HCRYPTHASH *phHash);
 
-int decryptSM2(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen);
+//19 cpGetHashParam
+int   cpGetHashParamImpl(HCRYPTPROV hProv,HCRYPTHASH hHash,DWORD dwParam,BYTE *pbData,DWORD *pdwDataLen,DWORD dwFlags);
 
-int encryptSM2(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen);
+//20 cpHashData
+int   cpHashDataImpl(HCRYPTPROV hProv,HCRYPTHASH hHash,const BYTE *pbData,DWORD dwDataLen,DWORD dwFlags);
 
-int decryptAlgo(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen);
+//21 cpSetHashParam
+int   cpSetHashParamImpl(HCRYPTPROV hProv,HCRYPTHASH hHash,DWORD dwParam,BYTE *pbData,DWORD dwFlags);
 
-int encryptAlgo(int comid, PHKEY_Z phKey, BYTE *pbData, DWORD *pdwDataLen);
+//22 cpSignHash
+int   cpSignHashImpl(HCRYPTPROV hProv,HCRYPTHASH hHash,DWORD dwKeySpec,LPCWSTR sDescription,DWORD dwFlags,BYTE *pbSignature,DWORD *pdwSigLen);
 
+//23 cpVerifySignature
+int   cpVerifySignatureImpl(HCRYPTPROV hProv,HCRYPTHASH hHash,const BYTE *pbSignature,DWORD dwSigLen,HCRYPTKEY hPubKey,LPCWSTR sDescription,DWORD dwFlags);
+
+//24 cpDuplicateKey 附加函数
+int   cpDuplicateKeyImpl(HCRYPTPROV hUID,HCRYPTKEY hKey,DWORD *pdwReserved,DWORD dwFlags,HCRYPTKEY *phKey);
+
+//25 cpHashSessionKey
+int   cpHashSessionKeyImpl(HCRYPTPROV hProv,HCRYPTHASH hHash,HCRYPTKEY hKey,DWORD dwFlags);
+
+#endif
