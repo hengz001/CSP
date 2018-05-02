@@ -1,0 +1,243 @@
+#Author		hengz
+#Data 		2018-04-17 11:09:00
+
+INC = $(PWD)/inc
+SRC = $(PWD)/src
+OBJ = $(PWD)/obj
+BIN = $(PWD)/bin
+LIB = $(PWD)/lib
+KSTORE = $(PWD)/kstore
+IBM = $(PWD)/ibm
+IC = $(PWD)/ic
+
+CFLAGS = -c -I $(INC) -Wall -Wstrict-prototypes -O3 
+CC	= gcc -g -O0
+
+#MFLAGS = -L$(LIB) -lracal
+
+#OBJS
+#LIBOBJS = $(OBJ)/mgrIcCard.o\
+		$(OBJ)/mgrSvr.o
+
+#ALL
+#all:	lib gmn
+all:	gmn gmnmon gmntcp
+
+strip:
+	strip $(BIN)/*
+	
+clean:
+	rm -fr $(BIN)/*
+	rm -fr $(OBJ)/*
+
+#lib: racal.a
+
+#LIB
+#racal.a: $(LIBOBJS)
+#	ar rv $(LIB)/libracal.a $(LIBOBJS)	
+
+#BIN
+gmn:	$(OBJ)/mgrSvr.o	\
+		$(OBJ)/mgrIcCard.o \
+		$(OBJ)/secDaemon.o \
+		$(OBJ)/rclShm.o \
+		$(OBJ)/rclConfig.o \
+		$(OBJ)/rclKeyStore.o \
+		$(OBJ)/mgrProcess.o \
+		$(OBJ)/mgrOpenPort.o \
+		$(OBJ)/mgrCmd.o \
+		$(OBJ)/v24Utils.o \
+		$(OBJ)/comAsync.o \
+		$(OBJ)/secTools.o \
+		$(OBJ)/icCpuCard.o \
+		$(OBJ)/hstDataCard.o \
+		$(OBJ)/ic_head.o \
+		$(OBJ)/mwcpu.o \
+		$(OBJ)/gmnKstoreNvram.o \
+		$(OBJ)/gmnKstoreLpsram.o \
+		$(OBJ)/rclUtils.o \
+		$(OBJ)/secParity.o  \
+		$(OBJ)/rclPBOC.o
+	$(CC) -o $(BIN)/gmn $(OBJ)/mgrSvr.o	\
+		$(OBJ)/mgrIcCard.o \
+		$(OBJ)/secDaemon.o \
+		$(OBJ)/rclShm.o \
+		$(OBJ)/rclConfig.o \
+		$(OBJ)/rclKeyStore.o \
+		$(OBJ)/mgrProcess.o \
+		$(OBJ)/mgrOpenPort.o \
+		$(OBJ)/mgrCmd.o \
+		$(OBJ)/v24Utils.o \
+		$(OBJ)/comAsync.o \
+		$(OBJ)/secTools.o \
+		$(OBJ)/icCpuCard.o \
+		$(OBJ)/hstDataCard.o \
+		$(OBJ)/ic_head.o \
+		$(OBJ)/mwcpu.o \
+		$(OBJ)/gmnKstoreNvram.o \
+		$(OBJ)/gmnKstoreLpsram.o \
+		$(OBJ)/rclUtils.o \
+		$(OBJ)/secParity.o \
+		$(OBJ)/rclPBOC.o
+#	$(MFLAGS) 
+
+gmnmon: $(OBJ)/monSvr.o \
+		$(OBJ)/secDaemon.o \
+		$(OBJ)/rclShm.o
+	$(CC) -o $(BIN)/gmnmon $(OBJ)/monSvr.o \
+		$(OBJ)/secDaemon.o \
+		$(OBJ)/rclShm.o
+	
+gmntcp:	$(OBJ)/tcpSvr.o \
+		$(OBJ)/secDaemon.o \
+		$(OBJ)/rclShm.o \
+		$(OBJ)/rclConfig.o \
+		$(OBJ)/secTools.o \
+		$(OBJ)/tcpNetCfg.o \
+		$(OBJ)/comSock.o \
+		$(OBJ)/rclUtils.o \
+		$(OBJ)/tcpCmd.o \
+		$(OBJ)/hstTrailer.o \
+		$(OBJ)/AsciiEbcdic.o \
+		$(OBJ)/IBM1388decode.o \
+		$(OBJ)/hstMisc.o \
+		$(OBJ)/hstErrors.o \
+		$(OBJ)/hstCmd.o \
+		$(OBJ)/rclPrint.o \
+		$(OBJ)/secParity.o \
+		$(OBJ)/rclPBOC.o \
+		$(OBJ)/gmnKstoreNvram.o \
+		$(OBJ)/gmnKstoreLpsram.o \
+		-lpthread
+	$(CC) -o $(BIN)/gmntcp $(OBJ)/tcpSvr.o \
+		$(OBJ)/secDaemon.o \
+		$(OBJ)/rclShm.o \
+		$(OBJ)/rclConfig.o \
+		$(OBJ)/secTools.o \
+		$(OBJ)/tcpNetCfg.o \
+		$(OBJ)/comSock.o \
+		$(OBJ)/rclUtils.o \
+		$(OBJ)/tcpCmd.o \
+		$(OBJ)/hstTrailer.o \
+		$(OBJ)/AsciiEbcdic.o \
+		$(OBJ)/IBM1388decode.o \
+		$(OBJ)/hstMisc.o \
+		$(OBJ)/hstErrors.o \
+		$(OBJ)/hstCmd.o \
+		$(OBJ)/rclPrint.o \
+		$(OBJ)/secParity.o \
+		$(OBJ)/rclPBOC.o \
+		$(OBJ)/gmnKstoreNvram.o \
+		$(OBJ)/gmnKstoreLpsram.o \
+		-lpthread
+	
+#OBJ
+$(OBJ)/mgrSvr.o:	$(SRC)/mgrSvr.c
+	$(CC) $(CFLAGS) $(SRC)/mgrSvr.c -o $@
+	
+$(OBJ)/mgrIcCard.o:	$(SRC)/mgrIcCard.c
+	$(CC) $(CFLAGS) $(SRC)/mgrIcCard.c -o $@
+	
+$(OBJ)/secDaemon.o:	$(SRC)/secDaemon.c
+	$(CC) $(CFLAGS) $(SRC)/secDaemon.c -o $@
+	
+$(OBJ)/rclShm.o:	$(SRC)/rclShm.c
+	$(CC) $(CFLAGS) $(SRC)/rclShm.c -o $@
+	
+$(OBJ)/rclConfig.o:	$(SRC)/rclConfig.c
+	$(CC) $(CFLAGS) $(SRC)/rclConfig.c -o $@	
+	
+$(OBJ)/rclKeyStore.o:	$(SRC)/rclKeyStore.c
+	$(CC) $(CFLAGS) $(SRC)/rclKeyStore.c -o $@	
+	
+$(OBJ)/monSvr.o:	$(KSTORE)/monSvr.c
+	$(CC) $(CFLAGS) $(KSTORE)/monSvr.c -o $@	
+	
+$(OBJ)/mgrProcess.o:	$(SRC)/mgrProcess.c
+	$(CC) $(CFLAGS) $(SRC)/mgrProcess.c -o $@	
+	
+$(OBJ)/mgrOpenPort.o:	$(SRC)/mgrOpenPort.c
+	$(CC) $(CFLAGS) $(SRC)/mgrOpenPort.c -o $@	
+	
+$(OBJ)/mgrCmd.o:	$(SRC)/mgrCmd.c
+	$(CC) $(CFLAGS) $(SRC)/mgrCmd.c -o $@			
+	
+$(OBJ)/v24Utils.o:	$(SRC)/v24Utils.c
+	$(CC) $(CFLAGS) $(SRC)/v24Utils.c -o $@			
+	
+$(OBJ)/comAsync.o:	$(SRC)/comAsync.c
+	$(CC) $(CFLAGS) $(SRC)/comAsync.c -o $@			
+	
+$(OBJ)/secTools.o:	$(SRC)/secTools.c
+	$(CC) $(CFLAGS) $(SRC)/secTools.c -o $@	
+	
+$(OBJ)/tcpSvr.o:	$(SRC)/tcpSvr.c
+	$(CC) $(CFLAGS) $(SRC)/tcpSvr.c -o $@			
+	
+$(OBJ)/tcpNetCfg.o:	$(SRC)/tcpNetCfg.c
+	$(CC) $(CFLAGS) $(SRC)/tcpNetCfg.c -o $@			
+	
+$(OBJ)/comSock.o:	$(SRC)/comSock.c
+	$(CC) $(CFLAGS) $(SRC)/comSock.c -o $@			
+		
+$(OBJ)/rclUtils.o:	$(SRC)/rclUtils.c
+	$(CC) $(CFLAGS) $(SRC)/rclUtils.c -o $@	
+		
+$(OBJ)/tcpCmd.o:	$(SRC)/tcpCmd.c
+	$(CC) $(CFLAGS) $(SRC)/tcpCmd.c -o $@	
+	
+$(OBJ)/hstTrailer.o:	$(SRC)/hstTrailer.c
+	$(CC) $(CFLAGS) $(SRC)/hstTrailer.c -o $@	
+
+$(OBJ)/hstMisc.o:	$(SRC)/hstMisc.c
+	$(CC) $(CFLAGS) $(SRC)/hstMisc.c -o $@	
+
+$(OBJ)/hstErrors.o:	$(SRC)/hstErrors.c
+	$(CC) $(CFLAGS) $(SRC)/hstErrors.c -o $@	
+
+$(OBJ)/hstCmd.o:	$(SRC)/hstCmd.c
+	$(CC) $(CFLAGS) $(SRC)/hstCmd.c -o $@	
+
+$(OBJ)/rclPrint.o:	$(SRC)/rclPrint.c
+	$(CC) $(CFLAGS) $(SRC)/rclPrint.c -o $@	
+
+$(OBJ)/icCpuCard.o:	$(SRC)/icCpuCard.c
+	$(CC) $(CFLAGS) $(SRC)/icCpuCard.c -o $@	
+
+$(OBJ)/hstDataCard.o:	$(SRC)/hstDataCard.c
+	$(CC) $(CFLAGS) $(SRC)/hstDataCard.c -o $@	
+
+$(OBJ)/gmnKstoreNvram.o:	$(SRC)/gmnKstoreNvram.c
+	$(CC) $(CFLAGS) $(SRC)/gmnKstoreNvram.c -o $@	
+
+$(OBJ)/gmnKstoreLpsram.o:	$(SRC)/gmnKstoreLpsram.c
+	$(CC) $(CFLAGS) $(SRC)/gmnKstoreLpsram.c -o $@	
+
+$(OBJ)/secParity.o:	$(SRC)/secParity.c
+	$(CC) $(CFLAGS) $(SRC)/secParity.c -o $@	
+
+$(OBJ)/rclPBOC.o:	$(SRC)/rclPBOC.c
+	$(CC) $(CFLAGS) $(SRC)/rclPBOC.c -o $@	
+
+
+
+#IBM	
+$(OBJ)/AsciiEbcdic.o:	$(IBM)/AsciiEbcdic.c
+	$(CC) $(CFLAGS) $(IBM)/AsciiEbcdic.c -o $@	
+	
+$(OBJ)/IBM1388decode.o:	$(IBM)/IBM1388decode.c
+	$(CC) $(CFLAGS) $(IBM)/IBM1388decode.c -o $@	
+	
+#IC
+
+$(OBJ)/ic_head.o:	$(IC)/ic_head.c
+	$(CC) $(CFLAGS) $(IC)/ic_head.c -o $@	
+
+$(OBJ)/mwcpu.o:	$(IC)/mwcpu.c
+	$(CC) $(CFLAGS) $(IC)/mwcpu.c -o $@	
+
+
+
+	
+	
+	

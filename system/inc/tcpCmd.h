@@ -1,0 +1,2 @@
+
+void hsmCmdHandle(int sockfd);

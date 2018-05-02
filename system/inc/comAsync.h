@@ -1,0 +1,2 @@
+
+int ClearPort(int hsmdev);
