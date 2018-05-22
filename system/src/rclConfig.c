@@ -464,3 +464,9 @@ int HsmGetDevicePort ( void )
 	/* Default TCP port */
 	return phsmShm->hsmcfg.rCh.devport;
 }
+
+/* Check the console port if echo is ON ? */
+int isHsmEchoOn ( void )
+{
+	return phsmShm->hsmcfg.rCs.echo; /* == ECHO_ON; */
+}

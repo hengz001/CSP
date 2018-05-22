@@ -23,6 +23,7 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <time.h>
+#include <stdarg.h>
 
 ///////////////////////////
 #include "gmnTypes.h"
@@ -53,5 +54,8 @@
 #include "gmnCryptoApi.h"
 #include "secPack.h"
 #include "PlxApi.h"
+#include "mgrGemen.h"
+#include "keymgr.h"
+#include "secFormat.h"
 
 #endif

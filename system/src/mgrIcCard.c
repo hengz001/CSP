@@ -93,3 +93,58 @@ int ReadConfigAndSaveTOCard(void) {
 	return reboot(RB_AUTOBOOT);
 }
 
+
+#define	MAX_IC_PIN_RETRY	3
+
+int EnterSmartCardPin(int fd, int icdev, char *pin, int *len, char *reply)
+{
+	int  rc;	/* Internal return value */
+	int  no  = 0;
+	int echo = isHsmEchoOn();
+
+	do {
+		no ++;
+
+		*len = 6;
+
+		rc = enterastring( fd,
+			"输入智能卡密码: ",
+			"Enter PIN: ",
+			pin, len, ANY_CHAR, echo);
+
+		//If entered QUIT key, just return
+		if( rc < 0 )
+		{
+			return (-1);
+		}
+
+		/* GMN04302004Ro */
+		WriteLine(fd,"正在读取智能卡数据...","Reading Smart Card ...");
+
+		if(IcVerifyPIN(icdev, pin, strlen(pin), reply)<0)
+		{
+			WriteLine(fd,
+				"输入密码错.",
+				"PIN REJECTED BY CARD.");
+			dv_beep(icdev, LONG_BEEP);
+		}
+		else
+		{
+			break;
+		}
+
+	} while (no<MAX_IC_PIN_RETRY);
+
+	if(no>=MAX_IC_PIN_RETRY)
+	{
+		WriteLine(fd,
+			"超过密码错误次数.",
+			"EXCEED THE PIN RETRY LIMIT.");
+		dv_beep(icdev, LONG_BEEP);
+		return (-1);
+	}
+
+	return 0;
+
+}
+

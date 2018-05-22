@@ -47,7 +47,9 @@ LIBOBJS = $(OBJ)/mgrIcCard.o \
 		$(OBJ)/secAlgo.o \
 		$(OBJ)/gmnCryptoApi.o \
 		$(OBJ)/secPack.o \
-		$(OBJ)/hstRsaKey.o
+		$(OBJ)/hstRsaKey.o \
+		$(OBJ)/mgrGemen.o \
+		$(OBJ)/secFormat.o
 
 MFLAGS = -L$(LIB) -lzhuheng
 
@@ -187,6 +189,12 @@ $(OBJ)/secPack.o:	$(SRC)/secPack.c
 
 $(OBJ)/hstRsaKey.o:	$(SRC)/hstRsaKey.c
 	$(CC) $(CFLAGS) $(SRC)/hstRsaKey.c -o $@	
+
+$(OBJ)/mgrGemen.o:	$(SRC)/mgrGemen.c
+	$(CC) $(CFLAGS) $(SRC)/mgrGemen.c -o $@	
+
+$(OBJ)/secFormat.o:	$(SRC)/secFormat.c
+	$(CC) $(CFLAGS) $(SRC)/secFormat.c -o $@	
 
 #IBM	
 $(OBJ)/AsciiEbcdic.o:	$(IBM)/AsciiEbcdic.c

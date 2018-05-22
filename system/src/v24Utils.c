@@ -174,3 +174,121 @@ int _ReadLine(int fd, char *buf, int len, int mode) {
 int ReadLine(int fd, char *buf, int len) {
 	return _ReadLine(fd, buf, len, 1);
 }
+
+int ReadPromptMessage(int fd,char *buf)
+{
+	int bytes;
+
+	bytes = getpasswd(fd,NULL,NULL,buf,ECHO_NOECHO);
+	WriteNewLine(fd);
+
+	if(bytes>0)
+	{
+		buf[bytes] = 0;
+		trim_r_space(buf);
+		strupper(buf);
+		return strlen(buf);
+	}
+	else if(bytes == 0){
+		buf[bytes] = 0;
+		return 0;
+	}
+
+	return (-1);
+}
+
+void message(int fd, char *buf, const char *format,...)
+{
+	va_list args;
+
+	va_start(args,format);
+	vsprintf(buf,format,args);
+	WriteNewLine(fd);
+	write(fd,buf,strlen(buf));
+	va_end(args);
+}
+
+/*** Make sure the string is the correct char set ***/
+int ismystring(char *str,int mode)
+{
+	char *p=str;
+	int  isiwanted = 1;
+
+	for(;;)
+	{
+		switch(mode)
+		{
+			case HEX_CHAR:
+				isiwanted=isiwanted&&isxdigit((int)(*p));
+				/***printf("HEX_CHAR![%d]\n",isiwanted);***/
+				break;
+
+			case DEC_CHAR:
+				isiwanted=isiwanted&&isdigit((int)(*p));
+				/***printf("DEC_CHAR![%d]\n",isiwanted);***/
+				break;
+
+			/*** If don't care the character set ***/
+			default:
+				isiwanted=isiwanted&&isascii((int)(*p));
+				/***printf("ANY_CHAR![%d]\n",isiwanted);***/
+				break;
+		}
+
+		p++;
+
+		if(!isiwanted)	break;
+		if(*p==0)	break;
+
+	}
+
+	return (isiwanted);
+}
+
+/*** Get A String from Input Device ***/
+int enterastring(int fd, char *locmsg, char *defmsg, char *key, int *len, int mode, int echo)
+{
+
+	int  first = 1;
+	int  length;
+	int  rc;	/* Internal return value */
+
+	do {
+		if(first)
+		{
+			/*** Enter a triple length DES key ***/
+			rc = getpasswd(fd, locmsg, defmsg, key, echo);
+		}
+		else
+		{
+			rc = getpasswd(fd,"输入非法! 请重新输入: ","Invalid! Enter again: ", key, echo);
+		}
+
+		if(rc<=0) return rc;
+
+		first = 0;
+
+		length = strlen(key);
+
+		if(mode!=ANY_CHAR)
+		{
+			/*** Strip of white spaces in the key string ***/
+			StripOffWhiteSpaces(key, length);
+
+			/*** Calculate the length of the key just entered ***/
+			length = strlen(key);
+
+			/* If the input data length is not the times of 16 */
+			//if(*len==0||*len%16)	*len = ((length+15) / 16 ) * 16;
+			// GMN12222003Ro deleted
+			//strupper(key);
+		}
+
+	} while(!ismystring(key,mode) || (mode!=ANY_CHAR&&length!=*len));
+
+	/* 05262003Ro */
+	*len = length;
+
+	return 0;
+}
+

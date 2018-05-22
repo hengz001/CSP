@@ -1,7 +1,7 @@
 #include "tcpSvr.h"
 //   ON/OFF 0/1
-//int debug = 0;
-int debug = 1;
+int debug = 0;
+//int debug = 1;
 
 int  goldsockfd;
 int  gsockfd[MAX_TCP_CONNECT_NO];

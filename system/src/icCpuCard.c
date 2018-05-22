@@ -311,6 +311,24 @@ int icVerifyPIN(int icdev, char *pin, int len, char *reply) {
 	return 0;
 }
 
+int IcVerifyPIN(int icdev, char *pin, int len, char *reply)
+{
+
+	/* Select MF */
+	if(IcSelectFile(icdev, "0000", "3F00", 2, reply)<0)
+	{
+		return (-1);
+	}
+
+	/* Select DF */
+	if(IcSelectFile(icdev, "0000", "0010", 2, reply)<0)
+	{
+		return (-1);
+	}
+
+	return icVerifyPIN( icdev, pin, len, reply);
+}
+
 int IcReadData(int icdev, int offset, char *pin, unsigned char *data, int len,char *reply)
 {
 
@@ -338,6 +356,61 @@ int IcReadData(int icdev, int offset, char *pin, unsigned char *data, int len,ch
 		return (-5);
 	}
 
+	return 0;
+}
+
+int ResetCardDevice(int fd, int icdev)
+{
+	int lang = HsmGetLanguage();
+	char buffer[256];
+	char resp[80];
+
+	if((IcResetDevice(icdev,resp)) < 0)
+	{
+		if(lang){
+			message(fd,buffer,"为插卡, 卡不可识别或卡已损坏.");
+		}else{
+			message(fd,buffer,"UNIDENTIFIED CARD OR CARD IS DANAGED.");
+		}
+		dv_beep(icdev,LONG_BEEP);
+		return (-1);
+	}
+	return (0);
+}
+
+/* Check Management Key from Smart Card */
+int IcCheckMgrKey(int icdev, char *pin, char *passwd, int *len, char *reply)
+{
+//	struct mgrIcCard_t mgrCard;
+//	uchar mdc[16], cv[8];
+//	uchar cmd5[MD5_DIGEST_LENGTH];
+//
+//	if( IcReadData(icdev, 0, pin, (uchar *)&mgrCard, sizeof(struct mgrIcCard_t), reply) < 0 )
+//	{
+//		return (-1);
+//	}
+//
+//	/* Generated the management card check */
+//	mdc_4(mgrCard.passwd, MD5_DIGEST_LENGTH, mdc);
+//
+//	/* The ExORed key encrypt 64 bits '0' */
+//	_CheckValueDKey(mdc, cv);
+//
+//	/* Check the management card validality */
+//	if(memcmp(mgrCard.cv,cv,sizeof(cv)))
+//	{
+//		return (-2);
+//	}
+//
+//	/* Generate the password check value according to MD5 */
+//	MD5((uchar*)passwd, *len, cmd5);
+//
+//	/* If the generated password is not the same with stored on card */
+//	if(memcmp(cmd5, mgrCard.passwd, MD5_DIGEST_LENGTH))
+//	{
+//		return (-3);
+//	}
+//
 	return 0;
 }
 

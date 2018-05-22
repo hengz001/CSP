@@ -1,7 +1,7 @@
 #include "mgrSvr.h"
 
-static int debug = 0;
-//static int debug = 1;
+//static int debug = 0;
+static int debug = 1;
 
 int fd;
 char prompt[32];
@@ -21,8 +21,13 @@ typedef struct {
 	int state;
 } racalFunc_t;
 
-static racalFunc_t hsm_cmd[] = { { "A", AA, 0, 0 }, { "B", AA, 1, 0 }, { "C",
-		AA, 0, 1 }, { "", NULL, 0, 0 } };
+static racalFunc_t hsm_cmd[] = {
+		{ "A", 	AA,		0, 0 },
+		{ "B", 	AA,		1, 0 },
+		{ "C", 	AA,		0, 1 },
+		{ "UP", UP,		0, 0 },
+		{ "", 	NULL,	0, 0 }
+};
 
 int main(int argc, char **argv) {
 	struct rlimit limit;

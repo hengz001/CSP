@@ -58,3 +58,5 @@ int hsmTcpTailerSupported( void );
 int copyFile(char *srcFile, char *destFile);
 
 int HsmGetDevicePort ( void );
+
+int isHsmEchoOn ( void );
