@@ -570,6 +570,20 @@ int rsaView(void)
 	return rc;
 }
 
+int md5View(void)
+{
+	int rc = 0;
+	unsigned char from[] = "zhuheng";
+	int flen = sizeof(from);
+	unsigned char to[255];
+
+	rc = md5(from,flen,to);
+	printf("RC:%d\n",rc);
+	HexDumpBuffer(stdout,to,MD5_DIGEST_LENGTH);
+
+	return rc;
+}
+
 int main(int argc, char **argv)
 {
 	printf("\n hello OPENSSL.\n");
@@ -587,7 +601,9 @@ int main(int argc, char **argv)
 //	aes_ofb_encrypt();
 
 	//RSA
-	rsaView();
+//	rsaView();
 
+	//MD5
+//	md5View();
 	return 0;
 }

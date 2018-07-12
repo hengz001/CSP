@@ -17,5 +17,6 @@
 #include "des.h"
 #include "aes.h"
 #include "rsa.h"
+#include "md5.h"
 
 #endif /* INC_COMMON_H_ */
