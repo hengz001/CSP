@@ -22,12 +22,16 @@ clean:
 zh: $(OBJ)/secret.o \
 	$(OBJ)/tools.o \
 	$(OBJ)/des.o \
-	$(OBJ)/aes.o 
+	$(OBJ)/aes.o \
+	$(OBJ)/rsa.o \
+	$(OBJ)/md5.o
 	$(CC) -o $(BIN)/hello \
 	$(OBJ)/secret.o \
 	$(OBJ)/tools.o \
 	$(OBJ)/des.o \
 	$(OBJ)/aes.o \
+	$(OBJ)/rsa.o \
+	$(OBJ)/md5.o \
 	$(LFLAGS)
 		
 $(OBJ)/secret.o: $(SRC)/secret.c
@@ -40,6 +44,11 @@ $(OBJ)/des.o: $(SRC)/des.c
 			$(CC) $(CFLAGS) $(SRC)/des.c -o $@
 
 $(OBJ)/aes.o: $(SRC)/aes.c
-			$(CC) $(CFLAGS) $(SRC)/aes.c -o $@			
+			$(CC) $(CFLAGS) $(SRC)/aes.c -o $@
 			
+$(OBJ)/rsa.o: $(SRC)/rsa.c
+			$(CC) $(CFLAGS) $(SRC)/rsa.c -o $@			
+			
+$(OBJ)/md5.o: $(SRC)/md5.c
+			$(CC) $(CFLAGS) $(SRC)/md5.c -o $@			
 			

@@ -13,7 +13,7 @@ int HexDumpOneLine(FILE *fp, unsigned char *buffer, int *len, int *line)
 		(*len > 0) ? fprintf(fp, "%02X", buffer[i]) : fprintf(fp, "  ");
 	}
 	*len += LINE_LEN;
-	fprintf(fp, "| ");
+	fprintf(fp, " |");
 
 	for (i = 0; i<LINE_LEN; i++, (*len)--)
 	{
