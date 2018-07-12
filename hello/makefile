@@ -21,11 +21,13 @@ clean:
 	
 zh: $(OBJ)/secret.o \
 	$(OBJ)/tools.o \
-	$(OBJ)/des.o 
+	$(OBJ)/des.o \
+	$(OBJ)/aes.o 
 	$(CC) -o $(BIN)/hello \
 	$(OBJ)/secret.o \
 	$(OBJ)/tools.o \
 	$(OBJ)/des.o \
+	$(OBJ)/aes.o \
 	$(LFLAGS)
 		
 $(OBJ)/secret.o: $(SRC)/secret.c
@@ -36,5 +38,8 @@ $(OBJ)/tools.o: $(SRC)/tools.c
 			
 $(OBJ)/des.o: $(SRC)/des.c
 			$(CC) $(CFLAGS) $(SRC)/des.c -o $@
+
+$(OBJ)/aes.o: $(SRC)/aes.c
+			$(CC) $(CFLAGS) $(SRC)/aes.c -o $@			
 			
 			

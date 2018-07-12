@@ -15,5 +15,6 @@
 
 #include "tools.h"
 #include "des.h"
+#include "aes.h"
 
 #endif /* INC_COMMON_H_ */

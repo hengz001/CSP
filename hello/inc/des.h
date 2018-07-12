@@ -10,7 +10,7 @@
 
 #include <openssl/des.h>
 
-int generateKey(unsigned char *key,int len);
+int generateDesKey(unsigned char *key,int len);
 
 //#ECB
 int desEcbEncryptSingle(unsigned char *key,unsigned char *in,unsigned char *out,int mode);

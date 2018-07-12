@@ -6,8 +6,9 @@
  */
 
 #include "common.h"
+#include "des.h"
 
-int generateKey(unsigned char *key,int len)
+int generateDesKey(unsigned char *key,int len)
 {
 	int i;
 	int rc = 0;

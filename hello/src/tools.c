@@ -1,4 +1,6 @@
+
 #include "common.h"
+#include "tools.h"
 
 #define LINE_LEN 16
 
