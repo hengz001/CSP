@@ -24,7 +24,11 @@ zh: $(OBJ)/secret.o \
 	$(OBJ)/des.o \
 	$(OBJ)/aes.o \
 	$(OBJ)/rsa.o \
-	$(OBJ)/md5.o
+	$(OBJ)/md5.o \
+	$(OBJ)/sm2.o \
+	$(OBJ)/sm3.o \
+	$(OBJ)/sm4.o \
+	$(OBJ)/random.o
 	$(CC) -o $(BIN)/hello \
 	$(OBJ)/secret.o \
 	$(OBJ)/tools.o \
@@ -32,6 +36,10 @@ zh: $(OBJ)/secret.o \
 	$(OBJ)/aes.o \
 	$(OBJ)/rsa.o \
 	$(OBJ)/md5.o \
+	$(OBJ)/sm2.o \
+	$(OBJ)/sm3.o \
+	$(OBJ)/sm4.o \
+	$(OBJ)/random.o \
 	$(LFLAGS)
 		
 $(OBJ)/secret.o: $(SRC)/secret.c
@@ -50,5 +58,17 @@ $(OBJ)/rsa.o: $(SRC)/rsa.c
 			$(CC) $(CFLAGS) $(SRC)/rsa.c -o $@			
 			
 $(OBJ)/md5.o: $(SRC)/md5.c
-			$(CC) $(CFLAGS) $(SRC)/md5.c -o $@			
+			$(CC) $(CFLAGS) $(SRC)/md5.c -o $@
+			
+$(OBJ)/sm2.o: $(SRC)/sm2.c
+			$(CC) $(CFLAGS) $(SRC)/sm2.c -o $@
+			
+$(OBJ)/sm3.o: $(SRC)/sm3.c
+			$(CC) $(CFLAGS) $(SRC)/sm3.c -o $@
+			
+$(OBJ)/sm4.o: $(SRC)/sm4.c
+			$(CC) $(CFLAGS) $(SRC)/sm4.c -o $@			
+			
+$(OBJ)/random.o: $(SRC)/random.c
+			$(CC) $(CFLAGS) $(SRC)/random.c -o $@			
 			

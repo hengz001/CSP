@@ -14,9 +14,15 @@
 #include <string.h>
 
 #include "tools.h"
+#include "random.h"
+
 #include "des.h"
 #include "aes.h"
 #include "rsa.h"
 #include "md5.h"
+#include "sm2.h"
+#include "sm3.h"
+#include "sm4.h"
+
 
 #endif /* INC_COMMON_H_ */

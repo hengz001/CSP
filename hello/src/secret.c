@@ -572,6 +572,7 @@ int rsaView(void)
 
 int md5View(void)
 {
+	printf("----> MD5\n");
 	int rc = 0;
 	unsigned char from[] = "zhuheng";
 	int flen = sizeof(from);
@@ -581,6 +582,20 @@ int md5View(void)
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stdout,to,MD5_DIGEST_LENGTH);
 
+	return rc;
+}
+
+int sm3View(void)
+{
+	printf("-----> SM3\n");
+	int rc = 0;
+	unsigned char from[] = "zhuheng";
+	int flen = sizeof(from);
+	unsigned char to[255];
+
+	rc = SM3(from,flen,to);
+	printf("RC:%d\n",rc);
+	HexDumpBuffer(stdout,to,SM3_DIGEST_LENGTH);
 	return rc;
 }
 
@@ -605,5 +620,14 @@ int main(int argc, char **argv)
 
 	//MD5
 //	md5View();
+
+	//SM3
+//	sm3View();
+
+	//Random
+//	unsigned char buf[64];
+//	printf("RC:%d\n",RANDOM(buf, 32));
+//	HexDumpBuffer(stdout,buf,64);
+
 	return 0;
 }
