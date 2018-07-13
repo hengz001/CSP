@@ -49,26 +49,22 @@ int aesEncrypt(unsigned char *in, unsigned char *out, AES_KEY *key, int mode)
 
 int aesCbcEncrypt(unsigned char *in, unsigned char *out,int len, AES_KEY *key, unsigned char *iv, int mode)
 {
-	int rc = 0;
-
 	AES_cbc_encrypt(in,out,len,key,iv,mode);
-	return rc;
+	return 0;
 }
 
 int aesCfbEncrypt(unsigned char *in, unsigned char *out,int len, AES_KEY *key, unsigned char *iv, int mode)
 {
-	int rc = 0;
 	int num = 0;
 
 	AES_cfb128_encrypt(in,out,len,key,iv,&num,mode);
-	return rc;
+	return 0;
 }
 
 int aesOfbEncrypt(unsigned char *in, unsigned char *out,int len, AES_KEY *key, unsigned char *iv)
 {
-	int rc = 0;
 	int num = 0;
 
 	AES_ofb128_encrypt(in,out,len,key,iv,&num);
-	return rc;
+	return 0;
 }

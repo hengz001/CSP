@@ -12,8 +12,6 @@
 
 int RANDOM(unsigned char *buf, int num)
 {
-	int rc = 0;
-	rc =  RAND_bytes(buf,num);
-	return rc;
+	return RAND_bytes(buf,num);
 }
 

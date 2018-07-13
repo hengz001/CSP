@@ -599,9 +599,84 @@ int sm3View(void)
 	return rc;
 }
 
+int sm4View(void)
+{
+	int rc = 0;
+	sms4_key_t enKey;
+	sms4_key_t deKey;
+	unsigned char userKey[16];
+	unsigned char in[256];
+	unsigned char out[256];
+	unsigned char out2[256];
+	unsigned char iv[32];
+
+	memset(userKey,0,sizeof(userKey));
+	memset(in,0x11,sizeof(in));
+	memset(out,0x22,sizeof(out));
+	memset(out2,0x33,sizeof(out2));
+
+	generateSm4(&enKey,userKey,SM4_ENCRYPT);
+	generateSm4(&deKey,userKey,SM4_DECRYPT);
+
+//	HexDumpBuffer(stdout,(unsigned char*)&enKey,sizeof(sms4_key_t));
+//	printf("---------->\n");
+//	HexDumpBuffer(stdout,(unsigned char*)&deKey,sizeof(sms4_key_t));
+
+	printf("------SM4 ECB\n");
+	sm4EcbEncrypt(in,out,&enKey,SM4_ENCRYPT);
+	printf("CipherText:\n");
+	HexDumpBuffer(stdout,out,16);
+
+	sm4EcbEncrypt(out,out2,&deKey,SM4_DECRYPT);
+	printf("PlainText:\n");
+	HexDumpBuffer(stdout,out2,16);
+
+	printf("------SM4 CBC\n");
+	memset(iv,0x11,sizeof(iv));
+	sm4CbcEncrypt(in,16,out,&enKey,iv,SM4_ENCRYPT);
+	printf("CipherText:\n");
+	HexDumpBuffer(stdout,out,16);
+
+	memset(iv,0x11,sizeof(iv));
+	sm4CbcEncrypt(out,16,out2,&deKey,iv,SM4_DECRYPT);
+	printf("PlainText:\n");
+	HexDumpBuffer(stdout,out2,16);
+
+	printf("------SM4 CFB\n");
+	memset(iv,0x11,sizeof(iv));
+	sm4CfbEncrypt(in,16,out,&enKey,iv,SM4_ENCRYPT);
+	printf("CipherText:\n");
+	HexDumpBuffer(stdout,out,16);
+
+	memset(iv,0x11,sizeof(iv));
+	sm4CfbEncrypt(out,16,out2,&enKey,iv,SM4_DECRYPT);
+	printf("PlainText:\n");
+	HexDumpBuffer(stdout,out2,16);
+
+	printf("------SM4 CFB\n");
+	memset(iv,0x11,sizeof(iv));
+	sm4OfbEncrypt(in,16,out,&enKey,iv);
+	printf("CipherText:\n");
+	HexDumpBuffer(stdout,out,16);
+
+	memset(iv,0x11,sizeof(iv));
+	sm4OfbEncrypt(out,16,out2,&enKey,iv);
+	printf("PlainText:\n");
+	HexDumpBuffer(stdout,out2,16);
+
+
+	return rc;
+}
+
 int main(int argc, char **argv)
 {
-	printf("\n hello OPENSSL.\n");
+	printf("\n Hello OPENSSL.\n");
+
+//Random
+//	unsigned char buf[64];
+//	printf("RC:%d\n",RANDOM(buf, 32));
+//	HexDumpBuffer(stdout,buf,64);
+
 
 	//DES
 //	desECB();
@@ -624,10 +699,7 @@ int main(int argc, char **argv)
 	//SM3
 //	sm3View();
 
-	//Random
-//	unsigned char buf[64];
-//	printf("RC:%d\n",RANDOM(buf, 32));
-//	HexDumpBuffer(stdout,buf,64);
-
+	//SM4
+	sm4View();
 	return 0;
 }
