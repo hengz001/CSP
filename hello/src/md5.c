@@ -8,7 +8,7 @@
 #include "common.h"
 #include "md5.h"
 
-int md5(unsigned char *from, int flen, unsigned char *to)
+int hzMD5(unsigned char *from, int flen, unsigned char *to)
 {
 	MD5_CTX c;
 	MD5_Init(&c);

@@ -10,6 +10,6 @@
 
 #include <openssl/rand.h>
 
-int RANDOM(unsigned char *buf, int num);
+int hzRandom(unsigned char *buf, int num);
 
 #endif

@@ -9,6 +9,6 @@
 #define __MD5_H__
 #include <openssl/md5.h>
 
-int md5(unsigned char *from, int flen, unsigned char *to);
+int hzMD5(unsigned char *from, int flen, unsigned char *to);
 
 #endif

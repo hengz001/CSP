@@ -8,7 +8,7 @@
 #include "common.h"
 #include "des.h"
 
-int generateDesKey(unsigned char *key,int len)
+int hzDesGenerateKey(unsigned char *key,int len)
 {
 	int i;
 	int rc = 0;
@@ -20,7 +20,7 @@ int generateDesKey(unsigned char *key,int len)
 	return rc;
 }
 
-int desEcbEncryptSingle(unsigned char *key,unsigned char *in,unsigned char *out,int mode)
+int hzDesEcbEncryptSingle(unsigned char *key,unsigned char *in,unsigned char *out,int mode)
 {
 	int rc = 0;
 	DES_key_schedule schedule;
@@ -30,7 +30,7 @@ int desEcbEncryptSingle(unsigned char *key,unsigned char *in,unsigned char *out,
 	return rc;
 }
 
-int desEcbEncryptDouble(unsigned char *key,unsigned char *in,unsigned char *out,int mode)
+int hzDesEcbEncryptDouble(unsigned char *key,unsigned char *in,unsigned char *out,int mode)
 {
 	int rc = 0;
 	DES_key_schedule schedule1,schedule2;
@@ -41,7 +41,7 @@ int desEcbEncryptDouble(unsigned char *key,unsigned char *in,unsigned char *out,
 	return rc;
 }
 
-int desEcbEncryptTriple(unsigned char *key,unsigned char *in,unsigned char *out,int mode)
+int hzDesEcbEncryptTriple(unsigned char *key,unsigned char *in,unsigned char *out,int mode)
 {
 	int rc = 0;
 	DES_key_schedule schedule1,schedule2,schedule3;
@@ -53,7 +53,7 @@ int desEcbEncryptTriple(unsigned char *key,unsigned char *in,unsigned char *out,
 	return rc;
 }
 
-int desCbcEncryptSingle(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv,int mode)
+int hzDesCbcEncryptSingle(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv,int mode)
 {
 	int rc = 0;
 	DES_key_schedule schedule;
@@ -63,7 +63,7 @@ int desCbcEncryptSingle(unsigned char *key,unsigned char *in, int iLen, unsigned
 	return rc;
 }
 
-int desCbcEncryptDouble(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv,int mode)
+int hzDesCbcEncryptDouble(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv,int mode)
 {
 	int rc = 0;
 	DES_key_schedule schedule1,schedule2;
@@ -76,7 +76,7 @@ int desCbcEncryptDouble(unsigned char *key,unsigned char *in, int iLen, unsigned
 	return rc;
 }
 
-int desCbcEncryptTriple(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv,int mode)
+int hzDesCbcEncryptTriple(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv,int mode)
 {
 	int rc = 0;
 	DES_key_schedule schedule1,schedule2,schedule3;
@@ -89,7 +89,7 @@ int desCbcEncryptTriple(unsigned char *key,unsigned char *in, int iLen, unsigned
 	return rc;
 }
 
-int desCfbEncryptSingle(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv,int mode)
+int hzDesCfbEncryptSingle(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv,int mode)
 {
 	int rc = 0;
 	int num = 0;
@@ -100,7 +100,7 @@ int desCfbEncryptSingle(unsigned char *key,unsigned char *in, int iLen, unsigned
 	return rc;
 }
 
-int desCfbEncryptDouble(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv,int mode)
+int hzDesCfbEncryptDouble(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv,int mode)
 {
 	int rc = 0;
 	int num = 0;
@@ -112,7 +112,7 @@ int desCfbEncryptDouble(unsigned char *key,unsigned char *in, int iLen, unsigned
 	return rc;
 }
 
-int desCfbEncryptTriple(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv,int mode)
+int hzDesCfbEncryptTriple(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv,int mode)
 {
 	int rc = 0;
 	int num = 0;
@@ -126,7 +126,7 @@ int desCfbEncryptTriple(unsigned char *key,unsigned char *in, int iLen, unsigned
 }
 
 //
-int desOfbEncryptSingle(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv)
+int hzDesOfbEncryptSingle(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv)
 {
 	int rc = 0;
 	int num = 0;
@@ -137,7 +137,7 @@ int desOfbEncryptSingle(unsigned char *key,unsigned char *in, int iLen, unsigned
 	return rc;
 }
 
-int desOfbEncryptDouble(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv)
+int hzDesOfbEncryptDouble(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv)
 {
 	int rc = 0;
 	int num = 0;
@@ -149,7 +149,7 @@ int desOfbEncryptDouble(unsigned char *key,unsigned char *in, int iLen, unsigned
 	return rc;
 }
 
-int desOfbEncryptTriple(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv)
+int hzDesOfbEncryptTriple(unsigned char *key,unsigned char *in, int iLen, unsigned char *out,unsigned char *iv)
 {
 	int rc = 0;
 	int num = 0;

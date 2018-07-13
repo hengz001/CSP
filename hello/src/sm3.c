@@ -8,7 +8,7 @@
 #include "common.h"
 #include "sm3.h"
 
-int SM3(unsigned char *from, int flen, unsigned char *to)
+int hzSM3(unsigned char *from, int flen, unsigned char *to)
 {
 	sm3_ctx_t c;
 	sm3_init(&c);

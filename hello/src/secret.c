@@ -26,10 +26,10 @@ int desECB(void)
 	memset(key,0x11,len);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,key,len);
-	rc = desEcbEncryptSingle(key,in,out,mode);
+	rc = hzDesEcbEncryptSingle(key,in,out,mode);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out,8);
-	rc = desEcbEncryptSingle(key,out,out2,mode^1);
+	rc = hzDesEcbEncryptSingle(key,out,out2,mode^1);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out2,8);
 
@@ -37,10 +37,10 @@ int desECB(void)
 	memset(key,0x11,len);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,key,len);
-	rc = desEcbEncryptDouble(key,in,out,mode);
+	rc = hzDesEcbEncryptDouble(key,in,out,mode);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out,8);
-	rc = desEcbEncryptSingle(key,out,out2,mode^1);
+	rc = hzDesEcbEncryptSingle(key,out,out2,mode^1);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out2,8);
 
@@ -49,10 +49,10 @@ int desECB(void)
 	memset(key,0x11,len);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,key,len);
-	rc = desEcbEncryptTriple(key,in,out,mode);
+	rc = hzDesEcbEncryptTriple(key,in,out,mode);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out,8);
-	rc = desEcbEncryptSingle(key,out,out2,mode^1);
+	rc = hzDesEcbEncryptSingle(key,out,out2,mode^1);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out2,8);
 
@@ -79,13 +79,13 @@ int desCBC(void)
 	memset(key,0x11,len);
 	printf("KEY:\n");
 	HexDumpBuffer(stderr,key,len);
-	rc = desCbcEncryptSingle(key,in,iLen,out,iv,DES_ENCRYPT);
+	rc = hzDesCbcEncryptSingle(key,in,iLen,out,iv,DES_ENCRYPT);
 	printf("CipherText RC:%d\n",rc);
 	HexDumpBuffer(stderr,out,iLen);
 
 	memset(iv,0x11,sizeof(iv));
 	printf("PlainText:\n");
-	rc = desCbcEncryptSingle(key,out,iLen,out2,iv,DES_DECRYPT);
+	rc = hzDesCbcEncryptSingle(key,out,iLen,out2,iv,DES_DECRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out2,iLen);
 
@@ -93,12 +93,12 @@ int desCBC(void)
 	len = 16;
 	iLen = 24;
 	memset(key,0x11,len);
-	desCbcEncryptDouble(key,in,iLen,out,iv,DES_ENCRYPT);
+	hzDesCbcEncryptDouble(key,in,iLen,out,iv,DES_ENCRYPT);
 	printf("CipherText:\n");
 	HexDumpBuffer(stderr,out,iLen);
 
 	memset(iv,0x11,sizeof(iv));
-	desCbcEncryptDouble(key,out,iLen,out2,iv,DES_DECRYPT);
+	hzDesCbcEncryptDouble(key,out,iLen,out2,iv,DES_DECRYPT);
 	printf("-PlainText:\n");
 	HexDumpBuffer(stderr,out2,iLen);
 
@@ -106,12 +106,12 @@ int desCBC(void)
 	len = 24;
 	iLen = 24;
 	memset(key,0x11,len);
-	desCbcEncryptTriple(key,in,iLen,out,iv,DES_ENCRYPT);
+	hzDesCbcEncryptTriple(key,in,iLen,out,iv,DES_ENCRYPT);
 	printf("CipherText:\n");
 	HexDumpBuffer(stderr,out,iLen);
 
 	memset(iv,0x11,sizeof(iv));
-	desCbcEncryptTriple(key,out,iLen,out2,iv,DES_DECRYPT);
+	hzDesCbcEncryptTriple(key,out,iLen,out2,iv,DES_DECRYPT);
 	printf("-PlainText:\n");
 	HexDumpBuffer(stderr,out2,iLen);
 
@@ -142,13 +142,13 @@ int desCFB(void)
 	memset(key,0x11,len);
 	printf("KEY:\n");
 	HexDumpBuffer(stderr,key,len);
-	rc = desCfbEncryptSingle(key,in,iLen,out,iv,DES_ENCRYPT);
+	rc = hzDesCfbEncryptSingle(key,in,iLen,out,iv,DES_ENCRYPT);
 	printf("CipherText:\n");
 	HexDumpBuffer(stderr,out,iLen);
 
 	memset(iv,0x11,sizeof(iv));
 	printf("PlainText:\n");
-	rc = desCfbEncryptSingle(key,out,iLen,out2,iv,DES_DECRYPT);
+	rc = hzDesCfbEncryptSingle(key,out,iLen,out2,iv,DES_DECRYPT);
 	HexDumpBuffer(stderr,out2,iLen);
 
 	memset(iv,0x11,sizeof(iv));
@@ -156,12 +156,12 @@ int desCFB(void)
 	iLen = 16;
 	memset(iv,0x11,sizeof(iv));
 	memset(key,0x11,len);
-	desCfbEncryptDouble(key,in,iLen,out,iv,DES_ENCRYPT);
+	hzDesCfbEncryptDouble(key,in,iLen,out,iv,DES_ENCRYPT);
 	printf("CipherText:\n");
 	HexDumpBuffer(stderr,out,iLen);
 
 	memset(iv,0x11,sizeof(iv));
-	desCfbEncryptDouble(key,out,iLen,out2,iv,DES_DECRYPT);
+	hzDesCfbEncryptDouble(key,out,iLen,out2,iv,DES_DECRYPT);
 	printf("-PlainText:\n");
 	HexDumpBuffer(stderr,out2,iLen);
 
@@ -170,12 +170,12 @@ int desCFB(void)
 	iLen = 24;
 	memset(iv,0x11,sizeof(iv));
 	memset(key,0x11,len);
-	desCfbEncryptTriple(key,in,iLen,out,iv,DES_ENCRYPT);
+	hzDesCfbEncryptTriple(key,in,iLen,out,iv,DES_ENCRYPT);
 	printf("CipherText:\n");
 	HexDumpBuffer(stderr,out,iLen);
 
 	memset(iv,0x11,sizeof(iv));
-	desCfbEncryptTriple(key,out,iLen,out2,iv,DES_DECRYPT);
+	hzDesCfbEncryptTriple(key,out,iLen,out2,iv,DES_DECRYPT);
 	printf("-PlainText:\n");
 	HexDumpBuffer(stderr,out2,iLen);
 
@@ -206,13 +206,13 @@ int desOFB(void)
 	memset(key,0x11,len);
 	printf("KEY:\n");
 	HexDumpBuffer(stderr,key,len);
-	rc = desOfbEncryptSingle(key,in,iLen,out,iv);
+	rc = hzDesOfbEncryptSingle(key,in,iLen,out,iv);
 	printf("CipherText:\n");
 	HexDumpBuffer(stderr,out,iLen);
 
 	memset(iv,0x11,sizeof(iv));
 	printf("PlainText:\n");
-	rc = desOfbEncryptSingle(key,out,iLen,out2,iv);
+	rc = hzDesOfbEncryptSingle(key,out,iLen,out2,iv);
 	HexDumpBuffer(stderr,out2,iLen);
 
 	memset(iv,0x11,sizeof(iv));
@@ -220,12 +220,12 @@ int desOFB(void)
 	iLen = 16;
 	memset(iv,0x11,sizeof(iv));
 	memset(key,0x11,len);
-	desOfbEncryptDouble(key,in,iLen,out,iv);
+	hzDesOfbEncryptDouble(key,in,iLen,out,iv);
 	printf("CipherText:\n");
 	HexDumpBuffer(stderr,out,iLen);
 
 	memset(iv,0x11,sizeof(iv));
-	desOfbEncryptDouble(key,out,iLen,out2,iv);
+	hzDesOfbEncryptDouble(key,out,iLen,out2,iv);
 	printf("-PlainText:\n");
 	HexDumpBuffer(stderr,out2,iLen);
 
@@ -234,12 +234,12 @@ int desOFB(void)
 	iLen = 24;
 	memset(iv,0x11,sizeof(iv));
 	memset(key,0x11,len);
-	desOfbEncryptTriple(key,in,iLen,out,iv);
+	hzDesOfbEncryptTriple(key,in,iLen,out,iv);
 	printf("CipherText:\n");
 	HexDumpBuffer(stderr,out,iLen);
 
 	memset(iv,0x11,sizeof(iv));
-	desOfbEncryptTriple(key,out,iLen,out2,iv);
+	hzDesOfbEncryptTriple(key,out,iLen,out2,iv);
 	printf("-PlainText:\n");
 	HexDumpBuffer(stderr,out2,iLen);
 
@@ -263,55 +263,55 @@ int aes_encrypt(void)
 
 //////////////////////////////////////128
 	bits = 128;
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
 	printf("RC:%d\n",rc);
 //	HexDumpBuffer(stderr,(unsigned char*)&aesKey,sizeof(AES_KEY));
 
-	rc = aesEncrypt(in, out, &aesKey, AES_ENCRYPT);
+	rc = hzAesEncrypt(in, out, &aesKey, AES_ENCRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out,16);
 
-	rc = generateAesKey(userKey,bits,&aesKey,AES_DECRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_DECRYPT);
 	printf("RC:%d\n",rc);
 //	HexDumpBuffer(stderr,(unsigned char*)&aesKey,sizeof(AES_KEY));
 
-	rc = aesEncrypt(out, out2, &aesKey, AES_DECRYPT);
+	rc = hzAesEncrypt(out, out2, &aesKey, AES_DECRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out2,16);
 
 //////////////////////////////////////192
 	bits = 192;
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
 	printf("RC:%d\n",rc);
 //	HexDumpBuffer(stderr,(unsigned char*)&aesKey,sizeof(AES_KEY));
 
-	rc = aesEncrypt(in, out, &aesKey, AES_ENCRYPT);
+	rc = hzAesEncrypt(in, out, &aesKey, AES_ENCRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out,16);
 
-	rc = generateAesKey(userKey,bits,&aesKey,AES_DECRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_DECRYPT);
 	printf("RC:%d\n",rc);
 //	HexDumpBuffer(stderr,(unsigned char*)&aesKey,sizeof(AES_KEY));
 
-	rc = aesEncrypt(out, out2, &aesKey, AES_DECRYPT);
+	rc = hzAesEncrypt(out, out2, &aesKey, AES_DECRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out2,16);
 
 //////////////////////////////////////256
 	bits = 256;
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
 	printf("RC:%d\n",rc);
 //	HexDumpBuffer(stderr,(unsigned char*)&aesKey,sizeof(AES_KEY));
 
-	rc = aesEncrypt(in, out, &aesKey, AES_ENCRYPT);
+	rc = hzAesEncrypt(in, out, &aesKey, AES_ENCRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out,16);
 
-	rc = generateAesKey(userKey,bits,&aesKey,AES_DECRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_DECRYPT);
 	printf("RC:%d\n",rc);
 //	HexDumpBuffer(stderr,(unsigned char*)&aesKey,sizeof(AES_KEY));
 
-	rc = aesEncrypt(out, out2, &aesKey, AES_DECRYPT);
+	rc = hzAesEncrypt(out, out2, &aesKey, AES_DECRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out2,16);
 
@@ -338,68 +338,68 @@ int aes_cbc_encrypt(void)
 //////////////////////////////////////128
 	bits = 128;
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
 	printf("RC:%d\n",rc);
 //	HexDumpBuffer(stderr,(unsigned char*)&aesKey,sizeof(AES_KEY));
 
 //	rc = aesEncrypt(in, out, &aesKey, AES_ENCRYPT);
-	rc = aesCbcEncrypt(in,out,bits/8,&aesKey,iv,AES_ENCRYPT);
+	rc = hzAesCbcEncrypt(in,out,bits/8,&aesKey,iv,AES_ENCRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out,16);
 
-	rc = generateAesKey(userKey,bits,&aesKey,AES_DECRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_DECRYPT);
 	printf("RC:%d\n",rc);
 //	HexDumpBuffer(stderr,(unsigned char*)&aesKey,sizeof(AES_KEY));
 
 //	rc = aesEncrypt(out, out2, &aesKey, AES_DECRYPT);
 	memset(iv,0x11,sizeof(iv));
-	rc = aesCbcEncrypt(out,out2,bits/8,&aesKey,iv,AES_DECRYPT);
+	rc = hzAesCbcEncrypt(out,out2,bits/8,&aesKey,iv,AES_DECRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out2,16);
 
 //////////////////////////////////////192
 	bits = 192;
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
 	printf("RC:%d\n",rc);
 //	HexDumpBuffer(stderr,(unsigned char*)&aesKey,sizeof(AES_KEY));
 
 //	rc = aesEncrypt(in, out, &aesKey, AES_ENCRYPT);
 	memset(iv,0x11,sizeof(iv));
-	rc = aesCbcEncrypt(in,out,bits/8,&aesKey,iv,AES_ENCRYPT);
+	rc = hzAesCbcEncrypt(in,out,bits/8,&aesKey,iv,AES_ENCRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out,16);
 
-	rc = generateAesKey(userKey,bits,&aesKey,AES_DECRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_DECRYPT);
 	printf("RC:%d\n",rc);
 //	HexDumpBuffer(stderr,(unsigned char*)&aesKey,sizeof(AES_KEY));
 
 //	rc = aesEncrypt(out, out2, &aesKey, AES_DECRYPT);
 	memset(iv,0x11,sizeof(iv));
-	rc = aesCbcEncrypt(out,out2,bits/8,&aesKey,iv,AES_DECRYPT);
+	rc = hzAesCbcEncrypt(out,out2,bits/8,&aesKey,iv,AES_DECRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out2,16);
 
 //////////////////////////////////////256
 	bits = 256;
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
 	printf("RC:%d\n",rc);
 //	HexDumpBuffer(stderr,(unsigned char*)&aesKey,sizeof(AES_KEY));
 
 //	rc = aesEncrypt(in, out, &aesKey, AES_ENCRYPT);
 	memset(iv,0x11,sizeof(iv));
-	rc = aesCbcEncrypt(in,out,bits/8,&aesKey,iv,AES_ENCRYPT);
+	rc = hzAesCbcEncrypt(in,out,bits/8,&aesKey,iv,AES_ENCRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out,16);
 
-	rc = generateAesKey(userKey,bits,&aesKey,AES_DECRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_DECRYPT);
 	printf("RC:%d\n",rc);
 //	HexDumpBuffer(stderr,(unsigned char*)&aesKey,sizeof(AES_KEY));
 
 //	rc = aesEncrypt(out, out2, &aesKey, AES_DECRYPT);
 	memset(iv,0x11,sizeof(iv));
-	rc = aesCbcEncrypt(out,out2,bits/8,&aesKey,iv,AES_DECRYPT);
+	rc = hzAesCbcEncrypt(out,out2,bits/8,&aesKey,iv,AES_DECRYPT);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stderr,out2,16);
 
@@ -425,37 +425,37 @@ int aes_cfb_encrypt(void)
 
 //////////////////////////////////////128
 	bits = 128;
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
-	rc = aesCfbEncrypt(in,out,bits,&aesKey,iv,AES_ENCRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesCfbEncrypt(in,out,bits,&aesKey,iv,AES_ENCRYPT);
 	HexDumpBuffer(stderr,out,16);
 
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
-	rc = aesCfbEncrypt(out,out2,bits,&aesKey,iv,AES_DECRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesCfbEncrypt(out,out2,bits,&aesKey,iv,AES_DECRYPT);
 	HexDumpBuffer(stderr,out2,16);
 
 //////////////////////////////////////192
 
 	bits = 192;
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
-	rc = aesCfbEncrypt(in,out,128,&aesKey,iv,AES_ENCRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesCfbEncrypt(in,out,128,&aesKey,iv,AES_ENCRYPT);
 	HexDumpBuffer(stderr,out,16);
 
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
-	rc = aesCfbEncrypt(out,out2,128,&aesKey,iv,AES_ENCRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesCfbEncrypt(out,out2,128,&aesKey,iv,AES_ENCRYPT);
 	HexDumpBuffer(stderr,out2,16);
 
 //////////////////////////////////////256
 	bits = 256;
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
-	rc = aesCfbEncrypt(in,out,128,&aesKey,iv,AES_ENCRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesCfbEncrypt(in,out,128,&aesKey,iv,AES_ENCRYPT);
 	HexDumpBuffer(stderr,out,16);
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
-	rc = aesCfbEncrypt(out,out2,128,&aesKey,iv,AES_ENCRYPT);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesCfbEncrypt(out,out2,128,&aesKey,iv,AES_ENCRYPT);
 	HexDumpBuffer(stderr,out2,16);
 
 	return rc;
@@ -480,37 +480,37 @@ int aes_ofb_encrypt(void)
 
 //////////////////////////////////////128
 	bits = 128;
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
-	rc = aesOfbEncrypt(in,out,bits,&aesKey,iv);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesOfbEncrypt(in,out,bits,&aesKey,iv);
 	HexDumpBuffer(stderr,out,16);
 
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
-	rc = aesOfbEncrypt(out,out2,bits,&aesKey,iv);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesOfbEncrypt(out,out2,bits,&aesKey,iv);
 	HexDumpBuffer(stderr,out2,16);
 
 //////////////////////////////////////192
 
 	bits = 192;
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
-	rc = aesOfbEncrypt(in,out,128,&aesKey,iv);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesOfbEncrypt(in,out,128,&aesKey,iv);
 	HexDumpBuffer(stderr,out,16);
 
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
-	rc = aesOfbEncrypt(out,out2,128,&aesKey,iv);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesOfbEncrypt(out,out2,128,&aesKey,iv);
 	HexDumpBuffer(stderr,out2,16);
 
 //////////////////////////////////////256
 	bits = 256;
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
-	rc = aesOfbEncrypt(in,out,128,&aesKey,iv);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesOfbEncrypt(in,out,128,&aesKey,iv);
 	HexDumpBuffer(stderr,out,16);
 	memset(iv,0x11,sizeof(iv));
-	rc = generateAesKey(userKey,bits,&aesKey,AES_ENCRYPT);
-	rc = aesOfbEncrypt(out,out2,128,&aesKey,iv);
+	rc = hzAesGenerateKey(userKey,bits,&aesKey,AES_ENCRYPT);
+	rc = hzAesOfbEncrypt(out,out2,128,&aesKey,iv);
 	HexDumpBuffer(stderr,out2,16);
 
 	return rc;
@@ -525,7 +525,7 @@ int rsaView(void)
 	puKey = RSA_new();
 	prKey = RSA_new();
 
-	rc = generateRsaKey(1024,65537,puKey,prKey);
+	rc = hzRsaGenerateKey(1024,65537,puKey,prKey);
 	printf("RC:%d\n",rc);
 	RSA_print_fp(stdout,prKey,0);
 	PEM_write_RSAPublicKey(stdout,puKey);
@@ -537,11 +537,11 @@ int rsaView(void)
 	unsigned int sigLen = 0;
 	int hashType = NID_md5;
 
-	rc = rsaSign(hashType,m,m_length,sigBuf,&sigLen,prKey);
+	rc = hzRsaSign(hashType,m,m_length,sigBuf,&sigLen,prKey);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stdout,sigBuf,sigLen);
 
-	rc = rsaVerify(hashType,m,m_length,sigBuf,sigLen,puKey);
+	rc = hzRsaVerify(hashType,m,m_length,sigBuf,sigLen,puKey);
 	printf("RC:%d\n",rc);
 
 	unsigned char out1[1024];
@@ -549,19 +549,19 @@ int rsaView(void)
 	int olen1;
 	int olen2;
 
-	 olen1 = rsaPublicKeyEncrypt(m_length,m,out1,puKey,RSA_PKCS1_PADDING);
+	 olen1 = hzRsaPublicKeyEncrypt(m_length,m,out1,puKey,RSA_PKCS1_PADDING);
 	 printf("\n CipherText length:%d\n",olen1);
 	 HexDumpBuffer(stdout,out1,olen1);
 
-	 olen2 = rsaPrivateKeyDecrypt(olen1,out1,out2,prKey,RSA_PKCS1_PADDING);
+	 olen2 = hzRsaPrivateKeyDecrypt(olen1,out1,out2,prKey,RSA_PKCS1_PADDING);
 	 printf("\n PlainText length:%d\n",olen2);
 	 HexDumpBuffer(stdout,out2,olen2);
 
-	 olen1 = rsaPrivateKeyEncrypt(m_length,m,out1,prKey,RSA_PKCS1_PADDING);
+	 olen1 = hzRsaPrivateKeyEncrypt(m_length,m,out1,prKey,RSA_PKCS1_PADDING);
 	 printf("\n CipherText length:%d\n",olen1);
 	 HexDumpBuffer(stdout,out1,olen1);
 
-	 olen2 = rsaPublicKeyDecrypt(olen1,out1,out2,puKey,RSA_PKCS1_PADDING);
+	 olen2 = hzRsaPublicKeyDecrypt(olen1,out1,out2,puKey,RSA_PKCS1_PADDING);
 	 printf("\n PlainText length:%d\n",olen2);
 	 HexDumpBuffer(stdout,out2,olen2);
 
@@ -578,7 +578,7 @@ int md5View(void)
 	int flen = sizeof(from);
 	unsigned char to[255];
 
-	rc = md5(from,flen,to);
+	rc = hzMD5(from,flen,to);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stdout,to,MD5_DIGEST_LENGTH);
 
@@ -593,7 +593,7 @@ int sm3View(void)
 	int flen = sizeof(from);
 	unsigned char to[255];
 
-	rc = SM3(from,flen,to);
+	rc = hzSM3(from,flen,to);
 	printf("RC:%d\n",rc);
 	HexDumpBuffer(stdout,to,SM3_DIGEST_LENGTH);
 	return rc;
@@ -615,56 +615,98 @@ int sm4View(void)
 	memset(out,0x22,sizeof(out));
 	memset(out2,0x33,sizeof(out2));
 
-	generateSm4(&enKey,userKey,SM4_ENCRYPT);
-	generateSm4(&deKey,userKey,SM4_DECRYPT);
+	hzSm4GenerateKey(&enKey,userKey,SM4_ENCRYPT);
+	hzSm4GenerateKey(&deKey,userKey,SM4_DECRYPT);
 
 //	HexDumpBuffer(stdout,(unsigned char*)&enKey,sizeof(sms4_key_t));
 //	printf("---------->\n");
 //	HexDumpBuffer(stdout,(unsigned char*)&deKey,sizeof(sms4_key_t));
 
 	printf("------SM4 ECB\n");
-	sm4EcbEncrypt(in,out,&enKey,SM4_ENCRYPT);
+	hzSm4EcbEncrypt(in,out,&enKey,SM4_ENCRYPT);
 	printf("CipherText:\n");
 	HexDumpBuffer(stdout,out,16);
 
-	sm4EcbEncrypt(out,out2,&deKey,SM4_DECRYPT);
+	hzSm4EcbEncrypt(out,out2,&deKey,SM4_DECRYPT);
 	printf("PlainText:\n");
 	HexDumpBuffer(stdout,out2,16);
 
 	printf("------SM4 CBC\n");
 	memset(iv,0x11,sizeof(iv));
-	sm4CbcEncrypt(in,16,out,&enKey,iv,SM4_ENCRYPT);
+	hzSm4CbcEncrypt(in,16,out,&enKey,iv,SM4_ENCRYPT);
 	printf("CipherText:\n");
 	HexDumpBuffer(stdout,out,16);
 
 	memset(iv,0x11,sizeof(iv));
-	sm4CbcEncrypt(out,16,out2,&deKey,iv,SM4_DECRYPT);
+	hzSm4CbcEncrypt(out,16,out2,&deKey,iv,SM4_DECRYPT);
 	printf("PlainText:\n");
 	HexDumpBuffer(stdout,out2,16);
 
 	printf("------SM4 CFB\n");
 	memset(iv,0x11,sizeof(iv));
-	sm4CfbEncrypt(in,16,out,&enKey,iv,SM4_ENCRYPT);
+	hzSm4CfbEncrypt(in,16,out,&enKey,iv,SM4_ENCRYPT);
 	printf("CipherText:\n");
 	HexDumpBuffer(stdout,out,16);
 
 	memset(iv,0x11,sizeof(iv));
-	sm4CfbEncrypt(out,16,out2,&enKey,iv,SM4_DECRYPT);
+	hzSm4CfbEncrypt(out,16,out2,&enKey,iv,SM4_DECRYPT);
 	printf("PlainText:\n");
 	HexDumpBuffer(stdout,out2,16);
 
 	printf("------SM4 CFB\n");
 	memset(iv,0x11,sizeof(iv));
-	sm4OfbEncrypt(in,16,out,&enKey,iv);
+	hzSm4OfbEncrypt(in,16,out,&enKey,iv);
 	printf("CipherText:\n");
 	HexDumpBuffer(stdout,out,16);
 
 	memset(iv,0x11,sizeof(iv));
-	sm4OfbEncrypt(out,16,out2,&enKey,iv);
+	hzSm4OfbEncrypt(out,16,out2,&enKey,iv);
 	printf("PlainText:\n");
 	HexDumpBuffer(stdout,out2,16);
 
 
+	return rc;
+}
+
+int sm2View(void)
+{
+	int rc = 0;
+
+	printf("______SM2\n");
+	EC_KEY *pukey,*prkey;
+
+	pukey = EC_KEY_new();
+	prkey = EC_KEY_new();
+	rc = hzSm2GenerateKey(pukey,prkey);
+//	printf("RC:%d\n",rc);
+//	PEM_write_EC_PUBKEY(stdout,pukey);
+//	PEM_write_ECPrivateKey(stdout,prkey,NULL,NULL,0,NULL,NULL);
+//	EC_KEY_print_fp(stdout,prkey,0);
+//	printf("\n------------\n");
+//	EC_KEY_print_fp(stdout,pukey,0);
+
+	unsigned char in[1024];
+	unsigned char out[1024];
+	unsigned char out2[1024];
+	int inlen = 256;
+	int outlen = 1024;
+	int out2len = 1024;
+
+	memset(in,0x11,inlen);
+	rc = hzSm2Signle(NID_sm3,in,inlen,out,&outlen,prkey);
+	printf("RC:%d LEN:%d\n",rc,outlen);
+	rc = hzSm2Verify(NID_sm3,in,inlen,out,outlen,pukey);
+	printf("RC:%d LEN:%d\n",rc,outlen);
+
+	rc = hzSm2PublicKeyEncrypt(NID_sm3,in,inlen,out,&outlen,pukey);
+	printf("RC:%d LEN:%d\n",rc,outlen);
+	HexDumpBuffer(stdout,out,outlen);
+	rc = hzSm2PrivateKeyDecrypt(NID_sm3,out,outlen,out2,&out2len,prkey);
+	printf("RC:%d LEN:%d\n",rc,out2len);
+	HexDumpBuffer(stdout,out2,out2len);
+
+	EC_KEY_free(pukey);
+	EC_KEY_free(prkey);
 	return rc;
 }
 
@@ -679,25 +721,28 @@ int main(int argc, char **argv)
 
 
 	//DES
-//	desECB();
-//	desCBC();
-//	desCFB();
-//	desOFB();
+	desECB();
+	desCBC();
+	desCFB();
+	desOFB();
 
 	//AES
-//	aes_encrypt();
-//	aes_cbc_encrypt();
-//	aes_cfb_encrypt();
-//	aes_ofb_encrypt();
+	aes_encrypt();
+	aes_cbc_encrypt();
+	aes_cfb_encrypt();
+	aes_ofb_encrypt();
 
 	//RSA
-//	rsaView();
+	rsaView();
 
 	//MD5
-//	md5View();
+	md5View();
+
+	//SM2
+	sm2View();
 
 	//SM3
-//	sm3View();
+	sm3View();
 
 	//SM4
 	sm4View();

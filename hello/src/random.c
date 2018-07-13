@@ -10,7 +10,7 @@
 #include "random.h"
 
 
-int RANDOM(unsigned char *buf, int num)
+int hzRandom(unsigned char *buf, int num)
 {
 	return RAND_bytes(buf,num);
 }

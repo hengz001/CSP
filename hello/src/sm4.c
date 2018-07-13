@@ -9,7 +9,7 @@
 #include "sm4.h"
 
 
-int generateSm4(sms4_key_t *key, unsigned char *userKey,int mode)
+int hzSm4GenerateKey(sms4_key_t *key, unsigned char *userKey,int mode)
 {
 	int rc = 0;
 
@@ -27,20 +27,20 @@ int generateSm4(sms4_key_t *key, unsigned char *userKey,int mode)
 	return rc;
 }
 
-int sm4EcbEncrypt(const unsigned char *in, unsigned char *out,const sms4_key_t *key, int enc)
+int hzSm4EcbEncrypt(const unsigned char *in, unsigned char *out,const sms4_key_t *key, int enc)
 {
 	sms4_ecb_encrypt(in,out,key,enc);
 	return 0;
 }
 
-int sm4CbcEncrypt(const unsigned char *in, int len, unsigned char *out,const sms4_key_t *key,unsigned char *iv, int enc)
+int hzSm4CbcEncrypt(const unsigned char *in, int len, unsigned char *out,const sms4_key_t *key,unsigned char *iv, int enc)
 {
 	sms4_cbc_encrypt(in,out,len,key,iv,enc);
 	return 0;
 }
 
 
-int sm4CfbEncrypt(const unsigned char *in, int len, unsigned char *out,const sms4_key_t *key,unsigned char *iv, int enc)
+int hzSm4CfbEncrypt(const unsigned char *in, int len, unsigned char *out,const sms4_key_t *key,unsigned char *iv, int enc)
 {
 	int num = 0;
 
@@ -48,7 +48,7 @@ int sm4CfbEncrypt(const unsigned char *in, int len, unsigned char *out,const sms
 	return 0;
 }
 
-int sm4OfbEncrypt(const unsigned char *in, int len, unsigned char *out,const sms4_key_t *key,unsigned char *iv)
+int hzSm4OfbEncrypt(const unsigned char *in, int len, unsigned char *out,const sms4_key_t *key,unsigned char *iv)
 {
 	int num = 0;
 

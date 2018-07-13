@@ -142,7 +142,7 @@ struct rsa_st {
 //	return rc;
 //}
 
-int generateRsaKey(int bits, int e_Dec, RSA *publicKey, RSA *privateKey)
+int hzRsaGenerateKey(int bits, int e_Dec, RSA *publicKey, RSA *privateKey)
 {
 	int rc = 0;
 	BIGNUM *bne;
@@ -171,31 +171,31 @@ int generateRsaKey(int bits, int e_Dec, RSA *publicKey, RSA *privateKey)
 	return RSA_check_key(privateKey);
 }
 
-int rsaSign(int hashType, const unsigned char *m, unsigned int m_length, unsigned char *sigret, unsigned int *siglen, RSA *prKey)
+int hzRsaSign(int hashType, const unsigned char *m, unsigned int m_length, unsigned char *sigret, unsigned int *siglen, RSA *prKey)
 {
 	return RSA_sign(hashType, m, m_length, sigret, siglen, prKey);
 }
 
-int rsaVerify(int hshType, const unsigned char *m, unsigned int m_length, const unsigned char *sigbuf, unsigned int siglen, RSA *puKey)
+int hzRsaVerify(int hshType, const unsigned char *m, unsigned int m_length, const unsigned char *sigbuf, unsigned int siglen, RSA *puKey)
 {
 	return RSA_verify(hshType, m, m_length, sigbuf, siglen, puKey);
 }
 
-int rsaPublicKeyEncrypt(int flen, const unsigned char *from, unsigned char *to, RSA *rsa, int padding)
+int hzRsaPublicKeyEncrypt(int flen, const unsigned char *from, unsigned char *to, RSA *rsa, int padding)
 {
 	return RSA_public_encrypt(flen,from,to,rsa,padding);
 }
-int rsaPublicKeyDecrypt(int flen, const unsigned char *from, unsigned char *to, RSA *rsa, int padding)
+int hzRsaPublicKeyDecrypt(int flen, const unsigned char *from, unsigned char *to, RSA *rsa, int padding)
 {
 	return RSA_public_decrypt(flen,from,to,rsa,padding);
 }
 
-int rsaPrivateKeyEncrypt(int flen, const unsigned char *from, unsigned char *to, RSA *rsa, int padding)
+int hzRsaPrivateKeyEncrypt(int flen, const unsigned char *from, unsigned char *to, RSA *rsa, int padding)
 {
 	return RSA_private_encrypt(flen,from,to,rsa,padding);
 }
 
-int rsaPrivateKeyDecrypt(int flen, const unsigned char *from, unsigned char *to, RSA *rsa, int padding)
+int hzRsaPrivateKeyDecrypt(int flen, const unsigned char *from, unsigned char *to, RSA *rsa, int padding)
 {
 	return RSA_private_decrypt(flen,from,to,rsa,padding);
 }

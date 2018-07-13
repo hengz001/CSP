@@ -10,6 +10,6 @@
 
 #include <openssl/sm3.h>
 
-int SM3(unsigned char *from, int flen, unsigned char *to);
+int hzSM3(unsigned char *from, int flen, unsigned char *to);
 
 #endif /* SM2_H_ */
