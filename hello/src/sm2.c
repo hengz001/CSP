@@ -60,7 +60,6 @@ int hzSm2GenerateKey(EC_KEY* pukey, EC_KEY* prkey)
 		{
 			rc = EC_KEY_set_public_key(pukey,prkey->pub_key);
 		}
-
 	}
 
 	EC_GROUP_free(group);

@@ -23,6 +23,7 @@
 #include "sm2.h"
 #include "sm3.h"
 #include "sm4.h"
+#include "sm9.h"
 
 
 #endif /* INC_COMMON_H_ */

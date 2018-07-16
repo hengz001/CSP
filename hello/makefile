@@ -28,6 +28,7 @@ zh: $(OBJ)/secret.o \
 	$(OBJ)/sm2.o \
 	$(OBJ)/sm3.o \
 	$(OBJ)/sm4.o \
+	$(OBJ)/sm9.o \
 	$(OBJ)/random.o
 	$(CC) -o $(BIN)/hello \
 	$(OBJ)/secret.o \
@@ -39,6 +40,7 @@ zh: $(OBJ)/secret.o \
 	$(OBJ)/sm2.o \
 	$(OBJ)/sm3.o \
 	$(OBJ)/sm4.o \
+	$(OBJ)/sm9.o \
 	$(OBJ)/random.o \
 	$(LFLAGS)
 		
@@ -68,6 +70,9 @@ $(OBJ)/sm3.o: $(SRC)/sm3.c
 			
 $(OBJ)/sm4.o: $(SRC)/sm4.c
 			$(CC) $(CFLAGS) $(SRC)/sm4.c -o $@			
+			
+$(OBJ)/sm9.o: $(SRC)/sm9.c
+			$(CC) $(CFLAGS) $(SRC)/sm9.c -o $@			
 			
 $(OBJ)/random.o: $(SRC)/random.c
 			$(CC) $(CFLAGS) $(SRC)/random.c -o $@			

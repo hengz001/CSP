@@ -710,6 +710,11 @@ int sm2View(void)
 	return rc;
 }
 
+int sm9View(void)
+{
+	return 0;
+}
+
 int main(int argc, char **argv)
 {
 	printf("\n Hello OPENSSL.\n");
@@ -720,31 +725,34 @@ int main(int argc, char **argv)
 //	HexDumpBuffer(stdout,buf,64);
 
 
-	//DES
-	desECB();
-	desCBC();
-	desCFB();
-	desOFB();
+//	//DES
+//	desECB();
+//	desCBC();
+//	desCFB();
+//	desOFB();
+//
+//	//AES
+//	aes_encrypt();
+//	aes_cbc_encrypt();
+//	aes_cfb_encrypt();
+//	aes_ofb_encrypt();
+//
+//	//RSA
+//	rsaView();
+//
+//	//MD5
+//	md5View();
+//
+//	//SM2
+//	sm2View();
+//
+//	//SM3
+//	sm3View();
+//
+//	//SM4
+//	sm4View();
 
-	//AES
-	aes_encrypt();
-	aes_cbc_encrypt();
-	aes_cfb_encrypt();
-	aes_ofb_encrypt();
-
-	//RSA
-	rsaView();
-
-	//MD5
-	md5View();
-
-	//SM2
-	sm2View();
-
-	//SM3
-	sm3View();
-
-	//SM4
-	sm4View();
+	//SM9
+	sm9View();
 	return 0;
 }
